@@ -13,7 +13,7 @@ class RobotDemo : public SimpleRobot
 	Joystick leftStick;  // leftStick wired to port 2
 
 public:
-	RobotDemo():
+	RobotDemo()://This is the constructer function
 		myRobot(1, 2, 3, 4),	// these must be initialized in the same order
 		rightStick(1),// as they are declared above.
 		leftStick(2)
@@ -41,8 +41,9 @@ public:
 		while (IsOperatorControl())
 		{
 			myRobot.TankDrive(leftStick, rightStick);
-			Wait(0.005);				// wait for a motor update time
+			Wait(0.005);// wait for a motor update time
 		}
+		myRobot.StopMotor();
 	}
 	
 	/**
