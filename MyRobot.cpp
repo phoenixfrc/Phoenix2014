@@ -9,8 +9,8 @@
 class RobotDemo : public SimpleRobot
 {
 	RobotDrive myRobot; // robot drive system
-	Joystick rightStick;
-	Joystick leftStick;
+	Joystick rightStick; // rightStick wired to port 1
+	Joystick leftStick;  // leftStick wired to port 2
 
 public:
 	RobotDemo():
