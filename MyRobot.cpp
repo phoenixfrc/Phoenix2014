@@ -1,4 +1,6 @@
 #include "WPILib.h"
+#include "Shooter.h"
+#include "TestMode.h"
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -51,6 +53,8 @@ public:
 	{
 		elevation.Reset();
 		elevation.Start();
+
+		Shooter shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -60,12 +64,18 @@ public:
 			Wait(0.005);// wait for a motor update time
 		}
 		myRobot.StopMotor();
+		
+		shooter.operateShooter(); 
 	}
-	
+		
 	/**
 	 * Runs during test mode
 	 */
 	void Test() {
+		TestMode tester;
+		while (IsTest()){
+			tester.performTesting();
+		}
 
 	}
 };
