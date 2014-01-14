@@ -28,6 +28,7 @@ public:
 		elevatorMotor(5)
 	{
 		myRobot.SetExpiration(0.1);
+		//myRobot.SetInvertedMotor();
 	}
 
 	/**
