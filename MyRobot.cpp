@@ -1,5 +1,7 @@
 #include "WPILib.h"
+#include "Shooter.h"
 #include "TestMode.h"
+
 /**
  * This is a demo program showing the use of the RobotBase class.
  * The SimpleRobot class is the base of a robot application that will automatically call your
@@ -36,7 +38,7 @@ public:
 	 * Runs the motors with arcade steering. 
 	 */
 	void OperatorControl()
-	{
+	{	Shooter shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -44,8 +46,10 @@ public:
 			Wait(0.005);// wait for a motor update time
 		}
 		myRobot.StopMotor();
+		
+		shooter.operateShooter(); 
 	}
-	
+		
 	/**
 	 * Runs during test mode
 	 */
