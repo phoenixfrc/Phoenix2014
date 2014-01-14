@@ -45,7 +45,7 @@ public:
 		}
 		myRobot.StopMotor();
 		
-		shooter.operateShooter(); // ??
+		shooter.operateShooter(); 
 	}
 		
 	/**
