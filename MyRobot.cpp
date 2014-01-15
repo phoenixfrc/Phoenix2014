@@ -19,9 +19,10 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 
 public:
+	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
 	RobotDemo()://This is the constructer function
-		//myRobot(1, 2,3, 4),	// these must be initialized in the same order
-		myRobot(1,3),
+		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
+		myRobot(1,3), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
 		rightStick(2),// as they are declared above.
 		leftStick(1),
 		gamePad(3),
@@ -30,7 +31,8 @@ public:
 		elevatorMotor(5)
 	{
 		myRobot.SetExpiration(0.1);
-		//myRobot.SetInvertedMotor();
+		myRobot.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+		myRobot.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	}
 
 	/**
