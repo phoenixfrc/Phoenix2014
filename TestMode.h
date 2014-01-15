@@ -6,7 +6,7 @@ class TestMode {
 	
 public:
 	TestMode();
-	void performTesting();
+	void performTesting(Joystick * gamePad, DriverStationLCD * lcd);
 	~TestMode();
 	
 };

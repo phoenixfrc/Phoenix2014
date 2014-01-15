@@ -17,21 +17,24 @@ class RobotDemo : public SimpleRobot
 	Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
 	Talon elevatorMotor;
+	DriverStationLCD * lcd;
 
 public:
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2,3, 4),	// these must be initialized in the same order
-		myRobot(1,3),
+		myRobot(1,3),  // left, right
 		rightStick(2),// as they are declared above.
 		leftStick(1),
 		gamePad(3),
 		elevation(1,2),
 		driveDistance(3,4),
-		elevatorMotor(5)
+		elevatorMotor(5),
+	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
 		//myRobot.SetInvertedMotor();
 	}
+	
 
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -74,7 +77,8 @@ public:
 	void Test() {
 		TestMode tester;
 		while (IsTest()){
-			tester.performTesting();
+			tester.performTesting(&gamePad, lcd);
+
 		}
 
 	}
