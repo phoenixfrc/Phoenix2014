@@ -1,10 +1,12 @@
 #include "TestMode.h"
 
 TestMode::TestMode(){
+	m_mode = testGamepad;
+	
 	
 }
 
-void TestMode::performTesting(Joystick * gamePad, DriverStationLCD * lcd)
+void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
 {
 	bool button1 = gamePad->GetRawButton(1);
 	bool button2 = gamePad->GetRawButton(2);
@@ -14,15 +16,54 @@ void TestMode::performTesting(Joystick * gamePad, DriverStationLCD * lcd)
 	bool button6 = gamePad->GetRawButton(6);
 	bool button7 = gamePad->GetRawButton(7);
 	bool button8 = gamePad->GetRawButton(8);
-	lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad = %c%c%c%c %c%c%c%c",
-			button1 ? '1':'0',
-			button2 ? '1':'0',
-			button3 ? '1':'0',		
-			button4 ? '1':'0',		
-			button5 ? '1':'0',		
-			button6 ? '1':'0',				
-			button7 ? '1':'0',		
-			button8 ? '1':'0');
+	
+	switch (m_mode) {
+		case testGamepad:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad = %c%c%c%c %c%c%c%c",
+					button1 ? '1':'0',
+					button2 ? '1':'0',
+					button3 ? '1':'0',		
+					button4 ? '1':'0',		
+					button5 ? '1':'0',		
+					button6 ? '1':'0',				
+					button7 ? '1':'0',		
+					button8 ? '1':'0');
+			if(button2){
+				m_mode = testJoystick;
+			}
+			break;
+		case testJoystick:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing joystick");
+			
+			if(button2){
+				m_mode = testTalon;
+			}
+			break;
+		case testTalon:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Talon");
+			
+			if(button2){
+				m_mode = testIO;
+			}
+			break;
+		case testIO:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO");
+			if(button2){
+				m_mode = testEncoder;
+			}
+			break;
+		case testEncoder:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
+			
+			
+			if(button2){
+				m_mode = testGamepad;
+			}
+			break;
+		default:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
+			break;
+	}
 }
 
 TestMode::~TestMode(){

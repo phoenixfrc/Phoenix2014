@@ -1,6 +1,8 @@
 #include "WPILib.h"
 #include "Shooter.h"
+#include "Grabber.h"
 #include "TestMode.h"
+
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -11,11 +13,13 @@
 class RobotDemo : public SimpleRobot
 {
 	RobotDrive myRobot; // robot drive system
+	Grabber ballGrabber;
 	Joystick rightStick; // rightStick wired to port 1
 	Joystick leftStick;  // leftStick wired to port 2
 	Joystick gamePad;
-	Encoder elevation;//we will use digital I/O port numbers 1 and 2
+	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
+	Encoder testEncoder;
 	Talon elevatorMotor;
 	DriverStationLCD * lcd;
 
@@ -24,11 +28,13 @@ public:
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
 		myRobot(1,3), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
+		ballGrabber(), //Place holder for grabber.
 		rightStick(2),// as they are declared above.
 		leftStick(1),
 		gamePad(3),
-		elevation(1,2),
+		//elevation(1,2),
 		driveDistance(3,4),
+		testEncoder(1,2),
 		elevatorMotor(5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
@@ -56,14 +62,15 @@ public:
 	 */
 	void OperatorControl()
 	{
-		elevation.Reset();
-		elevation.Start();
+		//elevation.Reset();
+		//elevation.Start();
 
 		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
 			myRobot.TankDrive(rightStick, leftStick);
+			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			Shooter.OperateShooter(&gamePad); 
@@ -80,10 +87,17 @@ public:
 	 */
 	void Test() {
 		TestMode tester;
+		testEncoder.Reset();
+		testEncoder.Start();
 		while (IsTest()){
-			tester.performTesting(&gamePad, lcd);
-
+			tester.PerformTesting(&gamePad, lcd);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Encoder Test");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", testEncoder.GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", testEncoder.GetRate());
+			lcd->UpdateLCD();
+			Wait(0.1);
 		}
+		testEncoder.Stop();
 
 	}
 };
