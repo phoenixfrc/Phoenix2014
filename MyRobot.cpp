@@ -79,8 +79,9 @@ public:
 	void Test() {
 		TestMode tester;
 		while (IsTest()){
-			tester.performTesting(&gamePad, lcd);
-
+			tester.PerformTesting(&gamePad, lcd);
+			lcd->UpdateLCD();
+			Wait(.1);
 		}
 
 	}
