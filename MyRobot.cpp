@@ -83,7 +83,7 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
-			tester.performTesting(&gamePad, lcd);
+			tester.PerformTesting(&gamePad, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Encoder Test");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", testEncoder.GetDistance());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", testEncoder.GetRate());
