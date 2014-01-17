@@ -1,6 +1,8 @@
 #include "WPILib.h"
 #include "Shooter.h"
+#include "Grabber.h"
 #include "TestMode.h"
+
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -11,6 +13,7 @@
 class RobotDemo : public SimpleRobot
 {
 	RobotDrive myRobot; // robot drive system
+	Grabber ballGrabber;
 	Joystick rightStick; // rightStick wired to port 1
 	Joystick leftStick;  // leftStick wired to port 2
 	Joystick gamePad;
@@ -25,6 +28,7 @@ public:
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
 		myRobot(1,3), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
+		ballGrabber(), //Place holder for grabber.
 		rightStick(2),// as they are declared above.
 		leftStick(1),
 		gamePad(3),
@@ -66,6 +70,7 @@ public:
 		while (IsOperatorControl())
 		{
 			myRobot.TankDrive(rightStick, leftStick);
+			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			Wait(0.005);// wait for a motor update time
