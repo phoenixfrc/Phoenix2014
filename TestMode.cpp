@@ -6,7 +6,7 @@ TestMode::TestMode(){
 	
 }
 
-void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
+void TestMode::PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd)
 {
 	bool button1 = gamePad->GetRawButton(1);
 	bool button2 = gamePad->GetRawButton(2);
@@ -54,7 +54,8 @@ void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
 			break;
 		case testEncoder:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
-			
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", encoder->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
 			
 			if(button2){
 				m_mode = testGamepad;
