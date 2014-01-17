@@ -14,8 +14,9 @@ class RobotDemo : public SimpleRobot
 	Joystick rightStick; // rightStick wired to port 1
 	Joystick leftStick;  // leftStick wired to port 2
 	Joystick gamePad;
-	Encoder elevation;//we will use digital I/O port numbers 1 and 2
+	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
+	Encoder testEncoder;
 	Talon elevatorMotor;
 	DriverStationLCD * lcd;
 
@@ -27,8 +28,9 @@ public:
 		rightStick(2),// as they are declared above.
 		leftStick(1),
 		gamePad(3),
-		elevation(1,2),
+		//elevation(1,2),
 		driveDistance(3,4),
+		testEncoder(1,2),
 		elevatorMotor(5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
@@ -56,8 +58,8 @@ public:
 	 */
 	void OperatorControl()
 	{
-		elevation.Reset();
-		elevation.Start();
+		//elevation.Reset();
+		//elevation.Start();
 
 		Shooter shooter;
 		myRobot.SetSafetyEnabled(true);
@@ -78,10 +80,17 @@ public:
 	 */
 	void Test() {
 		TestMode tester;
+		testEncoder.Reset();
+		testEncoder.Start();
 		while (IsTest()){
 			tester.performTesting(&gamePad, lcd);
-
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Encoder Test");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", testEncoder.GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", testEncoder.GetRate());
+			lcd->UpdateLCD();
+			Wait(0.1);
 		}
+		testEncoder.Stop();
 
 	}
 };
