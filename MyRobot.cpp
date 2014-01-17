@@ -59,18 +59,20 @@ public:
 		elevation.Reset();
 		elevation.Start();
 
-		Shooter shooter;
+		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
 			myRobot.TankDrive(rightStick, leftStick);
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
+			Shooter.OperateShooter(&gamePad); 
 			Wait(0.005);// wait for a motor update time
+			
 		}
 		myRobot.StopMotor();
 		
-		shooter.operateShooter(); 
+		
 	}
 		
 	/**
