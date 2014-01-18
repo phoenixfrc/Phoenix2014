@@ -5,7 +5,7 @@
 
 class Shooter {
 	Talon shooterMotor;
-	//DigitalInput limitSwitch;
+	DigitalInput retractedSensor;
 public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(Joystick * gamePad);  //Controll the Shooter

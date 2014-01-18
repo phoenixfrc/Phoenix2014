@@ -4,8 +4,8 @@
 		enum shooterRelease	{released, loaded};
 
 Shooter::Shooter() :
-    shooterMotor(2)// Talon(2)
-
+    shooterMotor(2),
+	retractedSensor(3)
 {
 
 }
@@ -16,6 +16,8 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	bool loadShooter = gamePad->GetRawButton(7);
 	
 	bool releaseShooter = gamePad->GetRawButton(8);
+	
+	bool isRetracted = retractedSensor.Get();
 
 	//decode load shooter button (LT, button7)
 	if (loadShooter) {
