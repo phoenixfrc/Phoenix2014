@@ -2,6 +2,7 @@
 #include "Shooter.h"
 #include "Grabber.h"
 #include "TestMode.h"
+#include "Phoenix2014.h"
 
 
 /**
@@ -27,7 +28,7 @@ public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
-		myRobot(1,3), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
+		myRobot(PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
 		ballGrabber(), //Place holder for grabber.
 		rightStick(2),// as they are declared above.
 		leftStick(1),
@@ -65,7 +66,7 @@ public:
 		//elevation.Reset();
 		//elevation.Start();
 
-		Shooter shooter;
+		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -73,11 +74,13 @@ public:
 			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
+			Shooter.OperateShooter(&gamePad); 
 			Wait(0.005);// wait for a motor update time
+			
 		}
 		myRobot.StopMotor();
 		
-		shooter.operateShooter(); 
+		
 	}
 		
 	/**

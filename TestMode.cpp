@@ -60,6 +60,8 @@ void TestMode::PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStatio
 			if(button2){
 				m_mode = testGamepad;
 			}
+			
+			
 			break;
 		default:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
