@@ -1,12 +1,12 @@
 #include "TestMode.h"
-
+#include "WPILib.h"
 TestMode::TestMode(){
 	m_mode = testGamepad;
 	
 	
 }
 
-void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
+void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick)
 {
 	bool button1 = gamePad->GetRawButton(1);
 	bool button2 = gamePad->GetRawButton(2);
@@ -33,7 +33,12 @@ void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
 			}
 			break;
 		case testJoystick:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing joystick");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "LJS = %f, RJS = %f",
+					leftStick->GetAxis(Joystick::kXAxis),		
+					rightStick->GetAxis(Joystick::kXAxis)
+					
+							);
+			
 			
 			if(button2){
 				m_mode = testTalon;
@@ -59,8 +64,6 @@ void TestMode::PerformTesting(Joystick * gamePad, DriverStationLCD * lcd)
 			if(button2){
 				m_mode = testGamepad;
 			}
-			
-			
 			break;
 		default:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
