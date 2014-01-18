@@ -17,7 +17,7 @@
 #define PHOENIX2014_DRIVEMOTOR_RIGHT_FRONT 4
 
 //talons needed for shooter
-#define PHOENIX2014_SHOOTER_RELEASE_PWM 7
+#define PHOENIX2014_SHOOTER_LOAD_PWM 7
 
 //talons needed for grabber
 #define PHOENIX2014_GRABBER_ELEVATOR_PWM 5
