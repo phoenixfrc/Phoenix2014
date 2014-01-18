@@ -91,7 +91,7 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick);
 			lcd->UpdateLCD();
 			Wait(0.1);
 		}

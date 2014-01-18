@@ -4,8 +4,8 @@
 		enum shooterRelease	{released, loaded};
 
 Shooter::Shooter() :
-    shooterMotor(2),
-	retractedSensor(3)
+    shooterMotor(PHOENIX2014_SHOOTER_LOAD_PWM),
+    retractedSensor(3)
 {
 
 }
@@ -29,10 +29,12 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	
 	//decode release shooter button (RT, button8)
 	if (releaseShooter &&  !loadShooter) {
+	//	releaseShooter.set(relay::kReverse);
 			//release Shooter	
-
 	}
-
+	else{
+		//releaseShooter.set(relay::kOff);
+	}
 //Shooter::~Shooter(){
         
 }
