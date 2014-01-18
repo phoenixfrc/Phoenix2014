@@ -1,9 +1,11 @@
 #ifndef Shooter_h
 #define SHOOTER_H
 #include "WPILib.h"
+#include "Phoenix2014.h"
 
 class Shooter {
-	
+	Talon shooterMotor;
+	//DigitalInput limitSwitch;
 public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(Joystick * gamePad);  //Controll the Shooter
