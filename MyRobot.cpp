@@ -22,8 +22,10 @@ class RobotDemo : public SimpleRobot
 	Encoder driveDistance;
 	Encoder testEncoder;
 	Talon elevatorMotor;
+	DigitalInput testSwitch;
 	DriverStationLCD * lcd;
 
+	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
 	RobotDemo()://This is the constructer function
@@ -37,6 +39,7 @@ public:
 		driveDistance(3,4),
 		testEncoder(1,2),
 		elevatorMotor(5),
+		testSwitch(3),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -53,9 +56,14 @@ public:
 		myRobot.SetSafetyEnabled(false);
 		driveDistance.Reset();
 		driveDistance.Start();
-		myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
-		Wait(2.0); 				//    for 2 seconds
-		myRobot.Drive(0.0, 0.0); 	// stop robot
+		//myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
+		if(driveDistance.Get()==1){
+		myRobot.Drive(-5, 0.0);
+		Wait(2.0);
+		myRobot.Drive(0.0, 0.0);
+		}
+		//Wait(2.0); 				//    for 2 seconds
+		//myRobot.Drive(0.0, 0.0); 	// stop robot
 	}
 
 	/**
@@ -91,7 +99,7 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch);
 			lcd->UpdateLCD();
 			Wait(0.1);
 		}
