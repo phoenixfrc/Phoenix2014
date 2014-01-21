@@ -22,6 +22,8 @@
 //talons needed for grabber
 #define PHOENIX2014_GRABBER_ELEVATOR_PWM 5
 #define PHOENIX2014_GRABBER_ACTUATOR_PWM 6
-//
+//limit switch for shooter
 #define PHOENIX2014_SHOOTER_LIMIT_SWITCH 1
+//spike needed for grabber
+#define PHOENIX2014_GRABBER_ACTUATOR 7
 #endif /* PHOENIX2014_H_ */

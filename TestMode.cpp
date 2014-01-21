@@ -6,7 +6,7 @@ TestMode::TestMode(){
 	
 }
 
-void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick)
+void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -50,10 +50,12 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			if(button2){
 				m_mode = testIO;  //Changes mode to test IO
+				
 			}
 			break;
 		case testIO:  //Tests the Input and Outputs
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO");
+			
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO, %d", testSwitch->Get());
 			if(button2){
 				m_mode = testEncoder; //changes mode to test Encoder
 			}
