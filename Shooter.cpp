@@ -1,44 +1,37 @@
 #include "WPILib.h"
 #include "Shooter.h"
 		
-		enum shooterRelease	{released, loaded};
+		enum shooterStates{released, loaded};
 
 Shooter::Shooter() :
     shooterMotor(PHOENIX2014_SHOOTER_LOAD_PWM),
-    retractedSensor(3)
+    retractedSensor(3),
+    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
+    shooterEncoder(5,6)
 {
-
+    shooterEncoder.Reset();
 }
 
 void Shooter::OperateShooter(Joystick * gamePad) {
 
 	
-	bool loadShooter = gamePad->GetRawButton(7);
+	bool loadShooterButton = gamePad->GetRawButton(7);
 	
-	bool releaseShooter = gamePad->GetRawButton(8);
+	bool releaseShooterButton = gamePad->GetRawButton(8);
 	
 	bool isRetracted = retractedSensor.Get();
-
-	//decode load shooter button (LT, button7)
-	if (loadShooter) {//I think you have to hold the button down the whole time for this to work
-			if (isRetracted){
-					shooterMotor.Set(0.0);
-			}
-			else{
-				shooterMotor.Set(1.0);//turn on the motor
-	}
-}
-	else{
-		shooterMotor.Set(0.0);
-	}
 	
-	//decode release shooter button (RT, button8)
-	if (releaseShooter &&  !loadShooter) {
-	//	releaseShooter.set(relay::kReverse);
-			//release Shooter	
-	}
-	else{
-		//releaseShooter.set(relay::kOff);
+	int ShooterEncoderLimit = 100;
+	
+	if(releaseShooterButton && loaded){
+		releaseShooter.Set(Relay::kReverse);
+	}//Here I want start loading(retracting)
+	if (loadShooterButton &&  released && !isRetracted) {
+		shooterEncoder.Start();
+		shooterMotor.Set(1.0);
+	}//Read encoder if limit reached stop retracting
+	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
+		shooterMotor.Set(0.0);
 	}
 }
 

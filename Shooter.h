@@ -6,6 +6,8 @@
 class Shooter {
 	Talon shooterMotor;
 	DigitalInput retractedSensor;
+	Relay releaseShooter;
+	Encoder shooterEncoder;
 public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(Joystick * gamePad);  //Controll the Shooter
