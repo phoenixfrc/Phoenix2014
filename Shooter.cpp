@@ -20,9 +20,14 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	bool isRetracted = retractedSensor.Get();
 
 	//decode load shooter button (LT, button7)
-	if (loadShooter) {
-		shooterMotor.Set(1.0);//turn on the motor
+	if (loadShooter) {//I think you have to hold the button down the whole time for this to work
+			if (isRetracted){
+					shooterMotor.Set(0.0);
+			}
+			else{
+				shooterMotor.Set(1.0);//turn on the motor
 	}
+}
 	else{
 		shooterMotor.Set(0.0);
 	}
@@ -35,7 +40,9 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	else{
 		//releaseShooter.set(relay::kOff);
 	}
-//Shooter::~Shooter(){
+}
+
+Shooter::~Shooter(){
         
 }
 
