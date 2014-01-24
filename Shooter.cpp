@@ -19,6 +19,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	bool isRetracted = retractedSensor.Get();
 	int ShooterEncoderLimit = 100;
 	
+
 	//Here I want to shoot the ball
 	if(releaseShooterButton && shooterState == loaded){
 	releaseShooter.Set(Relay::kReverse);
@@ -33,6 +34,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	}
 	
 	//Read encoder if limit reached stop retracting
+
 	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
 	shooterMotor.Set(0.0);
 	}
