@@ -45,7 +45,14 @@ Shooter::~Shooter(){
 }
 
 
+/* Runs during test mode
+         * Blue X = button 1
+         * Green A = button 2
+         * Red B = button 3
+         * Yellow Y = button 4
+         * LB = button 5
+         * RB = button 6
+         * LT = button 7
+         * RT = button 8
+         */
 
-//rt=button8
-//lt=button7
-//shooter release digital i/o #1 
