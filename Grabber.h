@@ -5,6 +5,7 @@
 
 class Grabber {
 	Relay grabberPuller;
+	Talon grabberElevator;
 public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
