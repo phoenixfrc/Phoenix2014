@@ -23,6 +23,7 @@ class RobotDemo : public SimpleRobot
 	Encoder testEncoder;
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
+	Compressor compressor;
 	DriverStationLCD * lcd;
 
 	
@@ -40,11 +41,13 @@ public:
 		testEncoder(1,2),
 		elevatorMotor(5),
 		testSwitch(3),
+		compressor(4,5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
 		myRobot.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 		myRobot.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		compressor.Start();
 	}
 	
 
