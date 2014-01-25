@@ -1,4 +1,4 @@
-#ifndef Shooter_h
+#ifndef SHOOTER_H
 #define SHOOTER_H
 #include "WPILib.h"
 #include "Phoenix2014.h"
