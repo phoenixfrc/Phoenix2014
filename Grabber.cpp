@@ -14,8 +14,9 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	bool openGrabberButton = gamePad->GetRawButton(1);
 	bool closeGrabberButton = gamePad->GetRawButton(3);
-	bool moveGrabberUpButton = gamePad->GetRawButton(4);
-	bool moveGrabberDownButton = gamePad->GetRawButton(2);
+	float moveGrabberUpButton = gamePad->GetRawAxis(0.5);
+	float moveGrabberDownButton = gamePad->GetRawAxis(-0.5);
+	
 	
 	//this should open the grabber when you press the open button
 	if (openGrabberButton){
@@ -28,9 +29,10 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	if (moveGrabberUpButton){
 		grabberElevator.Set(1.0);
 	}
-	if (moveGrabberDownButton){
+	if (moveGrabberDownButton && !grabberState == pressed){
 		grabberElevator.Set(-1.0);
 	}
+	
 }
 
 Grabber::~Grabber(){
