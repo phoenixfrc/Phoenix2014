@@ -1,6 +1,8 @@
 #include "TestMode.h"
 #include "WPILib.h"
-TestMode::TestMode(DriverStation * theDriverStation){
+TestMode::TestMode(DriverStation * theDriverStation):
+   m_dsIO(theDriverStation->GetEnhancedIO())
+{
 	m_mode = testGamepad;
 	m_ds = theDriverStation;
 }

@@ -12,5 +12,6 @@ public:
 private:
 	int m_mode;
 	DriverStation * m_ds;
+	DriverStationEnhancedIO & m_dsIO;
 };
 #endif
