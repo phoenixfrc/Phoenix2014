@@ -1,9 +1,8 @@
 #include "TestMode.h"
 #include "WPILib.h"
-TestMode::TestMode(){
+TestMode::TestMode(DriverStation * theDriverStation){
 	m_mode = testGamepad;
-	
-	
+	m_ds = theDriverStation;
 }
 
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons)

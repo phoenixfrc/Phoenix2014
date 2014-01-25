@@ -100,7 +100,7 @@ public:
 	 * Runs during test mode
 	 */
 	void Test() {
-		TestMode tester;
+		TestMode tester(m_ds);
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
