@@ -6,7 +6,7 @@ TestMode::TestMode(){
 	
 }
 
-void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch)
+void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -45,7 +45,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testTalon:  //Tests the Talons
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Talon");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Talons, %d", testTalons->Get());
 			
 			
 			if(button2){

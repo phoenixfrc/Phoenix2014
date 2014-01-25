@@ -6,7 +6,7 @@ class TestMode {
 	
 public:
 	TestMode();
-	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch);
+	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons);
 	enum testModes{testGamepad, testJoystick, testTalon, testIO, testEncoder};
 	~TestMode();
 private:

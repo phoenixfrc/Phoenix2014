@@ -23,6 +23,7 @@ class RobotDemo : public SimpleRobot
 	Encoder testEncoder;
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
+	Talon testTalons;
 	DriverStationLCD * lcd;
 
 	
@@ -40,6 +41,7 @@ public:
 		testEncoder(1,2),
 		elevatorMotor(5),
 		testSwitch(3),
+		testTalons(2),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -99,7 +101,7 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
 			lcd->UpdateLCD();
 			Wait(0.1);
 		}
