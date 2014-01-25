@@ -23,7 +23,11 @@ class RobotDemo : public SimpleRobot
 	Encoder testEncoder;
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
+<<<<<<< HEAD
 	Talon testTalons;
+=======
+	Ultrasonic ultrasonicRangeFinder;
+>>>>>>> 1e50c07e791a7c0f1383c5d56f8e46cbc522835b
 	Compressor compressor;
 	DriverStationLCD * lcd;
 
@@ -42,7 +46,11 @@ public:
 		testEncoder(1,2),
 		elevatorMotor(5),
 		testSwitch(3),
+<<<<<<< HEAD
 		testTalons(2),
+=======
+		ultrasonicRangeFinder(6,7),
+>>>>>>> 1e50c07e791a7c0f1383c5d56f8e46cbc522835b
 		compressor(4,5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
@@ -83,6 +91,8 @@ public:
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
+			ultrasonicRangeFinder.Ping();
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", ultrasonicRangeFinder.GetRangeInches());
 			myRobot.TankDrive(rightStick, leftStick);
 			
 			//int rotation = elevation.Get();
