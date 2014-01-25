@@ -1,5 +1,5 @@
 #ifndef GRABBER_H
-#define GRABBER	_H
+#define GRABBER_H
 #include "WPILib.h"
 #include "Phoenix2014.h"
 

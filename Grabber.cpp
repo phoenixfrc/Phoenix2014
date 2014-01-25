@@ -14,8 +14,8 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	bool openGrabberButton = gamePad->GetRawButton(1);
 	bool closeGrabberButton = gamePad->GetRawButton(3);
-	float moveGrabberUpButton = gamePad->GetRawAxis(0.5);
-	float moveGrabberDownButton = gamePad->GetRawAxis(-0.5);
+	float moveGrabberUpButton = gamePad->GetRawAxis(1);
+	float moveGrabberDownButton = gamePad->GetRawAxis(2);
 	
 	
 	//this should open the grabber when you press the open button

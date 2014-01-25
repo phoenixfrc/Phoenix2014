@@ -6,11 +6,12 @@ Shooter::Shooter() :
    retractedSensor(3),
    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
    shooterEncoder(5,6),
-   shooterState(loading)
+   shooterState(loading),
+   loaderSensor(7)
 {
    shooterEncoder.Reset();
-}
 
+}
 void Shooter::OperateShooter(Joystick * gamePad) {
 
 
@@ -29,7 +30,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	//Here I want start loading(retracting)
 	if (loadShooterButton &&  shooterState == released && !isRetracted) {
 	shooterEncoder.Start();
-	shooterMotor.Set(1.0);
+	shooterMotor.Set(Relay::kReverse);
 	shooterState = loading;
 	}
 	
