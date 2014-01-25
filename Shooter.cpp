@@ -1,53 +1,58 @@
 #include "WPILib.h"
 #include "Shooter.h"
-		
-		enum shooterRelease	{released, loaded};
 
 Shooter::Shooter() :
-    shooterMotor(PHOENIX2014_SHOOTER_LOAD_PWM),
-    retractedSensor(3)
+   shooterMotor(PHOENIX2014_SHOOTER_LOAD_PWM),
+   retractedSensor(3),
+   releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
+   shooterEncoder(5,6),
+   shooterState(loading)
 {
-
+   shooterEncoder.Reset();
 }
 
 void Shooter::OperateShooter(Joystick * gamePad) {
 
-	
-	bool loadShooter = gamePad->GetRawButton(7);
-	
-	bool releaseShooter = gamePad->GetRawButton(8);
-	
+
+	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
+	bool releaseShooterButton = gamePad->GetRawButton(8);
 	bool isRetracted = retractedSensor.Get();
+	int ShooterEncoderLimit = 100;
+	
 
-	//decode load shooter button (LT, button7)
-	if (loadShooter) {//I think you have to hold the button down the whole time for this to work
-			if (isRetracted){
-					shooterMotor.Set(0.0);
-			}
-			else{
-				shooterMotor.Set(1.0);//turn on the motor
-	}
-}
-	else{
-		shooterMotor.Set(0.0);
+	//Here I want to shoot the ball
+	if(releaseShooterButton && shooterState == loaded){
+	releaseShooter.Set(Relay::kReverse);
+	shooterState = released;
 	}
 	
-	//decode release shooter button (RT, button8)
-	if (releaseShooter &&  !loadShooter) {
-	//	releaseShooter.set(relay::kReverse);
-			//release Shooter	
+	//Here I want start loading(retracting)
+	if (loadShooterButton &&  shooterState == released && !isRetracted) {
+	shooterEncoder.Start();
+	shooterMotor.Set(1.0);
+	shooterState = loading;
 	}
-	else{
-		//releaseShooter.set(relay::kOff);
-	}
-}
+	
+	//Read encoder if limit reached stop retracting
 
+	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
+	shooterMotor.Set(0.0);
+	}
+	}
+	
 Shooter::~Shooter(){
-        
+		   
 }
 
 
+/* Runs during test mode
+         * Blue X = button 1
+         * Green A = button 2
+         * Red B = button 3
+         * Yellow Y = button 4
+         * LB = button 5
+         * RB = button 6
+         * LT = button 7
+         * RT = button 8
+         */
 
-//rt=button8
-//lt=button7
-//shooter release digital i/o #1 

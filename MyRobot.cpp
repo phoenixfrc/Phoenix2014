@@ -24,6 +24,7 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
 	Talon testTalons;
+	Compressor compressor;
 	DriverStationLCD * lcd;
 
 	
@@ -42,11 +43,13 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
+		compressor(4,5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
 		myRobot.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 		myRobot.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		compressor.Start();
 	}
 	
 
