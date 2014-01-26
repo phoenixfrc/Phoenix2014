@@ -7,8 +7,8 @@ class Grabber {
 	enum grabberStates{open, closed};
 	Talon grabberActuator;
 	//Talon grabberElevator;
-	DigitalInput grabberCloseLimit;
-	DigitalInput grabberOpenLimit;
+	AnalogIOButton grabberCloseLimit;
+	AnalogIOButton grabberOpenLimit;
 	DigitalInput ballSensor;
 	
 	grabberStates grabberState;
@@ -16,7 +16,9 @@ public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
 		~Grabber();
-	
+private:
+		bool m_limitSwitch;
+		double m_grabberPower;
 	
 };
 #endif

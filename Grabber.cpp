@@ -11,24 +11,42 @@ Grabber::Grabber() :
 	ballSensor(PHOENIX2014_GRABBER_BALL_SENSOR),
 	grabberState(closed)
 {
-
+	//initialize the grabber to trip the closed grabber switch
+	m_limitSwitch = true;
+	m_grabberPower = 1.0;
 }
 
 void Grabber::OperateGrabber(Joystick * gamePad){
-	
-	bool openGrabberButton = gamePad->GetRawButton(1);
-	bool closeGrabberButton = gamePad->GetRawButton(3);
-
-	
+	//One button will toggle between open and closed grabber
+	bool grabberButton = gamePad->GetRawButton(1);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
 	//float moveGrabberDownButton = gamePad->GetRawButton(4);
 	bool ballPresent =  ballSensor.Get();
 	bool reachedLimitForClosed = grabberCloseLimit.Get();
 	bool reachedLimitForOpen = grabberOpenLimit.Get();
 	
+	if (grabberButton && m_limitSwitch){
+		grabberActuator.Set(m_grabberPower*-1);
+		if(m_limitSwitch == reachedLimitForClosed){
+			m_limitSwitch = reachedLimitForOpen;
+		}
+		else{
+			m_limitSwitch = reachedLimitForClosed;
+		}
+	}
+	if (m_limitSwitch){
+		grabberActuator.Set(0.0);
+	}
+	if(ballPresent && reachedLimitForOpen){
+		m_limitSwitch = reachedLimitForClosed;
+		grabberActuator.Set(-1.0);
+	}
+	if(reachedLimitForClosed){
+		grabberActuator.Set(0.0);
+	}
 	
 	//this should open the grabber when you press the open button
-	if (openGrabberButton == true){
+	/*if (openGrabberButton == true){
 		grabberActuator.Set(-25.0);
 	}
 	if (reachedLimitForOpen == true){
@@ -41,7 +59,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	if (reachedLimitForClosed == true){
 		grabberActuator.Set(0.0);
 	}
-	/*if (moveGrabberUpButton == true){
+	if (moveGrabberUpButton == true){
 		grabberElevator.Set(1.0);
 	}
 	if (moveGrabberDownButton == true && !grabberState == pressed){
