@@ -17,18 +17,22 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button6 = gamePad->GetRawButton(6); //Gets button six (RB = top right trigger)
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
+	bool checkBox1 = SmartDashboard::GetBoolean("CheckBox 1");
 	
 	switch (m_mode) {
 		case testGamepad:  //Tests the Gamepad
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad = %c%c%c%c %c%c%c%c", //prints the button values to LCD display
-					button1 ? '1':'0', 
-					button2 ? '1':'0',
-					button3 ? '1':'0',		
-					button4 ? '1':'0',		
-					button5 ? '1':'0',		
-					button6 ? '1':'0',				
-					button7 ? '1':'0',		
-					button8 ? '1':'0');
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad = %c%c%c%c %c%c%c%c, %c", //prints the button values to LCD display
+						    button1 ? '1':'0', 
+						    button2 ? '1':'0',
+					        button3 ? '1':'0',		
+					        button4 ? '1':'0',		
+					        button5 ? '1':'0',		
+					        button6 ? '1':'0',				
+					        button7 ? '1':'0',		
+							button8 ? '1':'0',
+							checkBox1 ? '1':'0'
+							);
+			SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 			}
