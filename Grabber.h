@@ -7,8 +7,8 @@ class Grabber {
 	enum grabberStates{open, closed};
 	Talon grabberActuator;
 	//Talon grabberElevator;
-	DigitalInput grabberCloseLimit;
-	DigitalInput grabberOpenLimit;
+	AnalogIOButton grabberCloseLimit;
+	AnalogIOButton grabberOpenLimit;
 	DigitalInput ballSensor;
 	
 	grabberStates grabberState;
