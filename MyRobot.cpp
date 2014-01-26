@@ -58,13 +58,20 @@ public:
 	void Autonomous()
 	{
 		myRobot.SetSafetyEnabled(false);
+		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
+		if(checkBox1 == true){
+			SmartDashboard::PutNumber("Autonomous mode", 1);
+		}
+		if(checkBox1 == false){
+			SmartDashboard::PutNumber("Autonomous mode", 2);
+		}
 		driveDistance.Reset();
 		driveDistance.Start();
 		//myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
 		if(driveDistance.Get()==1){
-		myRobot.Drive(-5, 0.0);
-		Wait(2.0);
-		myRobot.Drive(0.0, 0.0);
+		    myRobot.Drive(-5, 0.0);
+		    Wait(2.0);
+		    myRobot.Drive(0.0, 0.0);
 		}
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot

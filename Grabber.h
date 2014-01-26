@@ -4,21 +4,19 @@
 #include "Phoenix2014.h"
 
 class Grabber {
-	enum grabberStates{open, closed};
-	Talon grabberActuator;
-	//Talon grabberElevator;
-	AnalogIOButton grabberCloseLimit;
-	AnalogIOButton grabberOpenLimit;
-	DigitalInput ballSensor;
 	
-	grabberStates grabberState;
 public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
 		~Grabber();
 private:
-		bool m_limitSwitch;
+		enum grabberStates{open, opening, closed, closeing, unknown};
+		Talon grabberActuator;
+		//Talon grabberElevator;
+		AnalogIOButton grabberCloseLimit;
+		AnalogIOButton grabberOpenLimit;
+		DigitalInput ballSensor;
 		double m_grabberPower;
-	
+		grabberStates m_grabberState;
 };
 #endif
