@@ -1,5 +1,7 @@
 #include "TestMode.h"
 #include "WPILib.h"
+#include "NetworkTables/NetworkTable.h"
+
 TestMode::TestMode(DriverStation * theDriverStation):
    m_dsIO(theDriverStation->GetEnhancedIO())
 {
@@ -17,11 +19,11 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button6 = gamePad->GetRawButton(6); //Gets button six (RB = top right trigger)
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
-	bool checkBox1 = SmartDashboard::GetBoolean("CheckBox 1");
+	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 	
 	switch (m_mode) {
 		case testGamepad:  //Tests the Gamepad
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad = %c%c%c%c %c%c%c%c, %c", //prints the button values to LCD display
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad=%c%c%c%c %c%c%c%c:%c", //prints the button values to LCD display
 						    button1 ? '1':'0', 
 						    button2 ? '1':'0',
 					        button3 ? '1':'0',		
