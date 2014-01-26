@@ -25,10 +25,6 @@ class RobotDemo : public SimpleRobot
 	DigitalInput testSwitch;
 	Talon testTalons;
 	Ultrasonic ultrasonicRangeFinder;
-<<<<<<< HEAD
-	Compressor compressor;
-=======
->>>>>>> 227e453612099095c18d38e4faa3135fb6b2ca2e
 	DriverStationLCD * lcd;
 
 	
@@ -48,10 +44,6 @@ public:
 		testSwitch(3),
 		testTalons(2),
 		ultrasonicRangeFinder(6,7),
-<<<<<<< HEAD
-		compressor(4,5),
-=======
->>>>>>> 227e453612099095c18d38e4faa3135fb6b2ca2e
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
