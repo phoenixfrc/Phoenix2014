@@ -2,7 +2,7 @@
 #include "Shooter.h"
 
 Shooter::Shooter() :
-   shooterMotor(PHOENIX2014_SHOOTER_LOAD_PWM),
+   shooterMotor(PHOENIX2014_SHOOTER_LOAD),
    retractedSensor(3),
    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
    shooterEncoder(5,6),
@@ -18,6 +18,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
 	bool releaseShooterButton = gamePad->GetRawButton(8);
 	bool isRetracted = retractedSensor.Get();
+	bool loaderSwitchOn = (loaderSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
 	
 

@@ -23,8 +23,8 @@ class RobotDemo : public SimpleRobot
 	Encoder testEncoder;
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
+	Talon testTalons;
 	Ultrasonic ultrasonicRangeFinder;
-	Compressor compressor;
 	DriverStationLCD * lcd;
 
 	
@@ -42,14 +42,13 @@ public:
 		testEncoder(1,2),
 		elevatorMotor(5),
 		testSwitch(3),
+		testTalons(2),
 		ultrasonicRangeFinder(6,7),
-		compressor(4,5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
 		myRobot.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 		myRobot.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
-		compressor.Start();
 	}
 	
 
@@ -102,11 +101,11 @@ public:
 	 * Runs during test mode
 	 */
 	void Test() {
-		TestMode tester;
+		TestMode tester(m_ds);
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
 			lcd->UpdateLCD();
 			Wait(0.1);
 		}
