@@ -16,7 +16,9 @@ public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
 		~Grabber();
-	
+private:
+		bool m_limitSwitch;
+		double m_grabberPower;
 	
 };
 #endif
