@@ -38,7 +38,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
 	shooterMotor.Set(0.0);
 	}
-	}
+}
 	
 Shooter::~Shooter(){
 		   
