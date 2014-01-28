@@ -1,26 +1,34 @@
 #include "WPILib.h"
 #include "Shooter.h"
-
+#include "Phoenix2014.h"
 Shooter::Shooter() :
    shooterMotor(PHOENIX2014_SHOOTER_LOAD),
-   retractedSensor(3),
+   retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
-   shooterEncoder(5,6),
-   shooterState(loading)
-{
-   shooterEncoder.Reset();
-}
+   shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
+   //shooterState(loading),
+   loaderSensor(PHOENIX2014_SHOOTER_LOAD),
+   shooterLoadLimit(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
+   loaderMotor(PHOENIX2014_SHOOTER_LOAD)
 
+{
+		m_limitSwitch = true;
+			m_loaderPower = 1.0;
+   shooterEncoder.Reset();
+
+}
 void Shooter::OperateShooter(Joystick * gamePad) {
 
 
 	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
-	bool releaseShooterButton = gamePad->GetRawButton(8);
+/*	bool releaseShooterButton = gamePad->GetRawButton(8);																																																																																																																																																																																	
 	bool isRetracted = retractedSensor.Get();
+	bool loaderSwitchOn = (retractedSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
+	bool loadComplete =  loaderSensor.Get();
 	
 
-	//Here I want to shoot the ball
+	//Here I want to shoot the ball=
 	if(releaseShooterButton && shooterState == loaded){
 	releaseShooter.Set(Relay::kReverse);
 	shooterState = released;
@@ -29,16 +37,36 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	//Here I want start loading(retracting)
 	if (loadShooterButton &&  shooterState == released && !isRetracted) {
 	shooterEncoder.Start();
-	shooterMotor.Set(1.0);
+	shooterMotor.Set(Relay::kReverse);
 	shooterState = loading;
 	}
 	
 	//Read encoder if limit reached stop retracting
 
 	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
-	shooterMotor.Set(0.0);
+	shooterMotor.Set(Relay::kReverse);
 	}
-}
+}*/
+
+	if (loadShooterButton && m_limitSwitch){
+			loaderMotor.Set(Relay::kReverse);
+			if(m_limitSwitch == reachedLimitForLoad){
+			}
+			else{
+				m_limitSwitch = reachedLimitForLoad;
+			}
+		}
+		if (m_limitSwitch){
+			loaderMotor.Set(Relay::kOff);
+		}
+		if(loaderSensor.Get() && reachedLimitForLoad){
+			m_limitSwitch = reachedLimitForLoad;
+			loaderMotor.Set(Relay::kOff);
+		}
+		if(reachedLimitForLoad){
+			loaderMotor.Set(Relay::kOff);
+		}
+	}
 	
 Shooter::~Shooter(){
 		   
