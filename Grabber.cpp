@@ -84,7 +84,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	}
 	
 	//this should open the grabber when you press the open button
-	/*if (openGrabberButton == true){
+	if (openGrabberButton == true){
 		grabberActuator.Set(-25.0);
 	}
 	if (reachedLimitForOpen == true){

@@ -34,7 +34,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 							button8 ? '1':'0',
 							checkBox1 ? '1':'0'
 							);
-			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Testing thumstick ","%f", gamePad->GetX());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
 			SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
