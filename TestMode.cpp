@@ -20,6 +20,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
 	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
+	SmartDashboard::GetNumber("Slider 1");
 	
 	switch (m_mode) {
 		case testGamepad:  //Tests the Gamepad
