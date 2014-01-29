@@ -6,7 +6,7 @@ Shooter::Shooter() :
    retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
    shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
-   //shooterState(loading),
+   shooterState(loading),
    loaderSensor(PHOENIX2014_SHOOTER_LOAD),
    shooterLoadLimit(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
    loaderMotor(PHOENIX2014_SHOOTER_LOAD)
@@ -21,11 +21,11 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 
 
 	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
-/*	bool releaseShooterButton = gamePad->GetRawButton(8);																																																																																																																																																																																	
+	bool releaseShooterButton = gamePad->GetRawButton(8);																																																																																																																																																																																	
 	bool isRetracted = retractedSensor.Get();
-	bool loaderSwitchOn = (retractedSensor.Get() == 0);
+	//bool loaderSwitchOn = (retractedSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
-	bool loadComplete =  loaderSensor.Get();
+	//bool loadComplete =  loaderSensor.Get();
 	
 
 	//Here I want to shoot the ball=
@@ -43,12 +43,13 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	
 	//Read encoder if limit reached stop retracting
 
-	if(shooterEncoder.Get() >= ShooterEncoderLimit || isRetracted){
-	shooterMotor.Set(Relay::kReverse);
+	if(shooterEncoder.Get() >= ShooterEncoderLimit && shooterState == loading || isRetracted){
+	shooterMotor.Set(Relay::kOff);
+	shooterState = loaded;
 	}
-}*/
+}
 
-	if (loadShooterButton && m_limitSwitch){
+	/*if (loadShooterButton && m_limitSwitch){
 			loaderMotor.Set(Relay::kReverse);
 			if(m_limitSwitch == reachedLimitForLoad){
 			}
@@ -65,8 +66,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 		}
 		if(reachedLimitForLoad){
 			loaderMotor.Set(Relay::kOff);
-		}
-	}
+		}*/
 	
 Shooter::~Shooter(){
 		   

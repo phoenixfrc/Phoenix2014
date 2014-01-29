@@ -7,12 +7,12 @@ class Shooter {
 	//loaded means shooter fully retracted and ready to fire
 	//released means the shooter is not retracted and needs to be loaded
 
-	//enum shooterStates{released, loaded, loading};
+	enum shooterStates{released, loaded, loading};
 	Relay shooterMotor;
 	AnalogIOButton retractedSensor;
 	Relay releaseShooter;
 	Encoder shooterEncoder;
-	//shooterStates shooterState;
+	shooterStates shooterState;
 	DigitalInput loaderSensor;
 	AnalogIOButton shooterLoadLimit;
 	Relay loaderMotor;
