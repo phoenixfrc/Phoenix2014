@@ -59,19 +59,25 @@ public:
 	{
 		myRobot.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
-		int rangeToWall = 60;
+		int rangeToWallClose = 60;
+		int rangeToWallFar = 120;
 		
 		if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 1);
 			
 			//Drive until Robot is within range to wall.
-			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWall){
+			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWallClose){
 				myRobot.Drive(-5, 0.0);
 			}
 			myRobot.Drive(0.0, 0.0); //Stop the Robot
 		}
 		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
+			
+			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWallFar){
+				myRobot.Drive(-5, 0.0);
+			}
+			myRobot.Drive(0.0, 0.0);
 		}
 		//driveDistance.Reset();
 		//driveDistance.Start();
@@ -122,7 +128,7 @@ public:
 		while (IsTest()){
 			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
 			lcd->UpdateLCD();
-			Wait(0.1);
+			Wait(0.2);
 		}
 		testEncoder.Stop();
 

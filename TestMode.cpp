@@ -38,6 +38,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
 			SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
+				Wait(0.2);
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 			}
 			break;
@@ -50,6 +51,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			
 			if(button2){
+				Wait(0.2);
 				m_mode = testTalon; //Changes mode to test Talon
 			}
 			break;
@@ -58,6 +60,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			
 			if(button2){
+				Wait(0.2);
 				m_mode = testIO;  //Changes mode to test IO
 				
 			}
@@ -66,6 +69,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO, %d", testSwitch->Get());
 			if(button2){
+				Wait(0.2);
 				m_mode = testEncoder; //changes mode to test Encoder
 			}
 			break;
@@ -75,6 +79,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
 			
 			if(button2){
+				Wait(0.2);
 				m_mode = testGamepad; //Changes mode to Test Gamepad
 			}
 			break;
