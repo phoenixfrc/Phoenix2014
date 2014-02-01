@@ -19,8 +19,10 @@ private:
 		AnalogIOButton bottomLimitSwitch;
 		AnalogIOButton topLimitSwitch;
 		Encoder elevatorEncoder;
-		Relay elevatorMotor;
+		Talon elevatorMotor;
 		double m_grabberPower;
+		double m_elevatorPower;
+		double m_encoderLimit;
 		grabberStates m_grabberState;
 };
 #endif
