@@ -12,11 +12,13 @@ Grabber::Grabber() :
 	bottomLimitSwitch(PHOENIX2014_ANALOG_BOTTOM_LIMIT_SWITCH),
 	topLimitSwitch(PHOENIX2014_ANALOG_ELEVATOR_TOP_LIMIT_SWITCH),
 	elevatorEncoder(PHOENIX2014_ELEVATOR_ENCODER_A, PHOENIX2014_ELEVATOR_ENCODER_B),
-	elevatorMotor(PHOENIX2014_RELAY_ELEVATOR)
+	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_PWM)
 {
 	//initialize the grabber to trip the closed grabber switch
 	m_grabberState = unknown;
 	m_grabberPower = 1.0;
+	m_elevatorPower = 1.0;
+	m_encoderLimit = 100;//Need to change later
 	
 }
 
@@ -113,22 +115,26 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 		grabberElevator.Set(-1.0);
 	}*/
 	if (yButton){
-		elevatorMotor.Set(Relay::kForward);
+		elevatorMotor.Set(m_elevatorPower);
 		if (topLimit){
-			elevatorMotor.Set(Relay::kOff);
+			elevatorMotor.Set(0.0);
 		}
 	}
 	if(aButton){
-		elevatorMotor.Set(Relay::kReverse);
+		elevatorMotor.Set(m_elevatorPower*-1);
 		if(bottomLimit){
-			elevatorMotor.Set(Relay::kOff);
+			elevatorMotor.Set(0.0);
 		}
 	}
 	if(yButton && bottomLimit){
-		elevatorMotor.Set(Relay::kForward);
+		elevatorEncoder.Reset();
+		elevatorEncoder.Start();
+		elevatorMotor.Set(m_elevatorPower);
 	}
 	if(aButton && topLimit){
-		elevatorMotor.Set(Relay::kReverse);
+		elevatorEncoder.Reset();
+		elevatorEncoder.Start();
+		elevatorMotor.Set(m_elevatorPower*-1);
 	}
 	
 }
