@@ -80,7 +80,17 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			if(button2){
 				Wait(0.2);
-				m_mode = testGamepad; //Changes mode to Test Gamepad
+				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic
+			}
+			break;
+		case ultrasonicTestMode:
+			ultrasonic = new AnalogChannel(PHOENIX2014_ANALOG_ULTRASONIC);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", ultrasonic->GetValue());
+			
+			
+			if(button2){
+				Wait(0.2);
+				m_mode = testGamepad;
 			}
 			break;
 		default:

@@ -24,7 +24,6 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
 	Talon testTalons;
-	Ultrasonic ultrasonicRangeFinder;
 	DriverStationLCD * lcd;
 
 	
@@ -43,7 +42,6 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		ultrasonicRangeFinder(PHOENIX2014_ANALOG_ULTRASONIC_OUTPUT, PHOENIX2014_ANALOG_ULTRASONIC_INPUT),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -66,7 +64,8 @@ public:
 			SmartDashboard::PutNumber("Autonomous mode", 1);
 			
 			//Drive until Robot is within range to wall.
-			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWallClose){
+			
+			while(true){
 				myRobot.Drive(-5, 0.0);
 			}
 			myRobot.Drive(0.0, 0.0); //Stop the Robot
@@ -74,7 +73,7 @@ public:
 		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
 			
-			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWallFar){
+			while(true){
 				myRobot.Drive(-5, 0.0);
 			}
 			myRobot.Drive(0.0, 0.0);
@@ -103,8 +102,6 @@ public:
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
-			ultrasonicRangeFinder.Ping();
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", ultrasonicRangeFinder.GetRangeInches());
 			myRobot.TankDrive(rightStick, leftStick);
 			
 			//int rotation = elevation.Get();
@@ -125,7 +122,7 @@ public:
 		TestMode tester(m_ds);
 		testEncoder.Reset();
 		testEncoder.Start();
-		while (IsTest()){
+		while (IsTest() && IsEnabled()){
 			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
 			lcd->UpdateLCD();
 			Wait(0.2);
