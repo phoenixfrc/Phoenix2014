@@ -25,6 +25,7 @@ class RobotDemo : public SimpleRobot
 	DigitalInput testSwitch;
 	Talon testTalons;
 	AnalogChannel ultrasonic;
+	AnalogTrigger analogTestSwitch;
 	DriverStationLCD * lcd;
 
 	
@@ -44,6 +45,7 @@ public:
 		testSwitch(3),
 		testTalons(2),
 		ultrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
+		analogTestSwitch(2, 5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -125,7 +127,8 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &ultrasonic);
+			lcd->Clear();
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &ultrasonic, &analogTestSwitch);
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}
