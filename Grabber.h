@@ -16,6 +16,10 @@ private:
 		AnalogIOButton grabberCloseLimit;
 		AnalogIOButton grabberOpenLimit;
 		DigitalInput ballSensor;
+		AnalogIOButton bottomLimitSwitch;
+		AnalogIOButton topLimitSwitch;
+		Encoder elevatorEncoder;
+		Relay elevatorMotor;
 		double m_grabberPower;
 		grabberStates m_grabberState;
 };
