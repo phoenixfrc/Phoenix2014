@@ -43,7 +43,7 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		ultrasonicRangeFinder(6,7),
+		ultrasonicRangeFinder(PHOENIX2014_ANALOG_ULTRASONIC_OUTPUT, PHOENIX2014_ANALOG_ULTRASONIC_INPUT),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -59,20 +59,28 @@ public:
 	{
 		myRobot.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
+		int rangeToWall = 60;
+		
 		if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 1);
+			
+			//Drive until Robot is within range to wall.
+			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWall){
+				myRobot.Drive(-5, 0.0);
+			}
+			myRobot.Drive(0.0, 0.0); //Stop the Robot
 		}
 		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
 		}
-		driveDistance.Reset();
-		driveDistance.Start();
+		//driveDistance.Reset();
+		//driveDistance.Start();
 		//myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
-		if(driveDistance.Get()==1){
-		    myRobot.Drive(-5, 0.0);
-		    Wait(2.0);
-		    myRobot.Drive(0.0, 0.0);
-		}
+		//if(driveDistance.Get()==1){
+		    //myRobot.Drive(-5, 0.0);
+		    //Wait(2.0);
+		    //myRobot.Drive(0.0, 0.0);
+		//}
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
 	}
