@@ -9,7 +9,9 @@ TestMode::TestMode(DriverStation * theDriverStation):
 	m_ds = theDriverStation;
 }
 
-void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons)
+void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
+		                      Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, 
+		                      Talon * testTalons, AnalogChannel * ultrasonic)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -76,7 +78,17 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
 			
 			if(button2){
-				m_mode = testGamepad; //Changes mode to Test Gamepad
+				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic
+			}
+			break;
+		case ultrasonicTestMode:
+			//testSwitch = new AnalogIOButton(5);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "us%f", ultrasonic->GetVoltage());
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "AB%d", testSwitch->Get());
+			
+			
+			if(button2){
+				m_mode = testGamepad;
 			}
 			break;
 		default:

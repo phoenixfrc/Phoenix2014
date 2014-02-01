@@ -24,7 +24,7 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
 	Talon testTalons;
-	Ultrasonic ultrasonicRangeFinder;
+	AnalogChannel ultrasonic;
 	DriverStationLCD * lcd;
 
 	
@@ -43,7 +43,7 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		ultrasonicRangeFinder(PHOENIX2014_ANALOG_ULTRASONIC_OUTPUT, PHOENIX2014_ANALOG_ULTRASONIC_INPUT),
+		ultrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -59,19 +59,26 @@ public:
 	{
 		myRobot.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
-		int rangeToWall = 60;
+		int rangeToWallClose = 60;
+		int rangeToWallFar = 120;
 		
 		if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 1);
 			
 			//Drive until Robot is within range to wall.
-			while(ultrasonicRangeFinder.GetRangeInches() > rangeToWall){
+			
+			while(true){
 				myRobot.Drive(-5, 0.0);
 			}
 			myRobot.Drive(0.0, 0.0); //Stop the Robot
 		}
 		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
+			
+			while(true){
+				myRobot.Drive(-5, 0.0);
+			}
+			myRobot.Drive(0.0, 0.0);
 		}
 		//driveDistance.Reset();
 		//driveDistance.Start();
@@ -97,8 +104,6 @@ public:
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
-			ultrasonicRangeFinder.Ping();
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", ultrasonicRangeFinder.GetRangeInches());
 			myRobot.TankDrive(rightStick, leftStick);
 			
 			//int rotation = elevation.Get();
@@ -119,10 +124,10 @@ public:
 		TestMode tester(m_ds);
 		testEncoder.Reset();
 		testEncoder.Start();
-		while (IsTest()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
+		while (IsTest() && IsEnabled()){
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &ultrasonic);
 			lcd->UpdateLCD();
-			Wait(0.1);
+			Wait(0.2);
 		}
 		testEncoder.Stop();
 
