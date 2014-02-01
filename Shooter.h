@@ -10,7 +10,8 @@ class Shooter {
 	enum shooterStates{released, loaded, loading};
 	Relay shooterMotor;
 	AnalogIOButton retractedSensor;
-	Relay releaseShooter;
+	AnalogIOButton unwindedSensor;
+	Talon releaseShooter;
 	Encoder shooterEncoder;
 	shooterStates shooterState;
 	DigitalInput loaderSensor;

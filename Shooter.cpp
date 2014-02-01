@@ -4,6 +4,7 @@
 Shooter::Shooter() :
    shooterMotor(PHOENIX2014_SHOOTER_LOAD),
    retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
+   unwindedSensor(PHOENIX2014_ANALOG_UNWINED_LIMIT_SWITCH),
    releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
    shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
    shooterState(loading),
@@ -13,7 +14,7 @@ Shooter::Shooter() :
 
 {
 		m_limitSwitch = true;
-			m_loaderPower = 1.0;
+		m_loaderPower = 1.0;
    shooterEncoder.Reset();
 
 }
@@ -23,13 +24,20 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
 	bool releaseShooterButton = gamePad->GetRawButton(8);																																																																																																																																																																																	
 	bool isRetracted = retractedSensor.Get();
+	bool isUnwinded = unwindedSensor.Get();
 	//bool loaderSwitchOn = (retractedSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
 	//bool loadComplete =  loaderSensor.Get();
 	
 
 	//Here I want to shoot the ball=
-	if(releaseShooterButton && shooterState == loaded){
+	if (releaseShooterButton && shooterState == released){
+		releaseShooter.Set(1.0);
+	}
+			
+	
+	
+	/*if(releaseShooterButton && shooterState == loaded){
 	releaseShooter.Set(Relay::kReverse);
 	shooterState = released;
 	}
@@ -49,7 +57,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	}
 }
 
-	/*if (loadShooterButton && m_limitSwitch){
+	if (loadShooterButton && m_limitSwitch){
 			loaderMotor.Set(Relay::kReverse);
 			if(m_limitSwitch == reachedLimitForLoad){
 			}
@@ -67,7 +75,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 		if(reachedLimitForLoad){
 			loaderMotor.Set(Relay::kOff);
 		}*/
-	
+}
 Shooter::~Shooter(){
 		   
 }
