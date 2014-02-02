@@ -2,6 +2,7 @@
 #define TESTMODE_H
 #include "WPILib.h"
 #include "Phoenix2014.h"
+#include "UltrasonicSensor.h"
 
 class TestMode {
 	
@@ -12,7 +13,7 @@ public:
 	TestMode(DriverStation * theDriverStation);
 	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, 
 			            Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch,
-			            Talon * testTalons, AnalogChannel * ultrasonic, AnalogTrigger * analogTestSwitch);
+			            Talon * testTalons, UltrasonicSensor * frontUltrasonic, AnalogTrigger * analogTestSwitch);
 	~TestMode();
 private:
 	int m_mode;

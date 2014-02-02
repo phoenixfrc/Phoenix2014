@@ -1,11 +1,14 @@
 #include "UltrasonicSensor.h"
 #include "Phoenix2014.h"
-UltrasonicSensor::UltrasonicSensor(){
+UltrasonicSensor::UltrasonicSensor(int moduleNumber, int portNumber):
+AnalogChannel(moduleNumber, portNumber)
+{
 	
 }
 
-void UltrasonicSensor::UseUltrasonic(){
+float UltrasonicSensor::GetDistance(){
 	
+	return GetVoltage()*100;
 }
 
 UltrasonicSensor::~UltrasonicSensor(){

@@ -1,15 +1,15 @@
 #ifndef ULTRASONICSENSOR_H
 #define ULTRASONICSENSOR_H
+#include "WPILib.h"
 
-class UltrasonicSensor{
+class UltrasonicSensor : public AnalogChannel
+{
 public:
 	UltrasonicSensor(int moduleNumber, int portNumber);
-	void UseUltrasonic();	
-	//analogChannel(moduleNumber, portNumber){}
-	//float Range(){
-		//return analogChannel.GetVoltage()*100;
+	float GetDistance();	
+	float Range;
+		
 	~UltrasonicSensor();
 private:
-	AnalogChannel m_analogChannel;
 };
 #endif
