@@ -6,9 +6,11 @@
 class TestMode {
 	
 public:
-	AnalogChannel * ultrasonic;
+	AnalogIOButton * testSwitch;
 	TestMode(DriverStation * theDriverStation);
-	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons);
+	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, 
+			            Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch,
+			            Talon * testTalons, AnalogChannel * ultrasonic);
 	enum testModes{testGamepad, testJoystick, testTalon, testIO, testEncoder, ultrasonicTestMode};
 	~TestMode();
 private:

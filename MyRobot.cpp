@@ -24,6 +24,7 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
 	Talon testTalons;
+	AnalogChannel ultrasonic;
 	DriverStationLCD * lcd;
 
 	
@@ -42,6 +43,7 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
+		ultrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -108,7 +110,7 @@ public:
 			//the above is commented because we are not using it yet
 			Shooter.OperateShooter(&gamePad); 
 			Wait(0.005);// wait for a motor update time
-			
+	
 		}
 		myRobot.StopMotor();
 		
@@ -123,7 +125,7 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &ultrasonic);
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}

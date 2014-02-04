@@ -2,42 +2,108 @@
 #include "Shooter.h"
 #include "Phoenix2014.h"
 Shooter::Shooter() :
-   shooterMotor(PHOENIX2014_SHOOTER_LOAD),
+   winchMotor(PHOENIX2014_SHOOTER_LOAD),
    retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
    unwindedSensor(PHOENIX2014_ANALOG_UNWINED_LIMIT_SWITCH),
-   releaseShooter(PHOENIX2014_SHOOTER_RELEASE),
+   brakeSensor(PHOENIX2014_ANALOG_BRAKE_LIMIT_SWITCH),
+   brakeRelease(PHOENIX2014_SHOOTER_BRAKE_RELEASE),
    shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
-   shooterState(loading),
-   loaderSensor(PHOENIX2014_SHOOTER_LOAD),
-   shooterLoadLimit(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
-   loaderMotor(PHOENIX2014_SHOOTER_LOAD)
-
+   shooterLoadLimit(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH)
 {
 		m_limitSwitch = true;
+		m_shooterState = unknown;
 		m_loaderPower = 1.0;
+		m_encoderReachedLimitForLoad = 100.0;
+		
    shooterEncoder.Reset();
 
 }
 void Shooter::OperateShooter(Joystick * gamePad) {
 
 
-	bool loadShooterButton = gamePad->GetRawButton(7);//TODO make constants
-	bool releaseShooterButton = gamePad->GetRawButton(8);																																																																																																																																																																																	
-	bool isRetracted = retractedSensor.Get();
+	bool shooterButton = gamePad->GetRawButton(7);//TODO make constants
+	bool loadShooterButton = gamePad->GetRawButton(8);
+	bool isWinded = retractedSensor.Get();
 	bool isUnwinded = unwindedSensor.Get();
+	bool isBraked = brakeSensor.Get();
+	float encoderValue = shooterEncoder.Get();
 	//bool loaderSwitchOn = (retractedSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
+	int brakeCounter = 0;
 	//bool loadComplete =  loaderSensor.Get();
-	
+	switch (m_shooterState){
+		case shoot:
+			brakeRelease.Set(Relay::kReverse);
+			brakeCounter = brakeCounter++;
+			if(brakeCounter == 5){
+				m_shooterState = winding;
+			}
+			break;
+		case winding:
+			winchMotor.Set(1.0);
+			if(isWinded){
+				m_shooterState = braking;
+			}
+			break;
+		case braking:
+			winchMotor.Set(0.0);
+			if (isBraked){
+				m_shooterState = unwinding;
+			}
+			else{
+				brakeRelease.Set(Relay::kForward);
+			}
+			break;
+		case unwinding:
+			brakeRelease.Set(Relay::kOff);
+			if(isUnwinded){
+				m_shooterState = loaded;
+			}
+			else{
+				winchMotor.Set(-1.0);
+			}
+			break;
+		case loaded:
+			winchMotor.Set(0.0);
+			if (shooterButton){
+				m_shooterState = shoot;
+			}
+			break;
+		case unknown://unknown is the same as default
+		default:
+			if (isWinded && !isUnwinded && !isBraked){
+				m_shooterState = braking;
+			}
+			else if (!isWinded && isUnwinded && isBraked){
+				m_shooterState = loaded;
+			}
+			else if (!isUnwinded && isBraked){
+				m_shooterState = unwinding;
+			}
+			else if (isUnwinded && isWinded){
+				winchMotor.Set(0.0);
+			}
+			else{
+				m_shooterState = winding;
+			}
+			break;
+		}
 
-	//Here I want to shoot the ball=
-	if (releaseShooterButton && shooterState == released){
-		releaseShooter.Set(1.0);
+
+/*	if (loadShooterButton && shooterState == released){
+		shooterMotor.Set(1.0);//turn on winch motor
+		if(encoderValue >= m_reachedLimitForLoad || isretracted){
+			shooterMotor.Set(0.0);
+			if (brakeButton){
+				brakeSwitch.Get();
+			}
+			
+		}
 	}
 			
 	
 	
-	/*if(releaseShooterButton && shooterState == loaded){
+	if(releaseShooterButton && shooterState == loaded){
 	releaseShooter.Set(Relay::kReverse);
 	shooterState = released;
 	}

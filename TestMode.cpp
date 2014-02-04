@@ -9,7 +9,9 @@ TestMode::TestMode(DriverStation * theDriverStation):
 	m_ds = theDriverStation;
 }
 
-void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, Talon * testTalons)
+void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
+		                      Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, 
+		                      Talon * testTalons, AnalogChannel * ultrasonic)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -19,6 +21,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button6 = gamePad->GetRawButton(6); //Gets button six (RB = top right trigger)
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
+	
 	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 	double slider1 = SmartDashboard::GetNumber("Slider 1");
 	
@@ -36,9 +39,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 							checkBox1 ? '1':'0'
 							);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
-			SmartDashboard::PutNumber("Team Number", 2342);
+			// SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
-				Wait(0.2);
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 			}
 			break;
@@ -51,7 +53,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			
 			if(button2){
-				Wait(0.2);
 				m_mode = testTalon; //Changes mode to test Talon
 			}
 			break;
@@ -60,7 +61,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			
 			if(button2){
-				Wait(0.2);
 				m_mode = testIO;  //Changes mode to test IO
 				
 			}
@@ -69,7 +69,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO, %d", testSwitch->Get());
 			if(button2){
-				Wait(0.2);
 				m_mode = testEncoder; //changes mode to test Encoder
 			}
 			break;
@@ -79,17 +78,16 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
 			
 			if(button2){
-				Wait(0.2);
 				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic
 			}
 			break;
 		case ultrasonicTestMode:
-			ultrasonic = new AnalogChannel(PHOENIX2014_ANALOG_ULTRASONIC);
-			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", ultrasonic->GetValue());
+			//testSwitch = new AnalogIOButton(5);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "us%f", ultrasonic->GetVoltage());
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "AB%d", testSwitch->Get());
 			
 			
 			if(button2){
-				Wait(0.2);
 				m_mode = testGamepad;
 			}
 			break;
