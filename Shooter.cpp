@@ -4,7 +4,7 @@
 Shooter::Shooter() :
    winchMotor(PHOENIX2014_SHOOTER_LOAD),
    retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
-   unwindedSensor(PHOENIX2014_ANALOG_UNWINED_LIMIT_SWITCH),
+   unwoundSensor(PHOENIX2014_ANALOG_UNWINED_LIMIT_SWITCH),
    brakeSensor(PHOENIX2014_ANALOG_BRAKE_LIMIT_SWITCH),
    brakeRelease(PHOENIX2014_SHOOTER_BRAKE_RELEASE),
    shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
@@ -22,31 +22,33 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 
 
 	bool shooterButton = gamePad->GetRawButton(7);//TODO make constants
-	bool loadShooterButton = gamePad->GetRawButton(8);
-	bool isWinded = retractedSensor.Get();
-	bool isUnwinded = unwindedSensor.Get();
+	//bool loadShooterButton = gamePad->GetRawButton(8); will use this later
+	bool isWound = retractedSensor.Get();
+	bool isUnwound = unwoundSensor.Get();
 	bool isBraked = brakeSensor.Get();
 	float encoderValue = shooterEncoder.Get();
-	//bool loaderSwitchOn = (retractedSensor.Get() == 0);
 	int ShooterEncoderLimit = 100;
 	int brakeCounter = 0;
-	//bool loadComplete =  loaderSensor.Get();
 	switch (m_shooterState){
 		case shoot:
 			brakeRelease.Set(Relay::kReverse);
 			brakeCounter = brakeCounter++;
 			if(brakeCounter == 5){
+				shooterEncoder.Reset();
+				shooterEncoder.Start();
 				m_shooterState = winding;
 			}
 			break;
 		case winding:
 			winchMotor.Set(1.0);
-			if(isWinded){
+			if(encoderValue >= ShooterEncoderLimit || isWound){
 				m_shooterState = braking;
 			}
 			break;
 		case braking:
 			winchMotor.Set(0.0);
+			shooterEncoder.Reset();
+			shooterEncoder.Start();
 			if (isBraked){
 				m_shooterState = unwinding;
 			}
@@ -56,7 +58,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 			break;
 		case unwinding:
 			brakeRelease.Set(Relay::kOff);
-			if(isUnwinded){
+			if(encoderValue >= ShooterEncoderLimit || isUnwound){
 				m_shooterState = loaded;
 			}
 			else{
@@ -71,16 +73,16 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 			break;
 		case unknown://unknown is the same as default
 		default:
-			if (isWinded && !isUnwinded && !isBraked){
+			if (isWound && !isUnwound && !isBraked){
 				m_shooterState = braking;
 			}
-			else if (!isWinded && isUnwinded && isBraked){
+			else if (!isWound && isUnwound && isBraked){
 				m_shooterState = loaded;
 			}
-			else if (!isUnwinded && isBraked){
+			else if (!isUnwound && isBraked){
 				m_shooterState = unwinding;
 			}
-			else if (isUnwinded && isWinded){
+			else if (isUnwound && isWound){
 				winchMotor.Set(0.0);
 			}
 			else{

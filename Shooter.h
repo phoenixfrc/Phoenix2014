@@ -10,7 +10,7 @@ class Shooter {
 	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};
 	Talon winchMotor;
 	AnalogIOButton retractedSensor;
-	AnalogIOButton unwindedSensor;
+	AnalogIOButton unwoundSensor;
 	AnalogIOButton brakeSensor;
 	Relay brakeRelease;
 	Encoder shooterEncoder;
