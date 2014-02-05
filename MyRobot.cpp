@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "TestMode.h"
 #include "Phoenix2014.h"
+#include "UltrasonicSensor.h"
 
 
 /**
@@ -24,7 +25,10 @@ class RobotDemo : public SimpleRobot
 	Talon elevatorMotor;
 	DigitalInput testSwitch;
 	Talon testTalons;
-	AnalogChannel ultrasonic;
+	UltrasonicSensor frontUltrasonic;
+	UltrasonicSensor backUltrasonic;
+	UltrasonicSensor grabberUltrasonic;
+	AnalogTrigger analogTestSwitch;
 	DriverStationLCD * lcd;
 
 	
@@ -43,7 +47,10 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		ultrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
+		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
+		backUltrasonic(2, 3),
+		grabberUltrasonic(2, 4),
+		analogTestSwitch(2, 5),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -57,29 +64,40 @@ public:
 	 */
 	void Autonomous()
 	{
+	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		myRobot.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 		int rangeToWallClose = 60;
 		int rangeToWallFar = 120;
 		
+		while(IsAutonomous() && IsEnabled()){
 		if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 1);
 			
 			//Drive until Robot is within range to wall.
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
+
 			
-			while(true){
+					       );
+			float rangeToWall = frontUltrasonic.GetDistance();
+			while(rangeToWall > rangeToWallClose){
 				myRobot.Drive(-5, 0.0);
+				rangeToWall = frontUltrasonic.GetDistance();
+				Wait(.001);
 			}
 			myRobot.Drive(0.0, 0.0); //Stop the Robot
 		}
 		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
+			float rangeToWall = frontUltrasonic.GetDistance();
 			
-			while(true){
+			while(rangeToWall > rangeToWallFar){
 				myRobot.Drive(-5, 0.0);
 			}
 			myRobot.Drive(0.0, 0.0);
-		}
+		}}
+		lcd->Clear();
+		lcd->UpdateLCD();
 		//driveDistance.Reset();
 		//driveDistance.Start();
 		//myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
@@ -90,7 +108,9 @@ public:
 		//}
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
+		lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Exeting Autonomous");
 	}
+	
 
 	/**
 	 * Runs the motors with arcade steering. 
@@ -125,7 +145,8 @@ public:
 		testEncoder.Reset();
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &ultrasonic);
+			lcd->Clear();
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &grabberUltrasonic, &analogTestSwitch);
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}
