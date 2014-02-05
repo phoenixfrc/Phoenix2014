@@ -101,7 +101,7 @@ public:
 	{
 		//elevation.Reset();
 		//elevation.Start();
-
+		ballGrabber.elevatorController.Enable();
 		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
