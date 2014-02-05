@@ -3,6 +3,9 @@
 #include "NetworkTables/NetworkTable.h"
 
 TestMode::TestMode(DriverStation * theDriverStation):
+	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC),
+	testUltrasonic2(2, 3),
+	testUltrasonic3(2, 4),
    m_dsIO(theDriverStation->GetEnhancedIO())
 {
 	m_mode = testGamepad;
@@ -11,7 +14,8 @@ TestMode::TestMode(DriverStation * theDriverStation):
 
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
 		                      Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, 
-		                      Talon * testTalons, AnalogChannel * ultrasonic, AnalogTrigger * analogTestSwitch)
+		                      Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic,
+		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -82,8 +86,11 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case ultrasonicTestMode:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic->GetDistance());
 			//testSwitch = new AnalogIOButton(5);
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "us%f", ultrasonic->GetVoltage());
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "us%f", ultrasonic->GetVoltage());
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "AB%d", testSwitch->Get());
 			
 			
