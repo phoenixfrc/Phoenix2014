@@ -22,7 +22,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 
 
 	bool shooterButton = gamePad->GetRawButton(7);//TODO make constants
-	//bool loadShooterButton = gamePad->GetRawButton(8); will use this later
+	bool loadShooterButton = gamePad->GetRawButton(8);
 	bool isWound = retractedSensor.Get();
 	bool isUnwound = unwoundSensor.Get();
 	bool isBraked = brakeSensor.Get();
@@ -36,6 +36,9 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 			if(brakeCounter == 5){
 				shooterEncoder.Reset();
 				shooterEncoder.Start();
+				m_shooterState = winding;
+			}
+			if (loadShooterButton){
 				m_shooterState = winding;
 			}
 			break;
@@ -92,6 +95,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 		}
 
 
+	
 /*	if (loadShooterButton && shooterState == released){
 		shooterMotor.Set(1.0);//turn on winch motor
 		if(encoderValue >= m_reachedLimitForLoad || isretracted){

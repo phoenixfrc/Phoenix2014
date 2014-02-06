@@ -119,7 +119,7 @@ public:
 	{
 		//elevation.Reset();
 		//elevation.Start();
-
+		ballGrabber.elevatorController.Enable();
 		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
@@ -129,7 +129,12 @@ public:
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			Shooter.OperateShooter(&gamePad); 
+		    //Trying to make some things happen automatically during teleoperated
+		 
+			
+			
 			Wait(0.005);// wait for a motor update time
+		
 	
 		}
 		myRobot.StopMotor();
