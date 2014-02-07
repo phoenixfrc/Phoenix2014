@@ -14,7 +14,7 @@ public:
 	
 	TestMode(DriverStation * theDriverStation);
 	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, 
-			            Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch,
+			            Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch,
 			            Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic, 
 			            UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch);
 	~TestMode();
