@@ -5,7 +5,6 @@
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
 
-
 /**
  * This is a demo program showing the use of the RobotBase class.
  * The SimpleRobot class is the base of a robot application that will automatically call your
@@ -16,8 +15,8 @@ class RobotDemo : public SimpleRobot
 {
 	RobotDrive myRobot; // robot drive system
 	Grabber ballGrabber;
-	Joystick rightStick; // rightStick wired to port 1
-	Joystick leftStick;  // leftStick wired to port 2
+	Joystick rightJoyStick; // rightStick wired to port 1
+	Joystick leftJoyStick;  // leftStick wired to port 2
 	Joystick gamePad;
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
@@ -29,8 +28,9 @@ class RobotDemo : public SimpleRobot
 	UltrasonicSensor backUltrasonic;
 	UltrasonicSensor grabberUltrasonic;
 	AnalogTrigger analogTestSwitch;
+	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
-
+	
 	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
@@ -38,8 +38,8 @@ public:
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
 		myRobot(PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
 		ballGrabber(), //Place holder for grabber.
-		rightStick(2),// as they are declared above.
-		leftStick(1),
+		rightJoyStick(2),// as they are declared above.
+		leftJoyStick(1),
 		gamePad(3),
 		//elevation(1,2),
 		driveDistance(3,4),
@@ -51,6 +51,7 @@ public:
 		backUltrasonic(2, 3),
 		grabberUltrasonic(2, 4),
 		analogTestSwitch(2, 5),
+		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
 	{
 		myRobot.SetExpiration(0.1);
@@ -58,6 +59,11 @@ public:
 		myRobot.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	}
 	
+	float limitSpeed(float requestedSpeed)
+	{
+		float scaleSpeed = SmartDashboard::GetNumber("Slider 1");
+		return requestedSpeed * 0.01 * scaleSpeed;
+	}
 
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -123,9 +129,17 @@ public:
 		ballGrabber.elevatorController.Enable();
 		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
-		while (IsOperatorControl())
+		while (IsOperatorControl() && IsEnabled())
 		{
-			myRobot.TankDrive(rightStick, leftStick);
+			lcd->UpdateLCD();
+			float rJoyStick = limitSpeed(rightJoyStick.GetY());
+			float lJoyStick = limitSpeed(leftJoyStick.GetY());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%f %f %f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
+			myRobot.TankDrive(rJoyStick, lJoyStick);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic.GetDistance());
 			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
@@ -153,7 +167,7 @@ public:
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightStick, &leftStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &grabberUltrasonic, &analogTestSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &grabberUltrasonic, &analogTestSwitch);
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}

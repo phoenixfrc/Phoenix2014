@@ -13,7 +13,7 @@ TestMode::TestMode(DriverStation * theDriverStation):
 }
 
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
-		                      Joystick * rightStick, Joystick * leftStick, DigitalInput * testSwitch, 
+		                      Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch, 
 		                      Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic,
 		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch)
 {
@@ -50,8 +50,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			break;
 		case testJoystick:  //Tests the Joysticks
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "LJS = %f, RJS = %f", //prints out Joystick values to LCD Display
-					leftStick->GetAxis(Joystick::kXAxis),		
-					rightStick->GetAxis(Joystick::kXAxis)
+					leftJoyStick->GetAxis(Joystick::kXAxis),		
+					rightJoyStick->GetAxis(Joystick::kXAxis)
 					
 							);
 			
