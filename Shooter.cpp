@@ -5,7 +5,7 @@ Shooter::Shooter() :
    winchMotor(PHOENIX2014_SHOOTER_LOAD),
    retractedSensor(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH),
    unwoundSensor(PHOENIX2014_ANALOG_UNWINED_LIMIT_SWITCH),
-   brakeSensor(PHOENIX2014_ANALOG_BRAKE_LIMIT_SWITCH),
+   brakeSensor(PHOENIX2014_BRAKE_LIMIT_SWITCH),
    brakeRelease(PHOENIX2014_SHOOTER_BRAKE_RELEASE),
    shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
    shooterLoadLimit(PHOENIX2014_ANALOG_SHOOTER_LIMIT_SWITCH)
@@ -31,6 +31,7 @@ void Shooter::OperateShooter(Joystick * gamePad) {
 	int brakeCounter = 0;
 	switch (m_shooterState){
 		case shoot:
+			
 			brakeRelease.Set(Relay::kReverse);
 			brakeCounter = brakeCounter++;
 			if(brakeCounter == 5){

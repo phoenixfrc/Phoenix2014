@@ -19,7 +19,6 @@ private:
 		DigitalInput ballSensor;
 		AnalogIOButton bottomLimitSwitch;
 		AnalogIOButton topLimitSwitch;
-		Encoder elevatorEncoder;
 		Talon elevatorMotor;
 		double m_grabberPower;
 		double m_elevatorPower;
