@@ -4,15 +4,18 @@
 
 
 Grabber::Grabber() :
+	elevatorController(0.1, 0.001, 0.0, &elevatorAngleSensor, &elevatorMotor ),
 	grabberActuator(PHOENIX2014_GRABBER_ACTUATOR_PWM),
 	//grabberElevator(PHOENIX2014_GRABBER_ELEVATOR_PWM),
 	grabberCloseLimit(PHOENIX2014_ANALOG_GRABBER_CLOSE_LIMIT_SWITCH),
 	grabberOpenLimit(PHOENIX2014_ANALOG_GRABBER_OPEN_LIMIT_SWITCH),
-	ballSensor(PHOENIX2014_GRABBER_BALL_SENSOR),
-	bottomLimitSwitch(PHOENIX2014_ANALOG_ELEVATOR_BOTTOM_LIMIT_SWITCH),
-	topLimitSwitch(PHOENIX2014_ANALOG_ELEVATOR_TOP_LIMIT_SWITCH),
-	elevatorEncoder(PHOENIX2014_ELEVATOR_ENCODER_A, PHOENIX2014_ELEVATOR_ENCODER_B),
-	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_PWM)
+	ballSensor(PHOENIX2014_ANALOG_GRABBER_BALL_SENSOR),
+	bottomLimitSwitch(PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH),
+	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
+	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_PWM),
+	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE)
+	//lcd(DriverStationLCD::GetInstance())
+	
 {
 	//initialize the grabber to trip the closed grabber switch
 	m_grabberState = unknown;
@@ -34,34 +37,41 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	bool aButton = gamePad->GetRawButton(2);
 	bool bottomLimit = bottomLimitSwitch.Get();
 	bool topLimit = topLimitSwitch.Get();
+	int angleIncrement = 5;
+	int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
 	
 	//This will 
 	switch(m_grabberState){
 		case closeing:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c", m_grabberState);
 			grabberActuator.Set(0.0);
 			if (grabberButton){
 				m_grabberState = closeing;
 			}
 			break;
 		case unknown://unknown is the same as default
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
@@ -103,7 +113,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	}
 	//this should close the grabber when you press the close button
 	if (closeGrabberButton == true || ballPresent == true && reachedLimitForClosed == false){
-		grabberActuator.Set(25.0);
+		1s grabberActuator.Set(25.0);
 	}
 	if (reachedLimitForClosed == true){
 		grabberActuator.Set(0.0);
@@ -114,19 +124,32 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	if (moveGrabberDownButton == true && !grabberState == pressed){
 		grabberElevator.Set(-1.0);
 	}*/
-	if (yButton){
+	/*if (yButton){
 		elevatorMotor.Set(m_elevatorPower);
 		if (topLimit){
 			elevatorMotor.Set(0.0);
 		}
+	}*/
+	
+	
+	
+	if(yButton && !aButton && !topLimit){
+		elevatorController.SetSetpoint(currentElevatorAngle+angleIncrement);
+		//elevatorMotor.Set(m_elevatorPower);
 	}
-	if(aButton){
-		elevatorMotor.Set(m_elevatorPower*-1);
-		if(bottomLimit){
-			elevatorMotor.Set(0.0);
-		}
+	
+	else if(aButton && !yButton && !bottomLimit){
+		elevatorController.SetSetpoint(currentElevatorAngle-angleIncrement);
+		//elevatorMotor.Set(m_elevatorPower*-1);
+		
 	}
-	if(yButton && bottomLimit){
+	else 
+		elevatorMotor.Set(m_elevatorPower*0);
+	
+	
+	
+	
+/*	else(yButton && bottomLimit){
 		elevatorEncoder.Reset();
 		elevatorEncoder.Start();
 		elevatorMotor.Set(m_elevatorPower);
@@ -135,7 +158,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 		elevatorEncoder.Reset();
 		elevatorEncoder.Start();
 		elevatorMotor.Set(m_elevatorPower*-1);
-	}
+	}*/
 	
 }
 Grabber::~Grabber(){

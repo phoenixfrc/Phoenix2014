@@ -9,6 +9,7 @@ public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
 		~Grabber();
+		PIDController elevatorController;
 private:
 		enum grabberStates{open, opening, closed, closeing, unknown};
 		Talon grabberActuator;
@@ -18,11 +19,12 @@ private:
 		DigitalInput ballSensor;
 		AnalogIOButton bottomLimitSwitch;
 		AnalogIOButton topLimitSwitch;
-		Encoder elevatorEncoder;
 		Talon elevatorMotor;
 		double m_grabberPower;
 		double m_elevatorPower;
 		double m_encoderLimit;
 		grabberStates m_grabberState;
+		AnalogChannel elevatorAngleSensor;
+
 };
 #endif

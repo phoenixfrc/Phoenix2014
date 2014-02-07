@@ -7,15 +7,14 @@ class Shooter {
 	//loaded means shooter fully retracted and ready to fire
 	//released means the shooter is not retracted and needs to be loaded
 
-	enum shooterStates{released, loaded, loading};
-	Relay shooterMotor;
+	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};
+	Talon winchMotor;
 	AnalogIOButton retractedSensor;
-	Relay releaseShooter;
+	AnalogIOButton unwoundSensor;
+	AnalogIOButton brakeSensor;
+	Relay brakeRelease;
 	Encoder shooterEncoder;
-	shooterStates shooterState;
-	DigitalInput loaderSensor;
 	AnalogIOButton shooterLoadLimit;
-	Relay loaderMotor;
 	
 public:
 		Shooter();  //constructor called when instances created
@@ -24,7 +23,8 @@ public:
 
 private:
 		bool m_limitSwitch;
+		shooterStates m_shooterState;
 		double m_loaderPower;
-		bool reachedLimitForLoad;
+		double m_encoderReachedLimitForLoad;
 };
 #endif
