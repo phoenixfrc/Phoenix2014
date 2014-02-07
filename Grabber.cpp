@@ -13,8 +13,8 @@ Grabber::Grabber() :
 	bottomLimitSwitch(PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH),
 	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_PWM),
-	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE)
-	//lcd(DriverStationLCD::GetInstance())
+	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
+	lcd(DriverStationLCD::GetInstance())
 	
 {
 	//initialize the grabber to trip the closed grabber switch
@@ -43,35 +43,35 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	//This will 
 	switch(m_grabberState){
 		case closeing:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c", m_grabberState);
 			grabberActuator.Set(0.0);
 			if (grabberButton){
 				m_grabberState = closeing;
 			}
 			break;
 		case unknown://unknown is the same as default
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
@@ -134,6 +134,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	
 	if(yButton && !aButton && !topLimit){
+		
 		elevatorController.SetSetpoint(currentElevatorAngle+angleIncrement);
 		//elevatorMotor.Set(m_elevatorPower);
 	}

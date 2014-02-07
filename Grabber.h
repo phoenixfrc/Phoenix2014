@@ -25,6 +25,7 @@ private:
 		double m_encoderLimit;
 		grabberStates m_grabberState;
 		AnalogChannel elevatorAngleSensor;
+		DriverStationLCD * lcd;
 
 };
 #endif
