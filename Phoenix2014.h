@@ -50,13 +50,12 @@
 //limit Switches
 #define PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH 7
 #define PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH 8
-#define PHOENIX2014_BRAKE_LIMIT_SWITCH 9
-#define PHOENIX2014_GRABBER_CLOSE_LIMIT_SWITCH 10
-#define PHOENIX2014_GRABBER_OPEN_LIMIT_SWITCH  11
-#define PHOENIX2014_SHOOTER_LIMIT_SWITCH 12
-#define PHOENIX2014_UNWINED_LIMIT_SWITCH 13
-//unused port
-#define PHOENIX2014_UNUSED_14 14
+#define PHOENIX2014_BRAKE_ENGAGED_LIMIT_SWITCH 9
+#define PHOENIX2014_BRAKE_DISENGAGED_LIMIT_SWITCH 10
+#define PHOENIX2014_GRABBER_CLOSE_LIMIT_SWITCH 11
+#define PHOENIX2014_GRABBER_OPEN_LIMIT_SWITCH  12
+#define PHOENIX2014_SHOOTER_LIMIT_SWITCH 13
+#define PHOENIX2014_UNWINED_LIMIT_SWITCH 14
 // *******************************************************************
 //Analog IO
 #define PHOENIX2014_ANALOG_ULTRASONIC_FRONT 1
@@ -68,5 +67,13 @@
 #define PHOENIX2014_ANALOG_UNUSED_6 6
 #define PHOENIX2014_ANALOG_UNUSED_7 7
 #define PHOENIX2014_ANALOG_UNUSED_8 8
+// *********************************************************************
+// encoder calibrations
+//drivetrain
+//winch
+//elevator
+//ultrasonics
+//***********************************************************************
+
 
 #endif /* PHOENIX2014_H_ */

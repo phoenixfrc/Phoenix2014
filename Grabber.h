@@ -15,11 +15,11 @@ private:
 		enum grabberStates{open, opening, closed, closing, unknown};
 		Talon grabberActuator;
 		//Talon grabberElevator;
-		AnalogIOButton grabberCloseLimit;
-		AnalogIOButton grabberOpenLimit;
+		DigitalInput grabberCloseLimit;
+		DigitalInput grabberOpenLimit;
 		DigitalInput ballSensor;
-		AnalogIOButton bottomLimitSwitch;
-		AnalogIOButton topLimitSwitch;
+		DigitalInput bottomLimitSwitch;
+		DigitalInput topLimitSwitch;
 		Talon elevatorMotor;
 		double m_grabberPower;
 		double m_elevatorPower;
