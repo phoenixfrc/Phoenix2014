@@ -22,7 +22,8 @@ Grabber::Grabber() :
 	m_grabberPower = 1.0;
 	m_elevatorPower = 1.0;
 	m_encoderLimit = 100;//Need to change later
-	
+	//initialize elevator PiD loop
+	elevatorController.SetOutputRange(0, 1);
 }
 
 void Grabber::OperateGrabber(Joystick * gamePad){
@@ -132,7 +133,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	}*/
 	
 	
-	
+	//PID Loop for the grabber elevator which controlls the elevator arm
 	if(yButton && elevatorController.OnTarget() && !aButton && !topLimit){
 		currentElevatorAngle = currentElevatorAngle + angleIncrement;
 		elevatorController.SetSetpoint(currentElevatorAngle / 72.0);

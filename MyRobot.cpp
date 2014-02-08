@@ -156,6 +156,7 @@ public:
 	
 		}
 		myRobot.StopMotor();
+		ballGrabber.elevatorController.Disable();
 		
 		
 	}
