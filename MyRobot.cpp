@@ -22,6 +22,7 @@ class RobotDemo : public SimpleRobot
 	Encoder driveDistance;
 	Encoder testEncoder;
 	Talon elevatorMotor; //check if this is being used
+	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
@@ -131,9 +132,9 @@ public:
 	{
 		//elevation.Reset();
 		//elevation.Start();
-		
-		
-		Shooter Shooter;  //needs to be a class member also need to change name to lower case
+		ballGrabber.elevatorController.Enable();
+		ballGrabber.desiredElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 		driveTrain.SetSafetyEnabled(true);
 		int loopCounter = 0;
 		while (IsOperatorControl() && IsEnabled())
@@ -158,7 +159,7 @@ public:
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
 			bool loadShooterButton = gamePad.GetRawButton(8);
-			Shooter.OperateShooter(shooterButton,loadShooterButton); 
+			shooter.OperateShooter(shooterButton,loadShooterButton); 
 			ballGrabber.OperateGrabber(&gamePad);
 			//Trying to make some things happen automatically during teleoperated
 		 
