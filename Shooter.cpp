@@ -3,75 +3,70 @@
 #include "Phoenix2014.h"
 Shooter::Shooter() :
    winchMotor(PHOENIX2014_SHOOTER_LOAD_MOTOR),
-   retractedSensor(PHOENIX2014_SHOOTER_LIMIT_SWITCH),
+   winchEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
+   winchRetractedSensor(PHOENIX2014_SHOOTER_LIMIT_SWITCH),
    unwoundSensor(PHOENIX2014_UNWINED_LIMIT_SWITCH),
-   brakeSensor(PHOENIX2014_BRAKE_LIMIT_SWITCH),
-   brakeRelease(PHOENIX2014_SHOOTER_BRAKE_MOTOR_SPIKE),
-   shooterEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
-   shooterLoadLimit(PHOENIX2014_SHOOTER_LIMIT_SWITCH)
+   brakeEngaged(PHOENIX2014_BRAKE_LIMIT_SWITCH),
+   brakeMotor(PHOENIX2014_SHOOTER_BRAKE_MOTOR_SPIKE)
 {
-		m_limitSwitch = true;
 		m_shooterState = unknown;
 		m_loaderPower = 1.0;
 		m_encoderReachedLimitForLoad = 100.0;
 		
-   shooterEncoder.Reset();
+   winchEncoder.Reset();
 
 }
-void Shooter::OperateShooter(Joystick * gamePad) {
+void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 
-
-	bool shooterButton = gamePad->GetRawButton(7);//TODO make constants
-	bool loadShooterButton = gamePad->GetRawButton(8);
-	bool isWound = retractedSensor.Get();
-	bool isUnwound = unwoundSensor.Get();
-	bool isBraked = brakeSensor.Get();
-	float encoderValue = shooterEncoder.Get();
+	bool isWound = winchRetractedSensor.Get();
+	bool isUnwound = unwoundSensor.Get();//revisit unwound logic
+	bool isBraked = brakeEngaged.Get();
+	float encoderValue = winchEncoder.Get();
 	int ShooterEncoderLimit = 100;
 	int brakeCounter = 0;
 	switch (m_shooterState){
 		case shoot:
 			
-			brakeRelease.Set(Relay::kReverse);
+			brakeMotor.Set(Relay::kReverse);
 			brakeCounter = brakeCounter++;
 			if(brakeCounter == 5){
-				shooterEncoder.Reset();
-				shooterEncoder.Start();
+				winchEncoder.Reset();
+				winchEncoder.Start();
 				m_shooterState = winding;
 			}
-			if (loadShooterButton){
+			if (loadRequest){
 				m_shooterState = winding;
 			}
 			break;
 		case winding:
-			winchMotor.Set(1.0);
+			winchMotor.Set(m_loaderPower);
 			if(encoderValue >= ShooterEncoderLimit || isWound){
 				m_shooterState = braking;
 			}
 			break;
 		case braking:
 			winchMotor.Set(0.0);
-			shooterEncoder.Reset();
-			shooterEncoder.Start();
+			winchEncoder.Reset();
+			winchEncoder.Start();
 			if (isBraked){
 				m_shooterState = unwinding;
 			}
 			else{
-				brakeRelease.Set(Relay::kForward);
+				brakeMotor.Set(Relay::kForward);
 			}
 			break;
 		case unwinding:
-			brakeRelease.Set(Relay::kOff);
+			brakeMotor.Set(Relay::kOff);
 			if(encoderValue >= ShooterEncoderLimit || isUnwound){
 				m_shooterState = loaded;
 			}
 			else{
-				winchMotor.Set(-1.0);
+				winchMotor.Set(-m_loaderPower);
 			}
 			break;
 		case loaded:
 			winchMotor.Set(0.0);
-			if (shooterButton){
+			if (shootRequest){
 				m_shooterState = shoot;
 			}
 			break;

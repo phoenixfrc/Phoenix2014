@@ -6,25 +6,24 @@
 class Shooter {
 	//loaded means shooter fully retracted and ready to fire
 	//released means the shooter is not retracted and needs to be loaded
-
-	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};
+	//
+	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};  //Undwinding needs to be investigated
 	Talon winchMotor;
-	AnalogIOButton retractedSensor;
-	AnalogIOButton unwoundSensor;
-	AnalogIOButton brakeSensor;
-	Relay brakeRelease;
-	Encoder shooterEncoder;
-	AnalogIOButton shooterLoadLimit;
+	Encoder winchEncoder; //zero on transition from winding to braking
+	DigitalInput winchRetractedSensor;
+	DigitalInput unwoundSensor; //use encoder instead.
+	DigitalInput brakeEngaged;
+	DigitalInput brakeDisengaged;
+	Relay brakeMotor;
 	
 public:
 		Shooter();  //constructor called when instances created
-		void OperateShooter(Joystick * gamePad);  //Controll the Shooter
+		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		~Shooter();  //The destructor called instances destroyed
 
 private:
-		bool m_limitSwitch;
 		shooterStates m_shooterState;
 		double m_loaderPower;
-		double m_encoderReachedLimitForLoad;
+		double m_encoderReachedLimitForLoad;//make constant
 };
 #endif
