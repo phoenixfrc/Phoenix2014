@@ -148,8 +148,8 @@ public:
 			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
-			bool shooterButton = gamePad->GetRawButton(7);//TODO make constants
-			bool loadShooterButton = gamePad->GetRawButton(8);
+			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
+			bool loadShooterButton = gamePad.GetRawButton(8);
 			Shooter.OperateShooter(shooterButton,loadShooterButton); 
 			ballGrabber.OperateGrabber(&gamePad);
 			//Trying to make some things happen automatically during teleoperated
