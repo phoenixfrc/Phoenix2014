@@ -43,35 +43,35 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	//This will 
 	switch(m_grabberState){
 		case closing:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closing");
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closed");
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = opening");
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = open");
 			grabberActuator.Set(0.0);
 			if (grabberButton){
 				m_grabberState = closing;
 			}
 			break;
 		case unknown://unknown is the same as default
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = unknown");
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
