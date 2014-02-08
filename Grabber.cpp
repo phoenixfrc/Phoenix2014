@@ -5,14 +5,14 @@
 
 Grabber::Grabber() :
 	elevatorController(0.1, 0.001, 0.0, &elevatorAngleSensor, &elevatorMotor ),
-	grabberActuator(PHOENIX2014_GRABBER_ACTUATOR_PWM),
-	//grabberElevator(PHOENIX2014_GRABBER_ELEVATOR_PWM),
-	grabberCloseLimit(PHOENIX2014_ANALOG_GRABBER_CLOSE_LIMIT_SWITCH),
-	grabberOpenLimit(PHOENIX2014_ANALOG_GRABBER_OPEN_LIMIT_SWITCH),
-	ballSensor(PHOENIX2014_ANALOG_GRABBER_BALL_SENSOR),
+	grabberActuator(PHOENIX2014_GRABBER_CLAW_MOTOR_PWM),
+	//grabberElevator(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
+	grabberCloseLimit(PHOENIX2014_GRABBER_CLOSE_LIMIT_SWITCH),
+	grabberOpenLimit(PHOENIX2014_GRABBER_OPEN_LIMIT_SWITCH),
+	ballSensor(PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR),
 	bottomLimitSwitch(PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH),
 	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
-	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_PWM),
+	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
 	lcd(DriverStationLCD::GetInstance())
 	
@@ -43,35 +43,35 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	//This will 
 	switch(m_grabberState){
 		case closing:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = closing");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closing");
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = closed");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closed");
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = opening");
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = open");
 			grabberActuator.Set(0.0);
 			if (grabberButton){
 				m_grabberState = closing;
 			}
 			break;
 		case unknown://unknown is the same as default
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter State = %c%c%c%c%c%c%c", m_grabberState);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = unknown");
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;

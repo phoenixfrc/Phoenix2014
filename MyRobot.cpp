@@ -47,7 +47,7 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC),
+		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(2, 3),
 		grabberUltrasonic(2, 4),
 		analogTestSwitch(2, 5),

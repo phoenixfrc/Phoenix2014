@@ -3,7 +3,7 @@
 #include "NetworkTables/NetworkTable.h"
 
 TestMode::TestMode(DriverStation * theDriverStation):
-	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC),
+	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 	testUltrasonic2(2, 3),
 	testUltrasonic3(2, 4),
    m_dsIO(theDriverStation->GetEnhancedIO())
