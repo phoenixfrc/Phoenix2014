@@ -66,6 +66,9 @@ public:
 	}
 	void RobotInit(){
 	//move initial code from inside operator controll
+		ballGrabber.elevatorController.Enable();
+		ballGrabber.desiredElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -123,29 +126,34 @@ public:
 	/**
 	 * Runs the motors with arcade steering. 
 	 */
+	
 	void OperatorControl()
 	{
 		//elevation.Reset();
 		//elevation.Start();
 		
-		ballGrabber.elevatorController.Enable();
-		ballGrabber.desiredElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
+		
 		Shooter Shooter;  //needs to be a class member also need to change name to lower case
 		driveTrain.SetSafetyEnabled(true);
+		int loopCounter = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
-			lcd->UpdateLCD();
+			loopCounter ++;
+			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
 			float lJoyStick = limitSpeed(leftJoyStick.GetY());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%f %f %f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+			
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
 		//organize lcd code limit to 2 times per second
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic.GetDistance());
-			
+			if(loopCounter = 100){
+				lcd->UpdateLCD();
+				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%f %f %f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic.GetDistance());
+				loopCounter = 0;
+			}
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
