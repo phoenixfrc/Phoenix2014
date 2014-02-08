@@ -38,7 +38,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	bool bottomLimit = bottomLimitSwitch.Get();
 	bool topLimit = topLimitSwitch.Get();
 	int angleIncrement = 5;
-	
+
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
 	//This will 
 	switch(m_grabberState){
@@ -133,21 +133,27 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	
 	
-	if(yButton && !aButton && !topLimit){
+	if(yButton && elevatorController.OnTarget() && !aButton && !topLimit){
 		currentElevatorAngle = currentElevatorAngle + angleIncrement;
 		elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
 		//elevatorMotor.Set(m_elevatorPower);
 	}
 	
-	else if(aButton && !yButton && !bottomLimit){
+	else if(aButton && elevatorController.OnTarget() && !yButton && !bottomLimit){
 		currentElevatorAngle = currentElevatorAngle - angleIncrement;
 		elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
 		//elevatorMotor.Set(m_elevatorPower*-1);
 		
 	}
 	else 
-		elevatorMotor.Set(m_elevatorPower*0);
-	
+		if(topLimit)
+			currentElevatorAngle = currentElevatorAngle - angleIncrement;
+			elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
+		
+		if(bottomLimit)
+			currentElevatorAngle = currentElevatorAngle + angleIncrement;
+			elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
+				
 	
 	
 	
