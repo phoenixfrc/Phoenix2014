@@ -129,8 +129,8 @@ public:
 		//elevation.Start();
 		
 		ballGrabber.elevatorController.Enable();
-		ballGrabber.currentElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.currentElevatorAngle / 72.0);
+		ballGrabber.desiredElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 		Shooter Shooter;  //needs to be a class member also need to change name to lower case
 		driveTrain.SetSafetyEnabled(true);
 		while (IsOperatorControl() && IsEnabled())

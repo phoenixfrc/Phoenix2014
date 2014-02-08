@@ -38,7 +38,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	bool elevatorBackwardRequest = gamePad->GetRawButton(2);
 	bool bottomLimit = bottomLimitSwitch.Get();
 	bool topLimit = topLimitSwitch.Get();
-	int angleIncrement = 5;
+	int angleIncrement = 0.05;
 
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
 	//This will 
@@ -135,25 +135,25 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//
-	if(elevatorForwardRequest && elevatorController.OnTarget() && !elevatorBackwardRequest && !topLimit){
-		currentElevatorAngle = currentElevatorAngle + angleIncrement;
+	if(elevatorForwardRequest && !elevatorBackwardRequest && !topLimit){
+		desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 				//elevatorMotor.Set(m_elevatorPower);
 	}
 	
-	else if(elevatorBackwardRequest && elevatorController.OnTarget() && !elevatorForwardRequest && !bottomLimit){
-		currentElevatorAngle = currentElevatorAngle - angleIncrement;
+	else if(elevatorBackwardRequest && !elevatorForwardRequest && !bottomLimit){
+		desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
 				//elevatorMotor.Set(m_elevatorPower*-1);
 		
 	}
 	else {
 		if(topLimit){
-			currentElevatorAngle = currentElevatorAngle - angleIncrement;
+			desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
 					}
 		if(bottomLimit){
-			currentElevatorAngle = currentElevatorAngle + angleIncrement;
+			desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
+	elevatorController.SetSetpoint(desiredElevatorAngle / 72.0);
 	
 	
 /*	else(yButton && bottomLimit){
