@@ -127,6 +127,8 @@ public:
 		//elevation.Start();
 		
 		ballGrabber.elevatorController.Enable();
+		ballGrabber.currentElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.currentElevatorAngle / 72.0);
 		Shooter Shooter;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl() && IsEnabled())
@@ -154,6 +156,7 @@ public:
 	
 		}
 		myRobot.StopMotor();
+		ballGrabber.elevatorController.Disable();
 		
 		
 	}
