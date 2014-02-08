@@ -72,17 +72,13 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			break;
 		case unknown://unknown is the same as default
 		default:
-			if (isWound && !isUnwound && !isBraked){
-				m_shooterState = braking;
-			}
-			else if (!isWound && isUnwound && isBraked){
-				m_shooterState = loaded;
-			}
-			else if (!isUnwound && isBraked){
-				m_shooterState = unwinding;
-			}
-			else if (isUnwound && isWound){
-				winchMotor.Set(0.0);
+			if (isBraked){
+				if(isWound){
+					m_shooterState = unwinding;
+				}
+				else{
+					m_shooterState = loaded;
+				}
 			}
 			else{
 				m_shooterState = winding;
