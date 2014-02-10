@@ -49,9 +49,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testJoystick:  //Tests the Joysticks
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "LJS = %f, RJS = %f", //prints out Joystick values to LCD Display
-					leftJoyStick->GetAxis(Joystick::kXAxis),		
-					rightJoyStick->GetAxis(Joystick::kXAxis)
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "LJS=%f,RJS=%f", //prints out Joystick values to LCD Display
+					leftJoyStick->GetAxis(Joystick::kYAxis),		
+					rightJoyStick->GetAxis(Joystick::kYAxis)
 					
 							);
 			

@@ -9,11 +9,11 @@ Grabber::Grabber() :
 	//grabberElevator(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	grabberCloseLimit(PHOENIX2014_GRABBER_CLOSE_LIMIT_SWITCH),
 	grabberOpenLimit(PHOENIX2014_GRABBER_OPEN_LIMIT_SWITCH),
-	ballSensor(PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR),
 	bottomLimitSwitch(PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH),
 	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
+	ballDetector(2, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR),
 	lcd(DriverStationLCD::GetInstance())
 	
 {
@@ -24,6 +24,9 @@ Grabber::Grabber() :
 	m_encoderLimit = 100;//Need to change later
 	//initialize elevator PiD loop
 	elevatorController.SetOutputRange(0, 1);
+	distanceToClose = 12;
+	detectBall = true;
+
 }
 
 void Grabber::OperateGrabber(Joystick * gamePad){
@@ -40,6 +43,14 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	bool topLimit = topLimitSwitch.Get();
 	int angleIncrement = 5;
 
+	//Ball detector.
+	if(ballDetector.GetDistance() < distanceToClose){
+		detectBall = true;
+	}
+	else{
+		detectBall = false;
+	}
+	
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
 	//This will 
 	switch(m_grabberState){
@@ -66,8 +77,8 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 			break;
 		case open:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = open");
-			grabberActuator.Set(0.0);
-			if (grabberButton){
+			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
+			if (grabberButton || detectBall){
 				m_grabberState = closing;
 			}
 			break;
@@ -131,7 +142,6 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 			elevatorMotor.Set(0.0);
 		}
 	}*/
-	
 	
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//

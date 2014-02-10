@@ -26,7 +26,7 @@ class RobotDemo : public SimpleRobot
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
-	UltrasonicSensor grabberUltrasonic;  //move this to grabber class
+	UltrasonicSensor grabberUltrasonic;
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
@@ -49,7 +49,7 @@ public:
 		testTalons(2),
 		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(2, 3),
-		grabberUltrasonic(2, 4),
+		grabberUltrasonic(2,4),
 		analogTestSwitch(2, 5),
 		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
@@ -144,7 +144,6 @@ public:
 		//organize lcd code limit to 2 times per second
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic.GetDistance());
 			
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
