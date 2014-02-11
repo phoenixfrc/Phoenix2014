@@ -22,15 +22,14 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 	bool isWound = winchRetractedSensor.Get();
 	bool isUnwound = unwoundSensor.Get();//revisit unwound logic
 	bool isBraked = brakeEngaged.Get();
+	bool isUnbraked = brakeDisengaged.Get();
 	float encoderValue = winchEncoder.Get();
 	int ShooterEncoderLimit = 100;
-	int brakeCounter = 0;
 	switch (m_shooterState){
 		case shoot:
 			
 			brakeMotor.Set(Relay::kReverse);
-			brakeCounter = brakeCounter++;
-			if(brakeCounter == 5){
+			if(isUnbraked){
 				winchEncoder.Reset();
 				winchEncoder.Start();
 				m_shooterState = winding;

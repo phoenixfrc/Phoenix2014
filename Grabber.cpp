@@ -24,8 +24,10 @@ Grabber::Grabber() :
 	m_encoderLimit = 100;//Need to change later
 	//initialize elevator PiD loop
 	elevatorController.SetOutputRange(0, 1);
+	elevatorController.SetInputRange(0, 2.5);
 	distanceToClose = 12;
 	detectBall = true;
+	
 
 }
 
@@ -35,55 +37,55 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
 	//float moveGrabberDownButton = gamePad->GetRawButton(4);
 	//bool ballPresent =  ballSensor.Get();
-	bool reachedLimitForClosed = grabberCloseLimit.Get();
-	bool reachedLimitForOpen = grabberOpenLimit.Get();
+	bool reachedLimitForClosed = !grabberCloseLimit.Get();
+	bool reachedLimitForOpen = !grabberOpenLimit.Get();
 	bool elevatorForwardRequest = gamePad->GetRawButton(4);
 	bool elevatorBackwardRequest = gamePad->GetRawButton(2);
-	bool bottomLimit = bottomLimitSwitch.Get();
-	bool topLimit = topLimitSwitch.Get();
-	int angleIncrement = 5;
+	bool bottomLimit = !bottomLimitSwitch.Get();
+	bool topLimit = !topLimitSwitch.Get();
+	float angleIncrement = 0.05;
 
 	//Ball detector.
-	if(ballDetector.GetDistance() < distanceToClose){
+	/*if(ballDetector.GetDistance() < distanceToClose){
 		detectBall = true;
 	}
 	else{
 		detectBall = false;
-	}
+	}*/
 	
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
 	//This will 
 	switch(m_grabberState){
 		case closing:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closing");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = closing");
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = closed");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = closed");
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = opening");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = opening");
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = open");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = open");
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
 			if (grabberButton || detectBall){
 				m_grabberState = closing;
 			}
 			break;
 		case unknown://unknown is the same as default
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber State = unknown");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = unknown");
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
@@ -145,25 +147,25 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//
-	if(elevatorForwardRequest && elevatorController.OnTarget() && !elevatorBackwardRequest && !topLimit){
-		currentElevatorAngle = currentElevatorAngle + angleIncrement;
+	if(elevatorForwardRequest && !elevatorBackwardRequest && !topLimit){
+		desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 				//elevatorMotor.Set(m_elevatorPower);
 	}
 	
-	else if(elevatorBackwardRequest && elevatorController.OnTarget() && !elevatorForwardRequest && !bottomLimit){
-		currentElevatorAngle = currentElevatorAngle - angleIncrement;
+	else if(elevatorBackwardRequest && !elevatorForwardRequest && !bottomLimit){
+		desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
 				//elevatorMotor.Set(m_elevatorPower*-1);
 		
-	}
-	else {
+		}
+		else {
 		if(topLimit){
-			currentElevatorAngle = currentElevatorAngle - angleIncrement;
+			desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
 					}
 		if(bottomLimit){
-			currentElevatorAngle = currentElevatorAngle + angleIncrement;
+			desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(currentElevatorAngle / 72.0);
+	elevatorController.SetSetpoint(desiredElevatorAngle / 72.0);
 	
 	
 /*	else(yButton && bottomLimit){

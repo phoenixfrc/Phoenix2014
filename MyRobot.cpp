@@ -22,6 +22,7 @@ class RobotDemo : public SimpleRobot
 	Encoder driveDistance;
 	Encoder testEncoder;
 	Talon elevatorMotor; //check if this is being used
+	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
@@ -66,6 +67,9 @@ public:
 	}
 	void RobotInit(){
 	//move initial code from inside operator controll
+		ballGrabber.elevatorController.Enable();
+		ballGrabber.desiredElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -123,33 +127,42 @@ public:
 	/**
 	 * Runs the motors with arcade steering. 
 	 */
+	
 	void OperatorControl()
 	{
 		//elevation.Reset();
 		//elevation.Start();
-		
 		ballGrabber.elevatorController.Enable();
-		ballGrabber.currentElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.currentElevatorAngle / 72.0);
-		Shooter Shooter;  //needs to be a class member also need to change name to lower case
+		ballGrabber.desiredElevatorAngle = 90;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 		driveTrain.SetSafetyEnabled(true);
+		int loopCounter = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
-			lcd->UpdateLCD();
+			loopCounter ++;
+			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
 			float lJoyStick = limitSpeed(leftJoyStick.GetY());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%f %f %f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+			
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
 		//organize lcd code limit to 2 times per second
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
-			
+			if(loopCounter == 100){
+				//float readings[100];
+				//readings[loopCounter%100];
+				//do average();
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%f", frontUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+				lcd->UpdateLCD();
+				loopCounter = 0;
+			}
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
 			bool loadShooterButton = gamePad.GetRawButton(8);
-			Shooter.OperateShooter(shooterButton,loadShooterButton); 
+			shooter.OperateShooter(shooterButton,loadShooterButton); 
 			ballGrabber.OperateGrabber(&gamePad);
 			//Trying to make some things happen automatically during teleoperated
 		 
