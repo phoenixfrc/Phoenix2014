@@ -4,9 +4,10 @@
  *  Created on: Jan 17, 2014
  *      Author: Ryan
  */
+#include "Team.h"
 
-#ifndef PHOENIX2014_H_
-#define PHOENIX2014_H_
+#ifndef PHOENIX2014_H
+#define PHOENIX2014_H
 
 //define talon constant here
 
@@ -75,5 +76,11 @@
 //ultrasonics
 //***********************************************************************
 
+//Test board module 1 is broken using module 2
+#if TEAM_NUMBER == 2342
+#define PHOENIX2014_ANALOG_MODULE_NUMBER 1
+#else 
+#define PHOENIX2014_ANALOG_MODULE_NUMBER 2
+#endif	//TEAM NUMBER
 
 #endif /* PHOENIX2014_H_ */
