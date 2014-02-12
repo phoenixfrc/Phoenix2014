@@ -48,10 +48,10 @@ public:
 		elevatorMotor(5),
 		testSwitch(3),
 		testTalons(2),
-		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
-		backUltrasonic(2, 3),
-		grabberUltrasonic(2,4),
-		analogTestSwitch(2, 5),
+		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
+		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, 3),
+		grabberUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER,4),
+		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
 	{
