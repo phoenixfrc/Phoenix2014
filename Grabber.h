@@ -2,6 +2,7 @@
 #define GRABBER_H
 #include "WPILib.h"
 #include "Phoenix2014.h"
+#include "UltrasonicSensor.h"
 
 class Grabber {
 	
@@ -17,7 +18,7 @@ private:
 		//Talon grabberElevator;
 		DigitalInput grabberCloseLimit;
 		DigitalInput grabberOpenLimit;
-		DigitalInput ballSensor;
+		//DigitalInput ballSensor;
 		DigitalInput bottomLimitSwitch;
 		DigitalInput topLimitSwitch;
 		Talon elevatorMotor;
@@ -26,7 +27,10 @@ private:
 		double m_encoderLimit;
 		grabberStates m_grabberState;
 		AnalogChannel elevatorAngleSensor;
+		UltrasonicSensor ballDetector;
 		DriverStationLCD * lcd;
+		int distanceToClose;
+		bool detectBall;
 
 };
 #endif

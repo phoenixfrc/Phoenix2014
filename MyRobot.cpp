@@ -27,7 +27,7 @@ class RobotDemo : public SimpleRobot
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
-	UltrasonicSensor grabberUltrasonic;  //move this to grabber class
+	UltrasonicSensor grabberUltrasonic;
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
@@ -50,7 +50,7 @@ public:
 		testTalons(2),
 		frontUltrasonic(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(2, 3),
-		grabberUltrasonic(2, 4),
+		grabberUltrasonic(2,4),
 		analogTestSwitch(2, 5),
 		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
@@ -147,12 +147,15 @@ public:
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
 		//organize lcd code limit to 2 times per second
-			if(loopCounter = 100){
+			if(loopCounter == 100){
+				//float readings[100];
+				//readings[loopCounter%100];
+				//do average();
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%f", frontUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
 				lcd->UpdateLCD();
-				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%f %f %f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic.GetDistance());
 				loopCounter = 0;
 			}
 			//int rotation = elevation.Get();
