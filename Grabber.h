@@ -28,7 +28,7 @@ private:
 		grabberStates m_grabberState;
 		AnalogChannel elevatorAngleSensor;
 		UltrasonicSensor ballDetector;
-		DriverStationLCD * lcd;
+		//DriverStationLCD * lcd;
 		int distanceToClose;
 		bool detectBall;
 
