@@ -49,7 +49,7 @@ public:
 		testSwitch(3),
 		testTalons(2),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
-		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, 3),
+		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
 		grabberUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER,4),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
@@ -69,7 +69,7 @@ public:
 	//move initial code from inside operator controll
 		ballGrabber.elevatorController.Enable();
 		ballGrabber.desiredElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -132,10 +132,8 @@ public:
 	{
 		//elevation.Reset();
 		//elevation.Start();
-		ballGrabber.elevatorController.Enable();
-		ballGrabber.desiredElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / 72.0);
 		driveTrain.SetSafetyEnabled(true);
+		ballGrabber.desiredElevatorAngle = 90;
 		int loopCounter = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
@@ -155,6 +153,8 @@ public:
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEA= %f", ballGrabber.desiredElevatorAngle);
+				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEA=%7.3f EE=%7.3f", ballGrabber.elevatorAngleSensor.GetVoltage(),ballGrabber.elevatorAngleSensor.GetError());
 				lcd->UpdateLCD();
 				loopCounter = 0;
 			}

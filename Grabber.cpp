@@ -12,7 +12,7 @@ Grabber::Grabber() :
 	bottomLimitSwitch(PHOENIX2014_ELEVATOR_BOTTOM_LIMIT_SWITCH),
 	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
-	elevatorAngleSensor(PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
+	elevatorAngleSensor(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
 	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR)
 	//lcd(DriverStationLCD::GetInstance())
 
@@ -24,8 +24,8 @@ Grabber::Grabber() :
 	m_elevatorPower = 1.0;
 	m_encoderLimit = 100;//Need to change later
 	//initialize elevator PiD loop
-	elevatorController.SetOutputRange(0, 1);
-	elevatorController.SetInputRange(0, 2.5);
+	elevatorController.SetOutputRange(-0.25, 0.25);
+	elevatorController.SetInputRange(0, 5.0);
 	distanceToClose = 12;
 	detectBall = true;
 	
@@ -54,7 +54,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 		detectBall = false;
 	}
 	
-	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*72.0);
+	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*PHOENIX2014_POT_DEGREES_PER_VOLT);
 	//This will 
 	switch(m_grabberState){
 		case closing:
@@ -166,7 +166,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 			desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(desiredElevatorAngle / 72.0);
+	elevatorController.SetSetpoint(desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
 	
 	
 /*	else(yButton && bottomLimit){

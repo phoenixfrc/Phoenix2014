@@ -77,10 +77,11 @@
 //***********************************************************************
 
 //Test board module 1 is broken using module 2
+//Constant for elevator
+#define PHOENIX2014_POT_DEGREES_PER_VOLT 60.0
 #if TEAM_NUMBER == 2342
 #define PHOENIX2014_ANALOG_MODULE_NUMBER 1
 #else 
 #define PHOENIX2014_ANALOG_MODULE_NUMBER 2
 #endif	//TEAM NUMBER
-
 #endif /* PHOENIX2014_H_ */

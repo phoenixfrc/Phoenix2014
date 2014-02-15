@@ -22,12 +22,16 @@ private:
 		DigitalInput bottomLimitSwitch;
 		DigitalInput topLimitSwitch;
 		Talon elevatorMotor;
+public:
+		AnalogChannel elevatorAngleSensor;
+private:
 		double m_grabberPower;
 		double m_elevatorPower;
 		double m_encoderLimit;
 		grabberStates m_grabberState;
-		AnalogChannel elevatorAngleSensor;
+public:
 		UltrasonicSensor ballDetector;
+private:
 		//DriverStationLCD * lcd;
 		int distanceToClose;
 		bool detectBall;

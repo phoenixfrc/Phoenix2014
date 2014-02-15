@@ -15,7 +15,7 @@ class Shooter {
 	DigitalInput brakeEngaged;
 	DigitalInput brakeDisengaged;
 	Relay brakeMotor;
-	DriverStationLCD * lcd;
+	//DriverStationLCD * lcd;
 	
 public:
 		Shooter();  //constructor called when instances created
