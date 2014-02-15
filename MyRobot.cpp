@@ -155,7 +155,7 @@ public:
 				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
 				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEA=%6.2fSP=%6.2f", ballGrabber.desiredElevatorAngle, ballGrabber.elevatorController.GetSetpoint());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEA=%6.2fEE=%6.2f",
-						ballGrabber.elevatorAngleSensor.GetVoltage(),
+						ballGrabber.elevatorAngleSensor.PIDGet(),
 						ballGrabber.elevatorController.GetError());
 				lcd->UpdateLCD();
 				loopCounter = 0;

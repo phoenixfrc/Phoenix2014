@@ -10,7 +10,6 @@ public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
 		~Grabber();
-		PIDController elevatorController;
 		float desiredElevatorAngle;
 private:
 		enum grabberStates{open, opening, closed, closing, unknown};
@@ -24,6 +23,7 @@ private:
 		Talon elevatorMotor;
 public:
 		AnalogChannel elevatorAngleSensor;
+		PIDController elevatorController;
 private:
 		double m_grabberPower;
 		double m_elevatorPower;
