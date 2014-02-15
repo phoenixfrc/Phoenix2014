@@ -26,6 +26,8 @@ Grabber::Grabber() :
 	//initialize elevator PiD loop
 	elevatorController.SetOutputRange(-0.25, 0.25);
 	elevatorController.SetInputRange(0, 5.0);
+	elevatorController.SetAbsoluteTolerance(0.1);
+	elevatorController.SetContinuous(false);
 	distanceToClose = 12;
 	detectBall = true;
 	
@@ -166,8 +168,8 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 			desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
-	
+	//elevatorController.SetSetpoint(desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
+	elevatorController.SetSetpoint(2.5);
 	
 /*	else(yButton && bottomLimit){
 		elevatorEncoder.Reset();
