@@ -67,9 +67,9 @@ public:
 	}
 	void RobotInit(){
 	//move initial code from inside operator controll
+		ballGrabber.desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
-		ballGrabber.desiredElevatorAngle = 90;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -120,7 +120,7 @@ public:
 		//}
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
-		lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Exeting Autonomous");
+		lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Exiting Autonomous");
 	}
 	
 
@@ -133,7 +133,7 @@ public:
 		//elevation.Reset();
 		//elevation.Start();
 		driveTrain.SetSafetyEnabled(true);
-		ballGrabber.desiredElevatorAngle = 90;
+		//ballGrabber.desiredElevatorVoltage = 90;
 		int loopCounter = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
@@ -153,8 +153,8 @@ public:
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEA=%6.2fSP=%6.2f", ballGrabber.desiredElevatorAngle, ballGrabber.elevatorController.GetSetpoint());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEA=%6.2fEE=%6.2f",
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
 						ballGrabber.elevatorAngleSensor.PIDGet(),
 						ballGrabber.elevatorController.GetError());
 				lcd->UpdateLCD();

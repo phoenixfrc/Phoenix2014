@@ -12,7 +12,7 @@ Grabber::Grabber() :
 	topLimitSwitch(PHOENIX2014_ELEVATOR_TOP_LIMIT_SWITCH),
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	elevatorAngleSensor(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
-	elevatorController(0.1, 0.001, 0.0, &elevatorAngleSensor, &elevatorMotor ),
+	elevatorController(0.1*60, 0.001*20, 0.0, &elevatorAngleSensor, &elevatorMotor ),
 	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR)
 	//lcd(DriverStationLCD::GetInstance())
 
@@ -25,9 +25,10 @@ Grabber::Grabber() :
 	m_encoderLimit = 100;//Need to change later
 	//initialize elevator PiD loop
 	elevatorController.SetContinuous(false);
-	elevatorController.SetOutputRange(-0.25, 0.25);
-	elevatorController.SetInputRange(0, 1000.0);
-	elevatorController.SetAbsoluteTolerance(0.1);
+	elevatorController.SetOutputRange(-0.25, 0.25);//motor run from -1 to 1
+	elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
+	elevatorController.SetAbsoluteTolerance(0.002);//about one degree
+	elevatorAngleSensor.SetVoltageForPID(true);
 	distanceToClose = 12;
 	detectBall = true;
 	
@@ -46,7 +47,7 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	bool elevatorBackwardRequest = gamePad->GetRawButton(2);
 	bool bottomLimit = !bottomLimitSwitch.Get();
 	bool topLimit = !topLimitSwitch.Get();
-	float angleIncrement = 0.05;
+	float voltageIncrement = 0.001;
 
 	//Ball detector.
 	if(ballDetector.GetDistance() < distanceToClose){
@@ -151,24 +152,24 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//
 	if(elevatorForwardRequest && !elevatorBackwardRequest && !topLimit){
-		desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
+		desiredElevatorVoltage = desiredElevatorVoltage + voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower);
 	}
 	
 	else if(elevatorBackwardRequest && !elevatorForwardRequest && !bottomLimit){
-		desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
+		desiredElevatorVoltage = desiredElevatorVoltage - voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower*-1);
 		
 		}
 		else {
 		if(topLimit){
-			desiredElevatorAngle = desiredElevatorAngle - angleIncrement;
+			desiredElevatorVoltage = desiredElevatorVoltage - voltageIncrement;
 					}
 		if(bottomLimit){
-			desiredElevatorAngle = desiredElevatorAngle + angleIncrement;
+			desiredElevatorVoltage = desiredElevatorVoltage + voltageIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(desiredElevatorAngle / PHOENIX2014_POT_DEGREES_PER_VOLT);
+	elevatorController.SetSetpoint(desiredElevatorVoltage);
 	//elevatorController.SetSetpoint(450.0);
 	
 /*	else(yButton && bottomLimit){

@@ -77,9 +77,13 @@
 //***********************************************************************
 
 //Test board module 1 is broken using module 2
-//Constant for elevator
+//Constants for elevator
 #define PHOENIX2014_POT_DEGREES_PER_VOLT 60.0
 #define PHOENIX2014_UNITS_PER_DEGREE 3.2
+#define PHOENIX2014_VOLTAGE_AT_VERTICAL 2.5
+#define PHOENIX2014_VOLTAGE_AT_FRONT 1.0
+#define PHOENIX2014_VOLTAGE_AT_BACK 4.0
+
 #if TEAM_NUMBER == 2342
 #define PHOENIX2014_ANALOG_MODULE_NUMBER 1
 #else 
