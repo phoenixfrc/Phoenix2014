@@ -32,7 +32,7 @@ private:
 public:
 		UltrasonicSensor ballDetector;
 private:
-		//DriverStationLCD * lcd;
+		DriverStationLCD * lcd;
 		int distanceToClose;
 		bool detectBall;
 

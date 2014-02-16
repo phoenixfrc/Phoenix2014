@@ -61,7 +61,15 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testTalon:  //Tests the Talons
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Talons, %d", testTalons->Get());
+			float desiredValue = rightJoyStick->GetAxis(Joystick::kYAxis)/100;
+			testTalons->Set(desiredValue);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Talon, %5.3f", testTalons->Get());
+			
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+							//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+							//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
+							//	ballGrabber.elevatorAngleSensor.PIDGet(),
+							//	ballGrabber.elevatorController.GetError());
 			
 			
 			if(button2){
