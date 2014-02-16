@@ -9,7 +9,6 @@ Shooter::Shooter() :
    brakeEngaged(PHOENIX2014_BRAKE_ENGAGED_LIMIT_SWITCH),
    brakeDisengaged(PHOENIX2014_BRAKE_DISENGAGED_LIMIT_SWITCH),
    brakeMotor(PHOENIX2014_SHOOTER_BRAKE_MOTOR_SPIKE)
-   //lcd(DriverStationLCD::GetInstance())
 {
 		m_shooterState = unknown;
 		m_loaderPower = 1.0;
@@ -24,7 +23,7 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 	bool isUnwound = !unwoundSensor.Get();//revisit unwound logic
 	bool isBraked = !brakeEngaged.Get();
 	bool isUnbraked = !brakeDisengaged.Get();
-	float encoderValue = winchEncoder.Get();
+	int encoderValue = winchEncoder.Get();
 	int ShooterEncoderLimit = 100;
 	switch (m_shooterState){
 		case shoot:
@@ -145,6 +144,21 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 		if(reachedLimitForLoad){
 			loaderMotor.Set(Relay::kOff);
 		}*/
+}
+void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
+		bool isWound = !winchRetractedSensor.Get();
+		bool isUnwound = !unwoundSensor.Get();//revisit unwound logic
+		bool isBraked = !brakeEngaged.Get();
+		bool isUnbraked = !brakeDisengaged.Get();
+		int encoderValue = winchEncoder.Get();
+
+	lcd->PrintfLine(line, "Ss=%c%c%c%c ev=%d", //prints the button values to LCD display
+					isWound ? '1':'0',
+					isUnwound ? '1':'0',
+					isBraked ? '1':'0',
+					isUnbraked ? '1':'0',
+					encoderValue
+					);
 }
 Shooter::~Shooter(){
 		   

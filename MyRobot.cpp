@@ -27,7 +27,6 @@ class RobotDemo : public SimpleRobot
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
-	UltrasonicSensor grabberUltrasonic;
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
@@ -50,7 +49,6 @@ public:
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
-		grabberUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER,4),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
@@ -149,15 +147,17 @@ public:
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%f", frontUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.PIDGet());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+				ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
+				ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
+				shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-					//	ballGrabber.elevatorAngleSensor.PIDGet(),
-					//	ballGrabber.elevatorController.GetError());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
+						ballGrabber.elevatorAngleSensor.PIDGet(),
+						ballGrabber.elevatorController.GetError());
 				lcd->UpdateLCD();
 				loopCounter = 0;
 			}
@@ -190,7 +190,7 @@ public:
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &grabberUltrasonic, &analogTestSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &ballGrabber.ballDetector, &analogTestSwitch);
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}

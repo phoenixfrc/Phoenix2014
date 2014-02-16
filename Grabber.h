@@ -9,6 +9,8 @@ class Grabber {
 public:
 		Grabber();
 		void OperateGrabber(Joystick * gamePad);
+		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
+		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		~Grabber();
 		float desiredElevatorVoltage;
 private:
@@ -32,9 +34,10 @@ private:
 public:
 		UltrasonicSensor ballDetector;
 private:
-		DriverStationLCD * lcd;
+		//DriverStationLCD * lcd;
 		int distanceToClose;
 		bool detectBall;
+		char * m_stateString;
 
 };
 #endif

@@ -13,8 +13,8 @@ Grabber::Grabber() :
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	elevatorAngleSensor(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
 	elevatorController(0.1*60, 0.001*20, 0.0, &elevatorAngleSensor, &elevatorMotor ),
-	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR),
-	lcd(DriverStationLCD::GetInstance())
+	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR)
+	//lcd(DriverStationLCD::GetInstance())
 
 	
 {
@@ -25,12 +25,13 @@ Grabber::Grabber() :
 	m_encoderLimit = 100;//Need to change later
 	//initialize elevator PiD loop
 	elevatorController.SetContinuous(false);
-	elevatorController.SetOutputRange(-0.25, 0.25);//motor run from -1 to 1
+	elevatorController.SetOutputRange(-0.5, 0.5);//motor run from -1 to 1
 	elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
 	elevatorController.SetAbsoluteTolerance(0.002);//about one degree
 	elevatorAngleSensor.SetVoltageForPID(true);
 	distanceToClose = 12;
 	detectBall = true;
+	m_stateString = "";
 	
 
 }
@@ -56,48 +57,39 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	else{
 		detectBall = false;
 	}
-	lcd->PrintfLine(DriverStationLCD::kUser_Line6, "gb=%c%c%c ev=%c%c%c%c", //prints the button values to LCD display
-					grabberButton ? '1':'0',
-					reachedLimitForOpen ? '1':'0', 
-					reachedLimitForClosed ? '1':'0',
-					elevatorForwardRequest ? '1':'0',		
-					elevatorBackwardRequest ? '1':'0',
-					bottomLimit ? '1':'0',		
-					topLimit ? '1':'0'
-					);
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*PHOENIX2014_POT_DEGREES_PER_VOLT);
 	//This will 
 	switch(m_grabberState){
 		case closing:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = closing");
+			m_stateString = "GS=closing";
 			grabberActuator.Set(m_grabberPower*-1);
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
 			}
 			break;
 		case closed:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = closed");
+			
+			m_stateString = "GS=closed";
 			grabberActuator.Set(0.0);
 			if(grabberButton){
 				m_grabberState = opening;
 			}
 			break;
 		case opening:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = opening");
+			m_stateString = "GS=opening";
 			grabberActuator.Set(m_grabberPower);
 			if(reachedLimitForOpen){
 				m_grabberState = open;
 			}
 			break;
 		case open:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = open");
+			m_stateString = "GS=open";
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
 			if (grabberButton || detectBall){
 				m_grabberState = closing;
 			}
 			break;
 		case unknown://unknown is the same as default
-			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "GS = unknown");
 		default:
 			if(reachedLimitForClosed){
 				m_grabberState = closed;
@@ -192,6 +184,21 @@ void Grabber::OperateGrabber(Joystick * gamePad){
 	}*/
 	
 }
+void Grabber::UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd){
+	lcd->PrintfLine(line, m_stateString);
+}
+void Grabber::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
+	bool reachedLimitForClosed = !grabberCloseLimit.Get();
+	bool reachedLimitForOpen = !grabberOpenLimit.Get();
+	bool bottomLimit = !bottomLimitSwitch.Get();
+	bool topLimit = !topLimitSwitch.Get();
+
+	lcd->PrintfLine(line, "gb=%c%c ev=%c%c", //prints the button values to LCD display
+						reachedLimitForOpen ? '1':'0',
+						reachedLimitForClosed ? '1':'0',
+						bottomLimit ? '1':'0',
+						topLimit ? '1':'0'
+						);
+}
 Grabber::~Grabber(){
-	
 }
