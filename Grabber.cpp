@@ -36,7 +36,7 @@ Grabber::Grabber() :
 
 }
 
-void Grabber::OperateGrabber(bool openToShooter, Joystick * gamePad){
+void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad){
 	//One button will toggle between open and closed grabber
 	bool grabberButton = gamePad->GetRawButton(1);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
@@ -57,6 +57,9 @@ void Grabber::OperateGrabber(bool openToShooter, Joystick * gamePad){
 	else{
 		detectBall = false;
 	}
+	if(openToShoot){
+			m_grabberState = opening;
+		}
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*PHOENIX2014_POT_DEGREES_PER_VOLT);
 	//This will 
 	switch(m_grabberState){
@@ -85,7 +88,7 @@ void Grabber::OperateGrabber(bool openToShooter, Joystick * gamePad){
 		case open:
 			m_stateString = "GS=open";
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
-			if (grabberButton || detectBall){
+			if (grabberButton || (detectBall && useBallSensor)){
 				m_grabberState = closing;
 			}
 			break;
