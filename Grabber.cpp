@@ -36,7 +36,7 @@ Grabber::Grabber() :
 
 }
 
-void Grabber::OperateGrabber(Joystick * gamePad){
+void Grabber::OperateGrabber(bool openToShooter, Joystick * gamePad){
 	//One button will toggle between open and closed grabber
 	bool grabberButton = gamePad->GetRawButton(1);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);

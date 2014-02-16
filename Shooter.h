@@ -15,7 +15,6 @@ class Shooter {
 	DigitalInput brakeEngaged;
 	DigitalInput brakeDisengaged;
 	Relay brakeMotor;
-	
 public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter

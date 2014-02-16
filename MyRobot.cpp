@@ -132,10 +132,11 @@ public:
 		//elevation.Start();
 		driveTrain.SetSafetyEnabled(true);
 		//ballGrabber.desiredElevatorVoltage = 90;
-		int loopCounter = 0;
+		int printDelay = 0;
+		int shootDelay = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
-			loopCounter ++;
+			printDelay ++;
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
 			float lJoyStick = limitSpeed(leftJoyStick.GetY());
@@ -143,7 +144,7 @@ public:
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
 		//organize lcd code limit to 2 times per second
-			if(loopCounter == 100){
+			if(printDelay == 100){
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
@@ -159,16 +160,26 @@ public:
 						ballGrabber.elevatorAngleSensor.PIDGet(),
 						ballGrabber.elevatorController.GetError());
 				lcd->UpdateLCD();
-				loopCounter = 0;
+				printDelay = 0;
 			}
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
 			bool loadShooterButton = gamePad.GetRawButton(8);
-			shooter.OperateShooter(shooterButton,loadShooterButton); 
-			ballGrabber.OperateGrabber(&gamePad);
+			if (shooterButton && shootDelay == 0){
+				shootDelay++;
+			}
+			if(shootDelay>0){
+				shootDelay++;
+			}
+			bool ReadyToShoot = (shootDelay>20);
+			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
+			if (ReadyToShoot){
+				shootDelay = 0;
+			}
+			ballGrabber.OperateGrabber(shooterButton, &gamePad);
 			//Trying to make some things happen automatically during teleoperated
-		 
+			
 			
 			
 			Wait(0.005);// wait for a motor update time
