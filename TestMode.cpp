@@ -15,7 +15,8 @@ TestMode::TestMode(DriverStation * theDriverStation):
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
 		                      Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch, 
 		                      Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic,
-		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch)
+		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch, 
+		                      Shooter * theShooter)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -31,6 +32,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	
 	switch (m_mode) {
 		case testGamepad:  //Tests the Gamepad
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "GamePad Test");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "gamepad=%c%c%c%c %c%c%c%c:%c", //prints the button values to LCD display
 						    button1 ? '1':'0', 
 						    button2 ? '1':'0',
@@ -44,6 +47,28 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 							);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
 			// SmartDashboard::PutNumber("Team Number", 2342);
+			if(button2){
+				m_mode = testShooter;  //Changeds to testShooter
+			}
+			break;
+		case testShooter:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter Test");
+			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
+			if(button2){
+				m_mode = testGrabber;  //Changes mode to testGrabber
+			}
+			break;
+		case testGrabber:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
+			if(button2){
+				m_mode = testElevator;  //Changes mode to testElevator
+			}
+			break;
+		case testElevator:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Elevator NI");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
+			
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 			}
