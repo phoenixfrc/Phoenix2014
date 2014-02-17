@@ -21,19 +21,20 @@ Grabber::Grabber() :
 	//initialize the grabber to trip the closed grabber switch
 	m_grabberState = unknown;
 	m_grabberPower = 1.0;
-	m_elevatorPower = 1.0;
-	m_encoderLimit = 100;//Need to change later
+	m_elevatorPower = 0.5;
 	//initialize elevator PiD loop
 	elevatorController.SetContinuous(false);
-	elevatorController.SetOutputRange(-0.5, 0.5);//motor run from -1 to 1
+	elevatorController.SetOutputRange(-m_elevatorPower, m_elevatorPower);//motor run from -1 to 1
 	elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
 	elevatorController.SetAbsoluteTolerance(0.002);//about one degree
 	elevatorAngleSensor.SetVoltageForPID(true);
 	distanceToClose = 12;
 	detectBall = true;
 	m_stateString = "";
-	
+}
 
+void Grabber::init(){
+	m_grabberState = unknown;
 }
 
 void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad){
