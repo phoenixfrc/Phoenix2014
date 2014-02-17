@@ -10,6 +10,7 @@ TestMode::TestMode(DriverStation * theDriverStation):
 {
 	m_mode = testGamepad;
 	m_ds = theDriverStation;
+	m_driving_motor = true;
 }
 
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
@@ -52,8 +53,19 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testShooter:
+			float dPadThumbstick = gamePad->GetY();
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter Test");
 			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
+			
+			if(m_driving_motor){
+				//if true drive motor 
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "Drive winch");
+			}
+			else{
+				//drive brake
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "Drive brake");
+			}
 			if(button2){
 				m_mode = testGrabber;  //Changes mode to testGrabber
 			}
@@ -144,7 +156,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
 			break;
 	}
+	
 }
+	
 
 TestMode::~TestMode(){
 	

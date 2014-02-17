@@ -23,6 +23,7 @@ public:
 	~TestMode();
 private:
 	int m_mode;
+	bool m_driving_motor;
 	DriverStation * m_ds;
 	DriverStationEnhancedIO & m_dsIO;
 };
