@@ -27,7 +27,6 @@ class RobotDemo : public SimpleRobot
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
-	UltrasonicSensor grabberUltrasonic;
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
@@ -47,10 +46,9 @@ public:
 		testEncoder(1,2),
 		elevatorMotor(5),
 		testSwitch(3),
-		testTalons(2),
+		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
-		grabberUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER,4),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
 	    lcd(DriverStationLCD::GetInstance())
@@ -71,11 +69,20 @@ public:
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
 	}
+	//this called when the robot is enabled
+	void init(){
+		ballGrabber.desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
+		ballGrabber.elevatorController.Enable();
+		shooter.init();
+		ballGrabber.init();
+	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
 	 */ 
 	void Autonomous()
 	{
+		init();
 	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
@@ -130,14 +137,16 @@ public:
 	
 	void OperatorControl()
 	{
+		init();
 		//elevation.Reset();
 		//elevation.Start();
 		driveTrain.SetSafetyEnabled(true);
 		//ballGrabber.desiredElevatorVoltage = 90;
-		int loopCounter = 0;
+		int printDelay = 0;
+		int shootDelay = 0;
 		while (IsOperatorControl() && IsEnabled())
 		{
-			loopCounter ++;
+			printDelay ++;
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
 			float lJoyStick = limitSpeed(leftJoyStick.GetY());
@@ -145,29 +154,43 @@ public:
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
 		//organize lcd code limit to 2 times per second
-			if(loopCounter == 100){
+			if(printDelay == 100){
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%f", frontUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "B%f", backUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", grabberUltrasonic.GetDistance());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+				ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
+				//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
+				shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
+				shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
 				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
 						ballGrabber.elevatorAngleSensor.PIDGet(),
 						ballGrabber.elevatorController.GetError());
 				lcd->UpdateLCD();
-				loopCounter = 0;
+				printDelay = 0;
 			}
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
 			bool loadShooterButton = gamePad.GetRawButton(8);
-			shooter.OperateShooter(shooterButton,loadShooterButton); 
-			ballGrabber.OperateGrabber(&gamePad);
+			if (shooterButton && shootDelay == 0){
+				shootDelay++;
+			}
+			if(shootDelay>0){
+				shootDelay++;
+			}
+			bool ReadyToShoot = (shootDelay>20);
+			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
+			if (ReadyToShoot){
+				shootDelay = 0;
+			}
+			ballGrabber.OperateGrabber(ReadyToShoot, shooterButton , &gamePad);
 			//Trying to make some things happen automatically during teleoperated
-		 
+			
 			
 			
 			Wait(0.005);// wait for a motor update time
@@ -189,7 +212,11 @@ public:
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &grabberUltrasonic, &analogTestSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick,
+								  &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic,
+								  &ballGrabber.ballDetector, &analogTestSwitch,
+								  &shooter
+								  );
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}
