@@ -5,75 +5,32 @@ Shooter::Shooter() :
    winchMotor(PHOENIX2014_SHOOTER_LOAD_MOTOR),
    winchEncoder(PHOENIX2014_SHOOTER_ENCODER_A,PHOENIX2014_SHOOTER_ENCODER_B),
    winchRetractedSensor(PHOENIX2014_SHOOTER_LIMIT_SWITCH),
-   unwoundSensor(PHOENIX2014_UNWINED_LIMIT_SWITCH),
    brakeEngaged(PHOENIX2014_BRAKE_ENGAGED_LIMIT_SWITCH),
    brakeDisengaged(PHOENIX2014_BRAKE_DISENGAGED_LIMIT_SWITCH),
    brakeMotor(PHOENIX2014_SHOOTER_BRAKE_MOTOR_SPIKE)
 {
-		m_shooterState = unknown;
-		m_loaderPower = 1.0;
-		m_encoderReachedLimitForLoad = 100.0;
-		
-   winchEncoder.Reset();
-
+	m_shooterState = unknown;
+	m_loaderPower = 1.0;
+	m_encoderReachedLimitForLoad = -1;
+	winchEncoder.Reset();
+	winchEncoder.Start();
 }
+
+void Shooter::init(){
+	winchEncoder.Reset();
+	winchEncoder.Start();
+	m_shooterState = unknown;
+	m_encoderReachedLimitForLoad = -1;
+}
+
 void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 
 	bool isWound = !winchRetractedSensor.Get();
-	bool isUnwound = !unwoundSensor.Get();//revisit unwound logic
 	bool isBraked = !brakeEngaged.Get();
 	bool isUnbraked = !brakeDisengaged.Get();
 	int encoderValue = winchEncoder.Get();
 	int ShooterEncoderLimit = 100;
 	switch (m_shooterState){
-		case shoot:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = shoot");
-			brakeMotor.Set(Relay::kReverse);
-			if(isUnbraked){
-				winchEncoder.Reset();
-				winchEncoder.Start();
-				m_shooterState = winding;
-			}
-			if (loadRequest){
-				m_shooterState = winding;
-			}
-			break;
-		case winding:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = winding");
-			winchMotor.Set(m_loaderPower);
-			if(encoderValue >= ShooterEncoderLimit || isWound){
-				m_shooterState = braking;
-			}
-			break;
-		case braking:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = braking");
-			winchMotor.Set(0.0);
-			winchEncoder.Reset();
-			winchEncoder.Start();
-			if (isBraked){
-				m_shooterState = unwinding;
-			}
-			else{
-				brakeMotor.Set(Relay::kForward);
-			}
-			break;
-		case unwinding:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = unwinding");
-			brakeMotor.Set(Relay::kOff);
-			if((encoderValue >= ShooterEncoderLimit) || isUnwound){
-				m_shooterState = loaded;
-			}
-			else{
-				winchMotor.Set(-m_loaderPower);
-			}
-			break;
-		case loaded:
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = loaded");
-			winchMotor.Set(0.0);
-			if (shootRequest){
-				m_shooterState = shoot;
-			}
-			break;
 		case unknown://unknown is the same as default
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = unknown");
 		default:
@@ -86,6 +43,48 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 				}
 			}
 			else{
+				m_shooterState = winding;
+			}
+			break;
+		case winding:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = winding");
+			winchMotor.Set(m_loaderPower);
+			if(isWound){
+				// Transition to next state - braking
+				winchMotor.Set(0.0);
+				winchEncoder.Reset();
+				winchEncoder.Start();
+				m_shooterState = braking;
+			}
+			break;
+		case braking:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = braking");
+			brakeMotor.Set(Relay::kForward);
+			if (isBraked){
+				brakeMotor.Set(Relay::kOff);
+				m_shooterState = unwinding;
+			}
+			break;
+		case unwinding:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = unwinding");
+			winchMotor.Set(-m_loaderPower);
+			if(encoderValue >= ShooterEncoderLimit){
+				winchMotor.Set(0.0);
+				m_shooterState = loaded;
+			}
+			break;
+		case loaded:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = loaded");
+			if (shootRequest){
+				winchEncoder.Reset();
+				winchEncoder.Start();
+				m_shooterState = shoot;
+			}
+			break;
+		case shoot:
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = shoot");
+			brakeMotor.Set(Relay::kReverse);
+			if(isUnbraked || loadRequest){
 				m_shooterState = winding;
 			}
 			break;
@@ -146,19 +145,37 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 		}*/
 }
 void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
-		bool isWound = !winchRetractedSensor.Get();
-		bool isUnwound = !unwoundSensor.Get();//revisit unwound logic
-		bool isBraked = !brakeEngaged.Get();
-		bool isUnbraked = !brakeDisengaged.Get();
-		int encoderValue = winchEncoder.Get();
+	bool isWound = !winchRetractedSensor.Get();
+	bool isBraked = !brakeEngaged.Get();
+	bool isUnbraked = !brakeDisengaged.Get();
+	int encoderValue = winchEncoder.Get();
 
-	lcd->PrintfLine(line, "Ss=%c%c%c%c ev=%d", //prints the button values to LCD display
+	lcd->PrintfLine(line, "Ss=%c%c%c en=%d", //prints the button values to LCD display
 					isWound ? '1':'0',
-					isUnwound ? '1':'0',
 					isBraked ? '1':'0',
 					isUnbraked ? '1':'0',
 					encoderValue
 					);
+}
+void Shooter::TestShooter(){
+	
+}
+void Shooter::PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd){
+	if(m_shooterState == shoot){
+		lcd->PrintfLine(line, "ShSt=shoot");
+	}
+	else if (m_shooterState == winding){
+		lcd->PrintfLine(line, "ShSt=winding");
+	}
+	else if (m_shooterState == braking){
+		lcd->PrintfLine(line, "ShSt=braking");
+		}
+	else if (m_shooterState == unwinding){
+		lcd->PrintfLine(line, "ShSt=unwinding");
+	}
+	else if (m_shooterState == loaded){
+		lcd->PrintfLine(line, "ShSt=loaded");
+	}
 }
 Shooter::~Shooter(){
 		   

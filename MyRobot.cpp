@@ -69,11 +69,20 @@ public:
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
 	}
+	//this called when the robot is enabled
+	void init(){
+		ballGrabber.desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
+		ballGrabber.elevatorController.Enable();
+		shooter.init();
+		ballGrabber.init();
+	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
 	 */ 
 	void Autonomous()
 	{
+		init();
 	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
@@ -155,6 +164,7 @@ public:
 	
 	void OperatorControl()
 	{
+		init();
 		//elevation.Reset();
 		//elevation.Start();
 		driveTrain.SetSafetyEnabled(true);
@@ -178,7 +188,8 @@ public:
 				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
 				ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
-				ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
+				//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
+				shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
 				shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
@@ -204,7 +215,7 @@ public:
 			if (ReadyToShoot){
 				shootDelay = 0;
 			}
-			ballGrabber.OperateGrabber(ReadyToShoot, shooterButton , &gamePad);
+			ballGrabber.OperateGrabber(shooterButton, ReadyToShoot, &gamePad);
 			//Trying to make some things happen automatically during teleoperated
 			
 			
@@ -228,7 +239,11 @@ public:
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &ballGrabber.ballDetector, &analogTestSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick,
+								  &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic,
+								  &ballGrabber.ballDetector, &analogTestSwitch,
+								  &shooter
+								  );
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}

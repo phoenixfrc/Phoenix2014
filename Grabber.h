@@ -12,6 +12,7 @@ public:
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		~Grabber();
+		void init();
 		float desiredElevatorVoltage;
 private:
 		enum grabberStates{open, opening, closed, closing, unknown};
@@ -29,7 +30,6 @@ public:
 private:
 		double m_grabberPower;
 		double m_elevatorPower;
-		double m_encoderLimit;
 		grabberStates m_grabberState;
 public:
 		UltrasonicSensor ballDetector;

@@ -11,7 +11,6 @@ class Shooter {
 	Talon winchMotor;
 	Encoder winchEncoder; //zero on transition from winding to braking
 	DigitalInput winchRetractedSensor;
-	DigitalInput unwoundSensor; //use encoder instead.
 	DigitalInput brakeEngaged;
 	DigitalInput brakeDisengaged;
 	Relay brakeMotor;
@@ -19,7 +18,10 @@ public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
+		void TestShooter();
+		void PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		~Shooter();  //The destructor called instances destroyed
+		void init();
 
 private:
 		shooterStates m_shooterState;
