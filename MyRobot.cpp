@@ -77,35 +77,62 @@ public:
 	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
-		int rangeToWallClose = 60;
-		int rangeToWallFar = 120;
+		//int rangeToWallClose = 60;
+		//int rangeToWallFar = 120;
+		//Initialize encoder.
+		int distanceToShoot = 133;
+		int shootDelay = 0;
+		ballGrabber.elevatorController.SetSetpoint(1.75);
+		driveDistance.Reset();
+		driveDistance.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE);
+		driveDistance.Start();
+		
 		
 		while(IsAutonomous() && IsEnabled()){
-		if(checkBox1 == true){
+		if(checkBox1 == false){
 			SmartDashboard::PutNumber("Autonomous mode", 1);
+			//Place robot 1 inch from white line. Robot is 33 inches long.  
+			//distance between line and wall is 216 inches.
+			//Drive forward 216 - 83 = 133 inches.
+			//Set elevator angle to 45 Degrees forward = 1.75 Volts.
+			//Drive until Robot is out of the white zone and within range to wall.
+			//Shoot as soon as robot is stopped.
+			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistance.GetDistance());
+			ballGrabber.elevatorController.Enable();
+			while(driveDistance.GetDistance() < distanceToShoot){
+			driveTrain.Drive(-0.5, 0.0);
+			}
+			driveTrain.Drive(0.0, 0.0);
+			Wait(.5);
+			shootDelay++;
+			bool ReadyToShoot = (shootDelay>20);
+			if (ReadyToShoot){
+				shooter.OperateShooter(ReadyToShoot, false);
+				shootDelay = 0;
+			}
+			ballGrabber.OperateGrabber(false, true, &gamePad);
 			
-			//Drive until Robot is within range to wall.
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
 
 			
-					       );
-			float rangeToWall = frontUltrasonic.GetDistance();
+		};
+			/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
 				driveTrain.Drive(-5, 0.0);
 				rangeToWall = frontUltrasonic.GetDistance();
 				Wait(.001);
 			}
-			driveTrain.Drive(0.0, 0.0); //Stop the Robot
+			driveTrain.Drive(0.0, 0.0); //Stop the Robot*/
 		}
-		if(checkBox1 == false){
+		/*if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
-			float rangeToWall = frontUltrasonic.GetDistance();
+			//float rangeToWall = frontUltrasonic.GetDistance();
 			
-			while(rangeToWall > rangeToWallFar){
+			//while(rangeToWall > rangeToWallFar){
 				driveTrain.Drive(-5, 0.0);
 			}
 			driveTrain.Drive(0.0, 0.0);
-		}}
+		}};*/
 		lcd->Clear();
 		lcd->UpdateLCD();
 		//driveDistance.Reset();

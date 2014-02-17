@@ -8,6 +8,8 @@
 
 #ifndef PHOENIX2014_H
 #define PHOENIX2014_H
+//For distance conversion
+#define PHOENIX2014_DRIVE_DISTANCE_PER_PULSE 5
 
 //define talon constant here
 
