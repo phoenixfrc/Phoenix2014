@@ -160,6 +160,9 @@ void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 					encoderValue
 					);
 }
+void Shooter::TestShooter(){
+	
+}
 Shooter::~Shooter(){
 		   
 }

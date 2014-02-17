@@ -19,6 +19,7 @@ public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
+		void TestShooter();
 		~Shooter();  //The destructor called instances destroyed
 
 private:
