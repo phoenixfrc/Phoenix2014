@@ -83,7 +83,7 @@ public:
 	void Autonomous()
 	{
 		init();
-	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
+		lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 		//int rangeToWallClose = 60;
@@ -91,40 +91,47 @@ public:
 		//Initialize encoder.
 		int distanceToShoot = 133;
 		int shootDelay = 0;
-		ballGrabber.elevatorController.SetSetpoint(1.75);
+		ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
 		driveDistance.Reset();
 		driveDistance.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE);
 		driveDistance.Start();
 		
 		
 		while(IsAutonomous() && IsEnabled()){
-		if(checkBox1 == false){
-			SmartDashboard::PutNumber("Autonomous mode", 1);
-			//Place robot 1 inch from white line. Robot is 33 inches long.  
-			//distance between line and wall is 216 inches.
-			//Drive forward 216 - 83 = 133 inches.
-			//Set elevator angle to 45 Degrees forward = 1.75 Volts.
-			//Drive until Robot is out of the white zone and within range to wall.
-			//Shoot as soon as robot is stopped.
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistance.GetDistance());
-			ballGrabber.elevatorController.Enable();
-			while(driveDistance.GetDistance() < distanceToShoot){
-			driveTrain.Drive(-0.5, 0.0);
-			}
-			driveTrain.Drive(0.0, 0.0);
-			Wait(.5);
-			shootDelay++;
-			bool ReadyToShoot = (shootDelay>20);
-			if (ReadyToShoot){
-				shooter.OperateShooter(ReadyToShoot, false);
-				shootDelay = 0;
-			}
-			ballGrabber.OperateGrabber(false, true, &gamePad);
-			
+			if(checkBox1 == false){
+				SmartDashboard::PutNumber("Autonomous mode", 1);
+				//Place robot 1 inch from white line. Robot is 33 inches long.  
+				//distance between line and wall is 216 inches.
+				//Drive forward 216 - 83 = 133 inches.
+				//Set elevator angle to 45 Degrees forward = 1.75 Volts.
+				//Drive until Robot is out of the white zone and within range to wall.
+				//Shoot as soon as robot is stopped.
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistance.GetDistance());
 
-			
-		};
+				driveTrain.Drive(-0.5, 0.0);
+				int maxDriveLoop = 50;
+				while((driveDistance.GetDistance() < distanceToShoot) || (maxDriveLoop > 0)){
+					//prepares shooter to shoot.
+					shooter.OperateShooter(false, true);
+					Wait(.05);
+					maxDriveLoop--;
+				}
+				driveTrain.Drive(0.0, 0.0);
+				
+				Wait(.005);
+				shootDelay++;
+				bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
+				if (ReadyToShoot){
+					shooter.OperateShooter(ReadyToShoot, false);
+					shootDelay = 0;
+				}
+				ballGrabber.OperateGrabber(false, true, &gamePad);	
+		    }
+			else{
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
+			}
 			/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
 				driveTrain.Drive(-5, 0.0);
@@ -210,7 +217,7 @@ public:
 			if(shootDelay>0){
 				shootDelay++;
 			}
-			bool ReadyToShoot = (shootDelay>20);
+			bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
 			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
 			if (ReadyToShoot){
 				shootDelay = 0;

@@ -8,8 +8,11 @@
 
 #ifndef PHOENIX2014_H
 #define PHOENIX2014_H
+//Autonomous
 //For distance conversion
 #define PHOENIX2014_DRIVE_DISTANCE_PER_PULSE 5
+//Angle ajustment.
+#define PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE 1.75
 
 //define talon constant here
 
@@ -85,6 +88,8 @@
 #define PHOENIX2014_VOLTAGE_AT_VERTICAL 2.5
 #define PHOENIX2014_VOLTAGE_AT_FRONT 1.0
 #define PHOENIX2014_VOLTAGE_AT_BACK 4.0
+//Constants for grabber
+#define PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY 20
 
 #if TEAM_NUMBER == 2342
 #define PHOENIX2014_ANALOG_MODULE_NUMBER 1
