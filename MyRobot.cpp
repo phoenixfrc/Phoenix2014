@@ -188,7 +188,7 @@ public:
 			if (ReadyToShoot){
 				shootDelay = 0;
 			}
-			ballGrabber.OperateGrabber(ReadyToShoot, shooterButton , &gamePad);
+			ballGrabber.OperateGrabber(shooterButton, ReadyToShoot, &gamePad);
 			//Trying to make some things happen automatically during teleoperated
 			
 			

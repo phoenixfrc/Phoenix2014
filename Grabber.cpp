@@ -21,7 +21,7 @@ Grabber::Grabber() :
 	//initialize the grabber to trip the closed grabber switch
 	m_grabberState = unknown;
 	m_grabberPower = 1.0;
-	m_elevatorPower = 0.5;
+	m_elevatorPower = 1.0;
 	//initialize elevator PiD loop
 	elevatorController.SetContinuous(false);
 	elevatorController.SetOutputRange(-m_elevatorPower, m_elevatorPower);//motor run from -1 to 1

@@ -13,9 +13,12 @@ Shooter::Shooter() :
 	m_loaderPower = 1.0;
 	m_encoderReachedLimitForLoad = -1;
 	winchEncoder.Reset();
+	winchEncoder.Start();
 }
 
 void Shooter::init(){
+	winchEncoder.Reset();
+	winchEncoder.Start();
 	m_shooterState = unknown;
 	m_encoderReachedLimitForLoad = -1;
 }
@@ -142,10 +145,10 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 		}*/
 }
 void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
-		bool isWound = !winchRetractedSensor.Get();
-		bool isBraked = !brakeEngaged.Get();
-		bool isUnbraked = !brakeDisengaged.Get();
-		int encoderValue = winchEncoder.Get();
+	bool isWound = !winchRetractedSensor.Get();
+	bool isBraked = !brakeEngaged.Get();
+	bool isUnbraked = !brakeDisengaged.Get();
+	int encoderValue = winchEncoder.Get();
 
 	lcd->PrintfLine(line, "Ss=%c%c%c en=%d", //prints the button values to LCD display
 					isWound ? '1':'0',
