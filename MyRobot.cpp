@@ -212,7 +212,11 @@ public:
 		testEncoder.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick, &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic, &ballGrabber.ballDetector, &analogTestSwitch);
+			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick,
+								  &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic,
+								  &ballGrabber.ballDetector, &analogTestSwitch,
+								  &shooter
+								  );
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}
