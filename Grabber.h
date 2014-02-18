@@ -21,8 +21,8 @@ private:
 		DigitalInput grabberCloseLimit;
 		DigitalInput grabberOpenLimit;
 		//DigitalInput ballSensor;
-		DigitalInput bottomLimitSwitch;
-		DigitalInput topLimitSwitch;
+		DigitalInput forwardLimitSwitch;
+		DigitalInput backLimitSwitch;
 		Talon elevatorMotor;
 public:
 		AnalogChannel elevatorAngleSensor;

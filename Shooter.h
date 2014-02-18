@@ -9,11 +9,10 @@ class Shooter {
 	//
 	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};  //Undwinding needs to be investigated
 	Talon winchMotor;
-	Encoder winchEncoder; //zero on transition from winding to braking
 	DigitalInput winchRetractedSensor;
 	DigitalInput brakeEngaged;
 	DigitalInput brakeDisengaged;
-	Relay brakeMotor;
+	Talon brakeMotor;
 public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
@@ -26,6 +25,6 @@ public:
 private:
 		shooterStates m_shooterState;
 		double m_loaderPower;
-		double m_encoderReachedLimitForLoad;//make constant
+		double m_brakePower;
 };
 #endif
