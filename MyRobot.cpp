@@ -21,7 +21,6 @@ class RobotDemo : public SimpleRobot
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
 	Encoder testEncoder;
-	Talon elevatorMotor; //check if this is being used
 	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
@@ -43,8 +42,7 @@ public:
 		gamePad(3),
 		//elevation(1,2),
 		driveDistance(3,4),
-		testEncoder(1,2),
-		elevatorMotor(5),
+		testEncoder(5,6),
 		testSwitch(3),
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
