@@ -58,7 +58,7 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			if (isBraked){
 				brakeMotor.Set(0.0);
 				m_shooterState = unwinding;
-				m_unwindDelayCounter = 2000; //this is 10 seconds at 200 iters per second
+				m_unwindDelayCounter = 8*200; //this is 8 seconds at 200 iters per second
 			}
 			break;
 		case unwinding:
