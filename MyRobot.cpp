@@ -21,7 +21,6 @@ class RobotDemo : public SimpleRobot
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistance;
 	Encoder testEncoder;
-	Talon elevatorMotor; //check if this is being used
 	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
@@ -43,8 +42,7 @@ public:
 		gamePad(3),
 		//elevation(1,2),
 		driveDistance(3,4),
-		testEncoder(1,2),
-		elevatorMotor(5),
+		testEncoder(5,6),
 		testSwitch(3),
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
@@ -83,38 +81,72 @@ public:
 	void Autonomous()
 	{
 		init();
-	        lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
+		lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
-		int rangeToWallClose = 60;
-		int rangeToWallFar = 120;
+		//int rangeToWallClose = 60;
+		//int rangeToWallFar = 120;
+		//Initialize encoder.
+		int distanceToShoot = 133;
+		int shootDelay = 0;
+		ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
+		driveDistance.Reset();
+		driveDistance.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE);
+		driveDistance.Start();
+		
 		
 		while(IsAutonomous() && IsEnabled()){
-		if(checkBox1 == true){
-			SmartDashboard::PutNumber("Autonomous mode", 1);
-			
-			//Drive until Robot is within range to wall.
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
+			if(checkBox1 == false){
+				SmartDashboard::PutNumber("Autonomous mode", 1);
+				//Place robot 1 inch from white line. Robot is 33 inches long.  
+				//distance between line and wall is 216 inches.
+				//Drive forward 216 - 83 = 133 inches.
+				//Set elevator angle to 45 Degrees forward = 1.75 Volts.
+				//Drive until Robot is out of the white zone and within range to wall.
+				//Shoot as soon as robot is stopped.
+				//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistance.GetDistance());
 
-			
-					       );
-			float rangeToWall = frontUltrasonic.GetDistance();
+				driveTrain.Drive(-0.5, 0.0);
+				int maxDriveLoop = 50;
+				while((driveDistance.GetDistance() < distanceToShoot) || (maxDriveLoop > 0)){
+					//prepares shooter to shoot.
+					shooter.OperateShooter(false, true);
+					Wait(.05);
+					maxDriveLoop--;
+				}
+				driveTrain.Drive(0.0, 0.0);
+				
+				Wait(.005);
+				shootDelay++;
+				bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
+				if (ReadyToShoot){
+					shooter.OperateShooter(ReadyToShoot, false);
+					shootDelay = 0;
+				}
+				ballGrabber.OperateGrabber(false, true, &gamePad);	
+		    }
+			else{
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
+			}
+			/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
 				driveTrain.Drive(-5, 0.0);
 				rangeToWall = frontUltrasonic.GetDistance();
 				Wait(.001);
 			}
-			driveTrain.Drive(0.0, 0.0); //Stop the Robot
+			driveTrain.Drive(0.0, 0.0); //Stop the Robot*/
 		}
-		if(checkBox1 == false){
+		/*if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
-			float rangeToWall = frontUltrasonic.GetDistance();
+			//float rangeToWall = frontUltrasonic.GetDistance();
 			
-			while(rangeToWall > rangeToWallFar){
+			//while(rangeToWall > rangeToWallFar){
 				driveTrain.Drive(-5, 0.0);
 			}
 			driveTrain.Drive(0.0, 0.0);
-		}}
+		}};*/
 		lcd->Clear();
 		lcd->UpdateLCD();
 		//driveDistance.Reset();
@@ -183,7 +215,7 @@ public:
 			if(shootDelay>0){
 				shootDelay++;
 			}
-			bool ReadyToShoot = (shootDelay>20);
+			bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
 			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
 			if (ReadyToShoot){
 				shootDelay = 0;
