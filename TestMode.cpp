@@ -141,7 +141,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
             break;
 		default:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
+			lcd->PrintfLine(Driver
+					StationLCD::kUser_Line4, "unknown mode");
 			break;
 	}
 }
