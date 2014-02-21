@@ -17,15 +17,15 @@ public:
 		Shooter();  //constructor called when instances created
 		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
-		void TestShooter();
+		void TestShooter(float brakePower, float loaderPower);
 		void PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		~Shooter();  //The destructor called instances destroyed
 		void init();
 
 private:
 		shooterStates m_shooterState;
-		double m_loaderPower;
-		double m_brakePower;
+		float m_loaderPower;
+		float m_brakePower;
 		int m_unwindDelayCounter;
 };
 #endif

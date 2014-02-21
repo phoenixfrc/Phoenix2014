@@ -60,15 +60,31 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			if(m_driving_motor){
 				//if true drive motor 
+				theShooter->TestShooter(0.0, dPadThumbstick);
 				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "Drive winch");
+				if(button4){
+					m_driving_motor = false;
+					//turn off driving motor
+					theShooter->TestShooter(0.0, 0.0);			
+				}
 			}
+			
 			else{
 				//drive brake
+				theShooter->TestShooter(dPadThumbstick, 0.0);
 				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "Drive brake");
+				if(button4) {
+					m_driving_motor = true; 
+					//stop the brake motor
+					theShooter->TestShooter(0.0, 0.0);
+				}
 			}
 			if(button2){
 				m_mode = testGrabber;  //Changes mode to testGrabber
+			//turn both motors off
+				theShooter->TestShooter(0.0, 0.0);
 			}
+			
 			break;
 		case testGrabber:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
@@ -152,11 +168,12 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				m_mode = testGamepad;
 			}
             break;
+		
 		default:
-			lcd->PrintfLine(Driver
-					StationLCD::kUser_Line4, "unknown mode");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
 			break;
 	}
+	
 	
 }
 	

@@ -152,8 +152,15 @@ void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 					m_unwindDelayCounter
 					);
 }
-void Shooter::TestShooter(){
-	
+void Shooter::TestShooter(float brakePower, float loaderPower){
+	if(brakePower < -m_brakePower){
+		brakePower = -m_brakePower;
+	}
+	if(brakePower > m_brakePower){
+		brakePower = m_brakePower;
+	}
+	brakeMotor.Set(brakePower);
+	winchMotor.Set(loaderPower);
 }
 void Shooter::PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd){
 	if(m_shooterState == shoot){
