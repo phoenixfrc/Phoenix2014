@@ -19,7 +19,8 @@ class RobotDemo : public SimpleRobot
 	Joystick leftJoyStick;  // leftStick wired to port 2
 	Joystick gamePad;
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
-	Encoder driveDistance;
+	Encoder driveDistanceRight;
+	Encoder driveDistanceLeft;
 	Encoder testEncoder;
 	Shooter shooter;
 	DigitalInput testSwitch;
@@ -41,7 +42,8 @@ public:
 		leftJoyStick(1),
 		gamePad(3),
 		//elevation(1,2),
-		driveDistance(3,4),
+		driveDistanceRight(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
+		driveDistanceLeft(PHOENIX2014_R_DRIVE_ENCODER_A, PHOENIX2014_R_DRIVE_ENCODER_B),
 		testEncoder(5,6),
 		testSwitch(3),
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
@@ -84,15 +86,20 @@ public:
 		lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
+		float rightDriveSpeed = -1.0;
+		float leftDriveSpeed = -1.0;
 		//int rangeToWallClose = 60;
 		//int rangeToWallFar = 120;
 		//Initialize encoder.
 		int distanceToShoot = 133;
 		int shootDelay = 0;
 		ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
-		driveDistance.Reset();
-		driveDistance.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE);
-		driveDistance.Start();
+		driveDistanceRight.Reset();
+		driveDistanceLeft.Reset();
+		driveDistanceRight.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_RIGHT);
+		driveDistanceLeft.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
+		driveDistanceRight.Start();
+		driveDistanceLeft.Start();
 		
 		
 		while(IsAutonomous() && IsEnabled()){
@@ -105,13 +112,20 @@ public:
 				//Drive until Robot is out of the white zone and within range to wall.
 				//Shoot as soon as robot is stopped.
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistance.GetDistance());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistanceRight.GetDistance());
 
 				driveTrain.Drive(-0.5, 0.0);
 				int maxDriveLoop = 50;
-				while((driveDistance.GetDistance() < distanceToShoot) || (maxDriveLoop > 0)){
+				while((driveDistanceRight.GetDistance() < distanceToShoot) || (driveDistanceLeft.GetDistance() < distanceToShoot) || (maxDriveLoop > 0)){
 					//prepares shooter to shoot.
 					shooter.OperateShooter(false, true);
+					if(driveDistanceLeft.GetDistance() >= distanceToShoot){
+						leftDriveSpeed = 0.0;
+					}
+					if(driveDistanceRight.GetDistance() >= distanceToShoot){
+						rightDriveSpeed = 0.0;
+					}
+					driveTrain.TankDrive(leftDriveSpeed, rightDriveSpeed);
 					Wait(.05);
 					maxDriveLoop--;
 				}
