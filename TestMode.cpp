@@ -141,6 +141,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%d", encoder->Get());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "%f", encoder->GetDistance());
 			
 			if(button2){
 				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic
