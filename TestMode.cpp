@@ -139,7 +139,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			break;
 		case testEncoder:  //Tests the Encoders
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
-			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", encoder->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%d", encoder->Get());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
 			
 			if(button2){
