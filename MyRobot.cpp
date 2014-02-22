@@ -21,7 +21,7 @@ class RobotDemo : public SimpleRobot
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistanceRight;
 	Encoder driveDistanceLeft;
-	Encoder testEncoder;
+	//Encoder testEncoder;
 	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
@@ -42,9 +42,9 @@ public:
 		leftJoyStick(1),
 		gamePad(3),
 		//elevation(1,2),
-		driveDistanceRight(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
-		driveDistanceLeft(PHOENIX2014_R_DRIVE_ENCODER_A, PHOENIX2014_R_DRIVE_ENCODER_B),
-		testEncoder(5,6),
+		driveDistanceRight(PHOENIX2014_R_DRIVE_ENCODER_A,PHOENIX2014_R_DRIVE_ENCODER_B ),
+		driveDistanceLeft(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
+		//testEncoder(5,6),
 		testSwitch(3),
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
@@ -262,11 +262,11 @@ public:
 	 */
 	void Test() {
 		TestMode tester(m_ds);
-		testEncoder.Reset();
-		testEncoder.Start();
+		driveDistanceRight.Reset();
+		driveDistanceRight.Start();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
-			tester.PerformTesting(&gamePad, &testEncoder, lcd, &rightJoyStick, &leftJoyStick,
+			tester.PerformTesting(&gamePad, &driveDistanceRight, lcd, &rightJoyStick, &leftJoyStick,
 								  &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic,
 								  &ballGrabber.ballDetector, &analogTestSwitch,
 								  &shooter
@@ -274,7 +274,7 @@ public:
 			lcd->UpdateLCD();
 			Wait(0.2);
 		}
-		testEncoder.Stop();
+		driveDistanceRight.Stop();
 
 	}
 };
