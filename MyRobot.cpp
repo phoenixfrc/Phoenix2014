@@ -93,6 +93,7 @@ public:
 		//Initialize encoder.
 		int distanceToShoot = 133;
 		int shootDelay = 0;
+		bool printDelay = 0;
 		ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
 		driveDistanceRight.Reset();
 		driveDistanceLeft.Reset();
@@ -100,7 +101,8 @@ public:
 		driveDistanceLeft.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
-		
+		int maxDriveLoop = 50;
+
 		
 		while(IsAutonomous() && IsEnabled()){
 			if(checkBox1 == false){
@@ -113,10 +115,7 @@ public:
 				//Shoot as soon as robot is stopped.
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
 				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistanceRight.GetDistance());
-
-				driveTrain.Drive(-0.5, 0.0);
-				int maxDriveLoop = 50;
-				while((driveDistanceRight.GetDistance() < distanceToShoot) || (driveDistanceLeft.GetDistance() < distanceToShoot) || (maxDriveLoop > 0)){
+				while(((driveDistanceRight.GetDistance() < distanceToShoot) || (driveDistanceLeft.GetDistance() < distanceToShoot)) && (maxDriveLoop > 0)){
 					//prepares shooter to shoot.
 					shooter.OperateShooter(false, true);
 					if(driveDistanceLeft.GetDistance() >= distanceToShoot){
@@ -128,6 +127,15 @@ public:
 					driveTrain.TankDrive(leftDriveSpeed, rightDriveSpeed);
 					Wait(.05);
 					maxDriveLoop--;
+					if(printDelay >= 1){
+						lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%6.3f %6.3f", driveDistanceLeft.GetDistance(), driveDistanceRight.GetDistance());
+						lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%d", maxDriveLoop);
+						lcd->UpdateLCD();
+						printDelay = 0;
+					}
+					else{
+						printDelay++;
+					}
 				}
 				driveTrain.Drive(0.0, 0.0);
 				
