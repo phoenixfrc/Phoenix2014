@@ -7,8 +7,10 @@ class DeadZoneTalon : public Talon
 public:
 	DeadZoneTalon(uint32_t channel);
 	DeadZoneTalon(uint8_t moduleNumber, uint32_t channel);
+	void Set(float value, uint8_t syncGroup=0);
 	
 	~DeadZoneTalon();
 private:
+	float m_deadZone;
 };
 #endif
