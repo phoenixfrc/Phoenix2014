@@ -4,6 +4,7 @@
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
 #include "Shooter.h"
+#include "Grabber.h"
 
 class TestMode {
 	UltrasonicSensor testUltrasonic1;
@@ -19,7 +20,7 @@ public:
 			            Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch,
 			            Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic, 
 			            UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch,
-			            Shooter * theShooter);
+			            Shooter * theShooter, Grabber * theElevator);
 	~TestMode();
 private:
 	int m_mode;

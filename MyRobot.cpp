@@ -65,14 +65,14 @@ public:
 	}
 	void RobotInit(){
 	//move initial code from inside operator controll
-		ballGrabber.desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
+		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
 	}
 	//this called when the robot is enabled
 	void init(){
-		ballGrabber.desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.desiredElevatorVoltage);
+		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();
@@ -220,7 +220,7 @@ public:
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
 				shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
 				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
 						ballGrabber.elevatorAngleSensor.PIDGet(),
 						ballGrabber.elevatorController.GetError());
@@ -269,7 +269,7 @@ public:
 			tester.PerformTesting(&gamePad, &driveDistanceRight, lcd, &rightJoyStick, &leftJoyStick,
 								  &testSwitch, &testTalons, &frontUltrasonic, &backUltrasonic,
 								  &ballGrabber.ballDetector, &analogTestSwitch,
-								  &shooter
+								  &shooter, &ballGrabber
 								  );
 			lcd->UpdateLCD();
 			Wait(0.2);

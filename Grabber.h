@@ -11,9 +11,12 @@ public:
 		void OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad);
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
+		
 		~Grabber();
 		void init();
-		float desiredElevatorVoltage;
+		float m_desiredElevatorVoltage;
+		void resetSetPoint();
+		
 private:
 		enum grabberStates{open, opening, closed, closing, unknown};
 		Talon grabberActuator;
