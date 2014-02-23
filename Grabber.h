@@ -3,6 +3,7 @@
 #include "WPILib.h"
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
+#include "DeadZoneTalon.h"
 
 class Grabber {
 	
@@ -26,7 +27,7 @@ private:
 		//DigitalInput ballSensor;
 		DigitalInput forwardLimitSwitch;
 		DigitalInput backLimitSwitch;
-		Talon elevatorMotor;
+		DeadZoneTalon elevatorMotor;
 public:
 		AnalogChannel elevatorAngleSensor;
 		PIDController elevatorController;
