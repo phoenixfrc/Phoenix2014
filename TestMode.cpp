@@ -28,6 +28,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button6 = gamePad->GetRawButton(6); //Gets button six (RB = top right trigger)
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
+	encoder->SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
 	
 	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 //	double slider1 = SmartDashboard::GetNumber("Slider 1");
@@ -148,8 +149,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			break;
 		case testEncoder:  //Tests the Encoders
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
-			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", encoder->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%d", encoder->Get());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "%f", encoder->GetDistance());
 			
 			if(button2){
 				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic

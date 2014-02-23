@@ -164,12 +164,15 @@ void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * ga
 	
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//
-	if(elevatorForwardRequest && !elevatorBackwardRequest && !backLimit){
+
+	
+
+	if(elevatorForwardRequest && !elevatorBackwardRequest && !forwardLimit){
 		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower);
 	}
 	
-	else if(elevatorBackwardRequest && !elevatorForwardRequest && !forwardLimit){
+	else if(elevatorBackwardRequest && !elevatorForwardRequest && !backLimit){
 		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower*-1);
 		
