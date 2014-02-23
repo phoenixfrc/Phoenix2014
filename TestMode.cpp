@@ -103,12 +103,13 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
 			theElevator->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
-			
+			testTalons->Set(dPadThumbstick);
 			
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 				theElevator->resetSetPoint();
 				theElevator->elevatorController.Enable();
+				
 			}
 			break;
 		case testJoystick:  //Tests the Joysticks
