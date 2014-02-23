@@ -2,6 +2,7 @@
 #include "WPILib.h"
 #include "NetworkTables/NetworkTable.h"
 
+
 TestMode::TestMode(DriverStation * theDriverStation):
 	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 	testUltrasonic2(2, 3),
@@ -17,7 +18,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 		                      Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch, 
 		                      Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic,
 		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch, 
-		                      Shooter * theShooter)
+		                      Shooter * theShooter, Grabber * theElevator)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -90,15 +91,23 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
 			if(button2){
+				theElevator->elevatorController.Disable();
 				m_mode = testElevator;  //Changes mode to testElevator
+			
 			}
 			break;
 		case testElevator:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Elevator NI");
+			dPadThumbstick = gamePad->GetY();
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Elevator Test");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
+			theElevator->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
+			
 			
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
+				theElevator->resetSetPoint();
+				theElevator->elevatorController.Enable();
 			}
 			break;
 		case testJoystick:  //Tests the Joysticks

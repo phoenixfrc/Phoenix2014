@@ -38,6 +38,13 @@ Grabber::Grabber() :
 void Grabber::init(){
 	m_grabberState = unknown;
 }
+void Grabber::resetSetPoint(){
+	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
+			
+	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
+
+}
+
 
 void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad){
 	//One button will toggle between open and closed grabber
@@ -158,24 +165,24 @@ void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * ga
 	//PID Loop for the grabber elevator which controlls the elevator arm
 	//
 	if(elevatorForwardRequest && !elevatorBackwardRequest && !backLimit){
-		desiredElevatorVoltage = desiredElevatorVoltage + voltageIncrement;
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower);
 	}
 	
 	else if(elevatorBackwardRequest && !elevatorForwardRequest && !forwardLimit){
-		desiredElevatorVoltage = desiredElevatorVoltage - voltageIncrement;
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
 				//elevatorMotor.Set(m_elevatorPower*-1);
 		
 		}
 		else {
 		if(backLimit){
-			desiredElevatorVoltage = desiredElevatorVoltage + voltageIncrement;
+			m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
 					}
 		if(forwardLimit){
-			desiredElevatorVoltage = desiredElevatorVoltage - voltageIncrement;
+			m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
 					}
 	}
-	elevatorController.SetSetpoint(desiredElevatorVoltage);
+	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
 	//elevatorController.SetSetpoint(450.0);
 	
 /*	else(yButton && bottomLimit){
