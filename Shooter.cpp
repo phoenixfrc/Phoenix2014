@@ -146,9 +146,9 @@ void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 	bool isUnbraked = !brakeDisengaged.Get();
 
 	lcd->PrintfLine(line, "Ss=%c%c%c %d", //prints the button values to LCD display
-					isWound ? '1':'0',
-					isBraked ? '1':'0',
-					isUnbraked ? '1':'0',
+					isWound ? 'W':'w',
+					isBraked ? 'B':'b',
+					isUnbraked ? 'U':'u',
 					m_unwindDelayCounter
 					);
 }
