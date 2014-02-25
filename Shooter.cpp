@@ -6,7 +6,7 @@ Shooter::Shooter() :
    winchRetractedSensor(PHOENIX2014_SHOOTER_LIMIT_SWITCH),
    brakeEngaged(PHOENIX2014_BRAKE_ENGAGED_LIMIT_SWITCH),
    brakeDisengaged(PHOENIX2014_BRAKE_DISENGAGED_LIMIT_SWITCH),
-   brakeMotor(PHOENIX2014_SHOOTER_BRAKE_MOTOR_SPIKE)
+   brakeMotor(PHOENIX2014_SHOOTER_BRAKE_MOTOR)
 {
 	m_shooterState = unknown;
 	m_loaderPower = 1.0;
