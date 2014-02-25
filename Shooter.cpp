@@ -10,7 +10,7 @@ Shooter::Shooter() :
 {
 	m_shooterState = unknown;
 	m_loaderPower = 1.0;
-	m_brakePower = 0.25;
+	m_brakePower = 1.00;
 }
 
 void Shooter::init(){
@@ -21,8 +21,8 @@ void Shooter::init(){
 void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 
 	bool isWound = !winchRetractedSensor.Get();
-	bool isBraked = !brakeEngaged.Get();
-	bool isUnbraked = !brakeDisengaged.Get();
+	bool isBraked = brakeEngaged.Get();
+	bool isUnbraked = brakeDisengaged.Get();
 	switch (m_shooterState){
 		case unknown://unknown is the same as default
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = unknown");
@@ -142,8 +142,8 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 }
 void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
 	bool isWound = !winchRetractedSensor.Get();
-	bool isBraked = !brakeEngaged.Get();
-	bool isUnbraked = !brakeDisengaged.Get();
+	bool isBraked = brakeEngaged.Get();
+	bool isUnbraked = brakeDisengaged.Get();
 
 	lcd->PrintfLine(line, "Ss=%c%c%c %d", //prints the button values to LCD display
 					isWound ? 'W':'w',

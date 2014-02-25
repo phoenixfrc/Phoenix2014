@@ -238,7 +238,7 @@ public:
 				shootDelay++;
 			}
 			bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
-			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
+			shooter.OperateShooter(shooterButton,loadShooterButton);
 			if (ReadyToShoot){
 				shootDelay = 0;
 			}
