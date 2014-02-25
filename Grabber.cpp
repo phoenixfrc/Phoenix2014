@@ -210,10 +210,10 @@ void Grabber::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 	bool topLimit = !backLimitSwitch.Get();
 
 	lcd->PrintfLine(line, "gb=%c%c ev=%c%c", //prints the button values to LCD display
-						reachedLimitForOpen ? '1':'0',
-						reachedLimitForClosed ? '1':'0',
-						bottomLimit ? '1':'0',
-						topLimit ? '1':'0'
+						reachedLimitForOpen ? 'O':'o',
+						reachedLimitForClosed ? 'C':'c',
+						bottomLimit ? 'B':'b',
+						topLimit ? 'T':'t'
 						);
 }
 Grabber::~Grabber(){
