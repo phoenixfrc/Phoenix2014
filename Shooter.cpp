@@ -55,15 +55,16 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 		case braking:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = braking");
 			brakeMotor.Set(m_brakePower);
+			
 			if (isBraked){
 				brakeMotor.Set(0.0);
 				m_shooterState = unwinding;
-				m_unwindDelayCounter = 8*200; //this is 8 seconds at 200 iters per second
+				m_unwindDelayCounter = 10*200; //this is 10 seconds at 200 iters per second
 			}
 			break;
 		case unwinding:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = unwinding");
-			winchMotor.Set(-m_loaderPower);
+			winchMotor.Set(-m_brakePower);
 			m_unwindDelayCounter--;
 			if(m_unwindDelayCounter <= 0){
 				winchMotor.Set(0.0);
@@ -72,14 +73,14 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			break;
 		case loaded:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = loaded");
-			if (shootRequest){
+			if (shootRequest){//or loadRequest
 				m_shooterState = shoot;
 			}
 			break;
 		case shoot:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = shoot");
 			brakeMotor.Set(-m_brakePower);
-			if(isUnbraked || loadRequest){
+			if(isUnbraked){
 				brakeMotor.Set(0.0);
 				m_shooterState = winding;
 			}
