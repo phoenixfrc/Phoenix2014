@@ -18,7 +18,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 		                      Joystick * rightJoyStick, Joystick * leftJoyStick, DigitalInput * testSwitch, 
 		                      Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic,
 		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch, 
-		                      Shooter * theShooter, Grabber * theElevator)
+		                      Shooter * theShooter, Grabber * theElevatorAndGrabber)
 {
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
@@ -55,7 +55,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testShooter:
-			float dPadThumbstick = gamePad->GetY();
+			float dPadThumbstick = GetThumbstickWithZero(gamePad);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter Test");
 			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
@@ -89,26 +89,33 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			break;
 		case testGrabber:
+			dPadThumbstick = GetThumbstickWithZero(gamePad);
+			theElevatorAndGrabber->grabberActuator.Set(dPadThumbstick);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
+			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line3,lcd);
+			
 			if(button2){
-				theElevator->elevatorController.Disable();
+				theElevatorAndGrabber->elevatorController.Disable();
 				m_mode = testElevator;  //Changes mode to testElevator
 			
 			}
 			break;
 		case testElevator:
-			dPadThumbstick = gamePad->GetY();
+			dPadThumbstick = GetThumbstickWithZero(gamePad);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Elevator Test");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
-			theElevator->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
+			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
-			testTalons->Set(dPadThumbstick);
+			theElevatorAndGrabber->DriveElevatorTestMode(dPadThumbstick);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2fEE=%6.2f",
+						theElevatorAndGrabber->elevatorAngleSensor.PIDGet(),
+						theElevatorAndGrabber->elevatorController.GetError());
 			
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
-				theElevator->resetSetPoint();
-				theElevator->elevatorController.Enable();
+				theElevatorAndGrabber->resetSetPoint();
+				theElevatorAndGrabber->elevatorController.Enable();
 				
 			}
 			break;
@@ -188,7 +195,14 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	
 	
 }
-	
+float TestMode::GetThumbstickWithZero(Joystick * gamePad){
+	float rawValue = gamePad->GetY();
+	if(rawValue<0.05 && rawValue>-0.05){
+		return 0.0;
+	}
+	return rawValue;
+}
+
 
 TestMode::~TestMode(){
 	

@@ -212,9 +212,13 @@ void Grabber::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 	lcd->PrintfLine(line, "gb=%c%c ev=%c%c", //prints the button values to LCD display
 						reachedLimitForOpen ? 'O':'o',
 						reachedLimitForClosed ? 'C':'c',
-						bottomLimit ? 'B':'b',
-						topLimit ? 'T':'t'
+						bottomLimit ? 'F':'f',
+						topLimit ? 'B':'b'
 						);
 }
+void Grabber::DriveElevatorTestMode(float value){
+	elevatorMotor.Set(value);
+}
+
 Grabber::~Grabber(){
 }

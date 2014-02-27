@@ -31,7 +31,6 @@ class RobotDemo : public SimpleRobot
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
 	bool m_display_page_1;
-	bool button6;
 	
 	
 	
@@ -67,22 +66,21 @@ public:
 		float scaleSpeed = SmartDashboard::GetNumber("Slider 1");
 		return requestedSpeed * 0.01 * scaleSpeed;
 	}
+	
+	// Executed at Robot power-on
 	void RobotInit(){
 	//move initial code from inside operator controll
-		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
-		ballGrabber.elevatorController.Enable();
-		m_display_page_1 = true;
-		button6 = gamePad.GetRawButton(6);
+		m_display_page_1 = false;
+
 	}
+	
 	//this called when the robot is enabled
 	void init(){
 		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
 		shooter.init();
-		ballGrabber.init();
-	
+		ballGrabber.init();	
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -211,6 +209,7 @@ public:
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
 			float lJoyStick = limitSpeed(leftJoyStick.GetY());
+			bool button6 = gamePad.GetRawButton(6);
 			
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
 			driveTrain.TankDrive(rJoyStick, lJoyStick);
@@ -229,7 +228,7 @@ public:
 					}
 				}
 				else{
-					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%c", button6 ? '1':'0');
 					ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
 					//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
@@ -281,7 +280,7 @@ public:
 	}
 		
 	/**
-	 * Runs during test mode
+	 * Runs during test mode	```````
 	 */
 	void Test() {
 		TestMode tester(m_ds);

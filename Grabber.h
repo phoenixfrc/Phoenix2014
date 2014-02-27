@@ -12,6 +12,7 @@ public:
 		void OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad);
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
+		void DriveElevatorTestMode(float value);
 		
 		~Grabber();
 		void init();
@@ -20,7 +21,9 @@ public:
 		
 private:
 		enum grabberStates{open, opening, closed, closing, unknown};
+public:
 		Talon grabberActuator;
+private:
 		//Talon grabberElevator;
 		DigitalInput grabberCloseLimit;
 		DigitalInput grabberOpenLimit;
