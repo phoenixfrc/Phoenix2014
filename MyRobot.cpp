@@ -222,7 +222,8 @@ public:
 				if(m_display_page_1)
 				{
 					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
-				
+					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
+
 					if(button6){
 						m_display_page_1 = false;
 					}
@@ -238,8 +239,11 @@ public:
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
 					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
 					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-					ballGrabber.elevatorAngleSensor.PIDGet(),
-					ballGrabber.elevatorController.GetError());
+									ballGrabber.elevatorAngleSensor.PIDGet(),
+									ballGrabber.elevatorController.GetError());
+					if(button6){
+						m_display_page_1 = true;
+					}
 				}
 				
 				lcd->UpdateLCD();
