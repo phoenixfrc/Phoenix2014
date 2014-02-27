@@ -73,14 +73,14 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			break;
 		case loaded:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = loaded");
-			if (shootRequest){//or loadRequest
+			if (shootRequest){
 				m_shooterState = shoot;
 			}
 			break;
 		case shoot:
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "SS = shoot");
 			brakeMotor.Set(-m_brakePower);
-			if(isUnbraked){
+			if(isUnbraked){//or loadRequest
 				brakeMotor.Set(0.0);
 				m_shooterState = winding;
 			}
