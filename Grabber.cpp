@@ -46,7 +46,7 @@ void Grabber::resetSetPoint(){
 }
 
 
-void Grabber::OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad){
+void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad){
 	//One button will toggle between open and closed grabber
 	bool grabberButton = gamePad->GetRawButton(1);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);

@@ -238,11 +238,12 @@ public:
 				shootDelay++;
 			}
 			bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
-			shooter.OperateShooter(shooterButton,loadShooterButton);
+			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
 			if (ReadyToShoot){
 				shootDelay = 0;
 			}
-			ballGrabber.OperateGrabber(shooterButton, ReadyToShoot, &gamePad);
+			bool okToGrab = (shootDelay == 0);//Normaly 0 unless delaying
+			ballGrabber.OperateGrabber(shooterButton, okToGrab, &gamePad);
 			//Trying to make some things happen automatically during teleoperated
 			
 			

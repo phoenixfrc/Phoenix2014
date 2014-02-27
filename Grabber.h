@@ -9,7 +9,7 @@ class Grabber {
 	
 public:
 		Grabber();
-		void OperateGrabber(bool useBallSensor, bool openToShoot, Joystick * gamePad);
+		void OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad);
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		
