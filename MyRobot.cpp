@@ -30,6 +30,10 @@ class RobotDemo : public SimpleRobot
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
+	bool m_display_page_1;
+	bool button6;
+	
+	
 	
 	
 public:
@@ -68,6 +72,8 @@ public:
 		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		ballGrabber.elevatorController.Enable();
+		m_display_page_1 = true;
+		button6 = gamePad.GetRawButton(6);
 	}
 	//this called when the robot is enabled
 	void init(){
@@ -76,6 +82,7 @@ public:
 		ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();
+	
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -212,18 +219,29 @@ public:
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
-				ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
-				//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
-				shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
-				shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-				lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-				lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-						ballGrabber.elevatorAngleSensor.PIDGet(),
-						ballGrabber.elevatorController.GetError());
+				if(m_display_page_1)
+				{
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+				
+					if(button6){
+						m_display_page_1 = false;
+					}
+				}
+				else{
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "F%6.2f B%6.2f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+					ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
+					//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
+					//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
+					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
+					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
+					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
+					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
+					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
+					ballGrabber.elevatorAngleSensor.PIDGet(),
+					ballGrabber.elevatorController.GetError());
+				}
+				
 				lcd->UpdateLCD();
 				printDelay = 0;
 			}
