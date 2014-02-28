@@ -40,9 +40,9 @@ void Grabber::init(){
 }
 void Grabber::resetSetPoint(){
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
-			
+	elevatorController.Reset();
 	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
-
+	
 }
 
 

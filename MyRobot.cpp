@@ -143,7 +143,6 @@ public:
 					}
 				}
 				driveTrain.Drive(0.0, 0.0);
-				
 				Wait(.005);
 				shootDelay++;
 				bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
@@ -154,8 +153,15 @@ public:
 				ballGrabber.OperateGrabber(false, true, &gamePad);	
 		    }
 			else{
+				driveTrain.TankDrive(0.5,0.5);
+				lcd->Clear();
 				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
+				lcd->UpdateLCD();
+				Wait(2.0);
+				driveTrain.TankDrive(0.0,0.0);
+				
+				break;
 			}
 			/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
