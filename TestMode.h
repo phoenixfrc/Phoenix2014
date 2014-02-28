@@ -21,7 +21,7 @@ public:
 			            Talon * testTalons, UltrasonicSensor * frontUltrasonic, UltrasonicSensor * backUltrasonic, 
 			            UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch,
 			            Shooter * theShooter, Grabber * theElevator);
-	float GetThumbstickWithZero(Joystick * gamePad);
+	static float GetThumbstickWithZero(Joystick * gamePad);
 	~TestMode();
 private:
 	int m_mode;
