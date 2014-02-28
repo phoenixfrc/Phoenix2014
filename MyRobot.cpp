@@ -32,9 +32,6 @@ class RobotDemo : public SimpleRobot
 	DriverStationLCD * lcd;
 	bool m_display_page_1;
 	
-	
-	
-	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
 	RobotDemo()://This is the constructer function
@@ -58,7 +55,7 @@ public:
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
-		driveTrain.SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		driveTrain.SetInvertedMotor(RobotDrive::kRearRightMotor, false); 
 	}
 	
 	float limitSpeed(float requestedSpeed)
@@ -153,14 +150,13 @@ public:
 				ballGrabber.OperateGrabber(false, true, &gamePad);	
 		    }
 			else{
-				driveTrain.TankDrive(0.5,0.5);
+				driveTrain.TankDrive(-0.5,-0.5);
 				lcd->Clear();
 				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
 				lcd->UpdateLCD();
 				Wait(2.0);
 				driveTrain.TankDrive(0.0,0.0);
-				
 				break;
 			}
 			/*float rangeToWall = frontUltrasonic.GetDistance();
@@ -199,6 +195,12 @@ public:
 	/**
 	 * Runs the motors with arcade steering. 
 	 */
+	/*void CameraMotor(){
+		const float minOffSet = 0.05;
+		if (gamePad.GetY() > minOffSet || gamePad.GetY() < -minOffSet){
+			
+		}
+	}*/
 	
 	void OperatorControl()
 	{
@@ -218,7 +220,7 @@ public:
 			bool button6 = gamePad.GetRawButton(6);
 			
 			//speedLimiter.SetMaxOutput(SmartDashboard::GetNumber("Slider 1"));
-			driveTrain.TankDrive(rJoyStick, lJoyStick);
+			driveTrain.TankDrive(lJoyStick, rJoyStick);
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
@@ -276,14 +278,10 @@ public:
 			
 			
 			Wait(0.005);// wait for a motor update time
-		
-	
-		}
+		} // end of while enabled
 		driveTrain.StopMotor();
-		ballGrabber.elevatorController.Disable();
-		
-		
-	}
+		ballGrabber.elevatorController.Disable();	
+	} // end of OperatorControl()
 		
 	/**
 	 * Runs during test mode	```````
@@ -305,6 +303,7 @@ public:
 		driveDistanceRight.Stop();
 
 	}
+	
 };
 
 START_ROBOT_CLASS(RobotDemo);
