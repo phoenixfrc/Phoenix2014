@@ -98,7 +98,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 		case open:
 			m_stateString = "GS=open";
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
-			if (grabberButton || (detectBall && useBallSensor)){
+			if (grabberButton /*|| (detectBall && useBallSensor)*/){
 				m_grabberState = closing;
 			}
 			break;
@@ -221,14 +221,17 @@ void Grabber::DriveElevatorTestMode(float value){
 	bool topLimit = !backLimitSwitch.Get();
 
 	if (bottomLimit){
-		elevatorMotor.Set(-0.2);
+		if(value<0){
+			value = 0.0;
+		}
 	}
 	else if (topLimit){
-		elevatorMotor.Set(0.2);
+		if(value>0){
+					value = 0.0;
+				}
 	}
-	else{
-		elevatorMotor.Set(value);
-	}
+
+	elevatorMotor.Set(value);
 }
 
 Grabber::~Grabber(){

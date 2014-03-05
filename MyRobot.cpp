@@ -88,14 +88,14 @@ public:
 		lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
-		float rightDriveSpeed = -1.0;
-		float leftDriveSpeed = -1.0;
+		//float rightDriveSpeed = -1.0;
+		//float leftDriveSpeed = -1.0;
 		//int rangeToWallClose = 60;
 		//int rangeToWallFar = 120;
 		//Initialize encoder.
-		int distanceToShoot = 133;
-		int shootDelay = 0;
-		bool printDelay = 0;
+		//int distanceToShoot = 133;
+		//int shootDelay = 0;
+		//bool printDelay = 0;
 		//ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
 		driveDistanceRight.Reset();
 		driveDistanceLeft.Reset();
@@ -103,11 +103,11 @@ public:
 		driveDistanceLeft.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
-		int maxDriveLoop = 50;
+		//int maxDriveLoop = 50;
 
-		
-		while(IsAutonomous() && IsEnabled()){
-			if(checkBox1 == false){
+		if(checkBox1 == false){
+			/*****
+			while(IsAutonomous() && IsEnabled()){
 				SmartDashboard::PutNumber("Autonomous mode", 1);
 				//Place robot 1 inch from white line. Robot is 33 inches long.  
 				//distance between line and wall is 216 inches.
@@ -147,26 +147,35 @@ public:
 					shooter.OperateShooter(ReadyToShoot, false);
 					shootDelay = 0;
 				}
-				ballGrabber.OperateGrabber(false, true, &gamePad);	
-		    }
-			else{
-				driveTrain.TankDrive(-0.5,-0.5);
-				lcd->Clear();
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
-				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
-				lcd->UpdateLCD();
-				Wait(2.0);
-				driveTrain.TankDrive(0.0,0.0);
-				break;
+				ballGrabber.OperateGrabber(false, true, &gamePad);
 			}
-			/*float rangeToWall = frontUltrasonic.GetDistance();
+			*****/	
+		}
+		else{
+			//bool shooting = false;
+			//shooter.OperateShooter(shooting, false);
+			driveTrain.TankDrive(-0.5,-0.5);
+			ballGrabber.DriveElevatorTestMode(-1.0);
+			lcd->Clear();
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Skip Auto");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "CheckBox Checked");
+			lcd->UpdateLCD();
+			Wait(2.0);
+			bool shooting = true;
+			driveTrain.TankDrive(0.0,0.0);
+			int counter = 0;
+			while(counter < 600){
+				shooter.OperateShooter(shooting, false);
+				Wait(0.005);
+			}
+		}
+		/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
 				driveTrain.Drive(-5, 0.0);
 				rangeToWall = frontUltrasonic.GetDistance();
 				Wait(.001);
 			}
 			driveTrain.Drive(0.0, 0.0); //Stop the Robot*/
-		}
 		/*if(checkBox1 == true){
 			SmartDashboard::PutNumber("Autonomous mode", 2);
 			//float rangeToWall = frontUltrasonic.GetDistance();

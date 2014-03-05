@@ -7,7 +7,7 @@ class Shooter {
 	//loaded means shooter fully retracted and ready to fire
 	//released means the shooter is not retracted and needs to be loaded
 	//
-	enum shooterStates{shoot, winding, braking, unwinding, loaded, unknown};  //Undwinding needs to be investigated
+	enum shooterStates{shoot, winding, braking, unwinding, loaded, resetting, unknown};  //Undwinding needs to be investigated
 	Talon winchMotor;
 	DigitalInput winchRetractedSensor;
 	DigitalInput brakeEngaged;

@@ -40,7 +40,15 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			} else {
 				// Brake is in an unknown state.  Put the brake fully
 				// disabled BEFORE attempting to wind.
-				m_shooterState = shoot;
+				m_shooterState = resetting;
+			}
+			break;
+		case resetting:
+			brakeMotor.Set(m_brakePower);
+				
+			if (isUnbraked){
+				brakeMotor.Set(0.0);
+				m_shooterState = winding;
 			}
 			break;
 		case winding:
