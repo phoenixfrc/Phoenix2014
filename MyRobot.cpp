@@ -74,8 +74,8 @@ public:
 	//this called when the robot is enabled
 	void init(){
 		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
-		//ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
-		//ballGrabber.elevatorController.Enable();
+		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
+		ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();	
 	}
@@ -104,6 +104,7 @@ public:
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
 		//int maxDriveLoop = 50;
+		while(IsAutonomous() && IsEnabled()){
 
 		if(checkBox1 == false){
 			/*****
@@ -199,7 +200,7 @@ public:
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
 		lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Exiting Autonomous");
 	}
-	
+	}
 
 	/**
 	 * Runs the motors with arcade steering. 

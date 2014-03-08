@@ -33,7 +33,7 @@ private:
 		DeadZoneTalon elevatorMotor;
 public:
 		AnalogChannel elevatorAngleSensor;
-		//PIDController elevatorController;
+		PIDController elevatorController;
 private:
 		double m_grabberPower;
 		double m_elevatorPower;

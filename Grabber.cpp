@@ -14,7 +14,7 @@ Grabber::Grabber() :
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	//the angle is 0 when shooter is backward (transmition side)
 	elevatorAngleSensor(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
-	//elevatorController(0.1*60, 0.001*20, 0.0, &elevatorAngleSensor, &elevatorMotor ),
+	elevatorController(0.1*60, 0.001*20, 0.0, &elevatorAngleSensor, &elevatorMotor ),
 	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR)
 	//lcd(DriverStationLCD::GetInstance())
 
@@ -25,10 +25,10 @@ Grabber::Grabber() :
 	m_grabberPower = 1.0;
 	m_elevatorPower = 1.0;
 	//initialize elevator PiD loop
-	//elevatorController.SetContinuous(false);
-	//elevatorController.SetOutputRange(-m_elevatorPower, m_elevatorPower);//motor run from -1 to 1
-	//elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
-	//elevatorController.SetAbsoluteTolerance(0.002);//about one degree
+	elevatorController.SetContinuous(false);
+	elevatorController.SetOutputRange(-m_elevatorPower, m_elevatorPower);//motor run from -1 to 1
+	elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
+	elevatorController.SetAbsoluteTolerance(0.002);//about one degree
 	elevatorAngleSensor.SetVoltageForPID(true);
 	distanceToClose = 12;
 	detectBall = true;
@@ -40,8 +40,8 @@ void Grabber::init(){
 }
 void Grabber::resetSetPoint(){
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
-	//elevatorController.Reset();
-	//elevatorController.SetSetpoint(m_desiredElevatorVoltage);
+	elevatorController.Reset();
+	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
 	
 }
 
@@ -169,12 +169,12 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 
 	if(elevatorForwardRequest && !elevatorBackwardRequest && !forwardLimit){
 		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
-				//elevatorMotor.Set(m_elevatorPower);
+				elevatorMotor.Set(m_elevatorPower);
 	}
 	
 	else if(elevatorBackwardRequest && !elevatorForwardRequest && !backLimit){
 		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
-				//elevatorMotor.Set(m_elevatorPower*-1);
+				elevatorMotor.Set(m_elevatorPower*-1);
 		
 		}
 		else {

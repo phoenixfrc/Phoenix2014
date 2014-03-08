@@ -108,6 +108,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
 			theElevatorAndGrabber->DriveElevatorTestMode(dPadThumbstick);
+			
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2fEE=%6.2f",
 			//			theElevatorAndGrabber->elevatorAngleSensor.PIDGet(),
 			//			theElevatorAndGrabber->elevatorController.GetError());
