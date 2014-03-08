@@ -49,6 +49,7 @@ void Grabber::resetSetPoint(){
 void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad){
 	//One button will toggle between open and closed grabber
 	bool grabberButton = gamePad->GetRawButton(1);
+	bool setElevatorAngleButton = gamePad->GetRawButton(3);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
 	//float moveGrabberDownButton = gamePad->GetRawButton(4);
 	//bool ballPresent =  ballSensor.Get();
@@ -59,6 +60,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 	bool forwardLimit = !forwardLimitSwitch.Get();
 	bool backLimit = !backLimitSwitch.Get();
 	float voltageIncrement = 0.001;
+	
 
 	//Ball detector.
 	if(ballDetector.GetDistance() < distanceToClose){
@@ -114,6 +116,9 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 				m_grabberState = opening;
 			}
 			break;
+	}
+	if(setElevatorAngleButton){
+		elevatorAngleSensor(2.0);
 	}
 	/*if (grabberButton && m_limitSwitch){
 		grabberActuator.Set(m_grabberPower*-1);

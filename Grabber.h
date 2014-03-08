@@ -18,7 +18,7 @@ public:
 		void init();
 		float m_desiredElevatorVoltage;
 		void resetSetPoint();
-		
+				
 private:
 		enum grabberStates{open, opening, closed, closing, unknown};
 public:
@@ -45,6 +45,7 @@ private:
 		int distanceToClose;
 		bool detectBall;
 		char * m_stateString;
+
 
 };
 #endif
