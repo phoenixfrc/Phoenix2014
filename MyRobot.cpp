@@ -14,10 +14,10 @@
 class RobotDemo : public SimpleRobot
 {
 	RobotDrive driveTrain; // robot drive system
-	Grabber ballGrabber;
 	Joystick rightJoyStick; // rightStick wired to port 1
 	Joystick leftJoyStick;  // leftStick wired to port 2
 	Joystick gamePad;
+	Grabber ballGrabber;
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistanceRight;
 	Encoder driveDistanceLeft;
@@ -37,10 +37,10 @@ public:
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
 		driveTrain(PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
-		ballGrabber(), //Place holder for grabber.
 		rightJoyStick(2),// as they are declared above.
 		leftJoyStick(1),
 		gamePad(3),
+		ballGrabber(&gamePad),
 		//elevation(1,2),
 		driveDistanceRight(PHOENIX2014_R_DRIVE_ENCODER_A,PHOENIX2014_R_DRIVE_ENCODER_B ),
 		driveDistanceLeft(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
@@ -287,7 +287,7 @@ public:
 				shootDelay = 0;
 			}
 			bool okToGrab = (shootDelay == 0);//Normaly 0 unless delaying
-			ballGrabber.OperateGrabber(shooterButton, okToGrab, &gamePad);
+			ballGrabber.OperateGrabber(shooterButton, okToGrab);
 			//Trying to make some things happen automatically during teleoperated
 			
 			

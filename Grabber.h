@@ -4,12 +4,16 @@
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
 #include "DeadZoneTalon.h"
+#include "TestMode.h"
 
 class Grabber {
 	
 public:
-		Grabber();
-		void OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad);
+		Grabber(Joystick * gamePad);
+		void OperateGrabber(bool openToShoot, bool useBallSensor);
+		float ButtonControledElevator();
+		float ThumbstickControledElevator();
+		float ElevatorLimitSwitchBehavior();
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DriveElevatorTestMode(float value);
@@ -20,6 +24,7 @@ public:
 		void resetSetPoint();
 		
 private:
+		Joystick * m_gamePad;
 		enum grabberStates{open, opening, closed, closing, unknown};
 public:
 		Talon grabberActuator;
