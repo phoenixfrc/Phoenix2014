@@ -68,14 +68,14 @@ public:
 	void RobotInit(){
 	//move initial code from inside operator controll
 		m_display_page_1 = false;
-
+		SmartDashboard::PutNumber("Angle", 2.7);
 	}
 	
 	//this called when the robot is enabled
 	void init(){
 		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
-		ballGrabber.elevatorController.Enable();
+		// ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();	
 	}
@@ -241,9 +241,11 @@ public:
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
+				lcd->Clear();
 				if(m_display_page_1)
 				{
-					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg1");
+					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
 					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
 
 					if(button6){
@@ -251,7 +253,7 @@ public:
 					}
 				}
 				else{
-					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%c", button6 ? '1':'0');
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg2 %c", button6 ? '1':'0');
 					ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
 					//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
@@ -259,10 +261,10 @@ public:
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
 					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-					//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-					//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-					//				ballGrabber.elevatorAngleSensor.PIDGet(),
-					//				ballGrabber.elevatorController.GetError());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.3fSP=%6.3f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV-%5.2fEE=%6.3f",
+									ballGrabber.elevatorAngleSensor.PIDGet(),
+									ballGrabber.elevatorController.GetError());
 					if(button6){
 						m_display_page_1 = true;
 					}
@@ -290,8 +292,6 @@ public:
 			ballGrabber.OperateGrabber(shooterButton, okToGrab);
 			//Trying to make some things happen automatically during teleoperated
 			
-			
-			
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
@@ -313,7 +313,7 @@ public:
 								  &shooter, &ballGrabber
 								  );
 			lcd->UpdateLCD();
-			Wait(0.2);
+			Wait(0.1);
 		}
 		driveDistanceRight.Stop();
 

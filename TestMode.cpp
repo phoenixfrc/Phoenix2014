@@ -96,7 +96,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line3,lcd);
 			
 			if(button2){
-			//	theElevatorAndGrabber->elevatorController.Disable();
+				theElevatorAndGrabber->elevatorController.Disable();
 				m_mode = testElevator;  //Changes mode to testElevator
 			
 			}
@@ -109,14 +109,14 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
 			theElevatorAndGrabber->DriveElevatorTestMode(dPadThumbstick);
 			
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2fEE=%6.2f",
-			//			theElevatorAndGrabber->elevatorAngleSensor.PIDGet(),
-			//			theElevatorAndGrabber->elevatorController.GetError());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2fEE=%6.2f",
+							theElevatorAndGrabber->elevatorAngleSensor.PIDGet(),
+							theElevatorAndGrabber->elevatorController.GetError());
 			
 			if(button2){
 				m_mode = testJoystick;  //Changes mode to Test Joystick
 				theElevatorAndGrabber->resetSetPoint();
-			//	theElevatorAndGrabber->elevatorController.Enable();
+				// theElevatorAndGrabber->elevatorController.Enable();
 				
 			}
 			break;
