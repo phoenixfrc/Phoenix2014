@@ -192,6 +192,7 @@ float Grabber::ButtonControledElevator(){
 		}
 		
 	return this->ElevatorLimitSwitchBehavior();
+	
 }
 
 
@@ -206,6 +207,7 @@ float Grabber::ThumbstickControledElevator(){
 		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_FRONT;
 	}
 	return this->ElevatorLimitSwitchBehavior();
+	
 }
 
 
@@ -261,6 +263,20 @@ void Grabber::DriveElevatorTestMode(float value){
 
 	elevatorMotor.Set(value);
 }
+//Custom Pid
+float Grabber::OperatePIDLoop(){
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / m_desiredElevatorVoltage;
+	if(pidError < PHOENIX2014_PID_THRESHOLD){
+		m_elevatorPower = 0;
+	}
+	else{
+		m_elevatorPower = pidError;
+	}
+	return pidError;
+}
+
+
 
 Grabber::~Grabber(){
+	
 }

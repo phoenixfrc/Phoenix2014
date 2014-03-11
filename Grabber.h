@@ -17,6 +17,7 @@ public:
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DriveElevatorTestMode(float value);
+		float OperatePIDLoop();
 		
 		~Grabber();
 		void init();
@@ -28,6 +29,7 @@ private:
 		enum grabberStates{open, opening, closed, closing, unknown};
 public:
 		Talon grabberActuator;
+		
 private:
 		//Talon grabberElevator;
 		DigitalInput grabberCloseLimit;
@@ -41,7 +43,7 @@ public:
 		PIDController elevatorController;
 private:
 		double m_grabberPower;
-		double m_elevatorPower;
+		double m_elevatorPower;			
 		grabberStates m_grabberState;
 public:
 		UltrasonicSensor ballDetector;
