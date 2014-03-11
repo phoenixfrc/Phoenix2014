@@ -4,6 +4,9 @@
 #include "TestMode.h"
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
+#include "Preferences.h"
+
+
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -30,6 +33,7 @@ class RobotDemo : public SimpleRobot
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
+	Preferences * dashboardPreferences;
 	bool m_display_page_1;
 	
 public:
@@ -51,7 +55,8 @@ public:
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
-	    lcd(DriverStationLCD::GetInstance())
+	    lcd(DriverStationLCD::GetInstance()),
+		dashboardPreferences(Preferences::GetInstance())
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -68,7 +73,9 @@ public:
 	void RobotInit(){
 	//move initial code from inside operator controll
 		m_display_page_1 = false;
-		SmartDashboard::PutNumber("Angle", 2.7);
+		double angleMeasure = dashboardPreferences->GetDouble("Angle", PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
+		SmartDashboard::PutNumber("Angle", angleMeasure);
+		
 	}
 	
 	//this called when the robot is enabled
@@ -221,8 +228,15 @@ public:
 		//ballGrabber.desiredElevatorVoltage = 90;
 		int printDelay = 0;
 		int shootDelay = 0;
+		bool SavePreferencesToFlash = false;
+		
 		while (IsOperatorControl() && IsEnabled())
 		{
+			SavePreferencesToFlash = gamePad.GetRawButton(8);
+			if(SavePreferencesToFlash){
+				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
+				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+			}
 			printDelay ++;
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
@@ -296,6 +310,11 @@ public:
 		} // end of while enabled
 		driveTrain.StopMotor();
 		//ballGrabber.elevatorController.Disable();	
+		
+		if(SavePreferencesToFlash){
+			dashboardPreferences->Save();
+		}
+			
 	} // end of OperatorControl()
 		
 	/**
@@ -314,6 +333,7 @@ public:
 								  );
 			lcd->UpdateLCD();
 			Wait(0.1);
+			
 		}
 		driveDistanceRight.Stop();
 
