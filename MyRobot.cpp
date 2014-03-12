@@ -110,10 +110,21 @@ public:
 		driveDistanceLeft.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
+		float currentDistance = frontUltrasonic.GetAverageDistance();
+		float minDistance = 132.0;
+		float maxDistance = 144.0;
+		bool GoalRange = minDistance > currentDistance < maxDistance;
+		
 		//int maxDriveLoop = 50;
 		while(IsAutonomous() && IsEnabled()){
 
 		if(checkBox1 == false){
+			if(GoalRange){
+				driveTrain.TankDrive(0.0,0.0);
+			}
+			else{
+				driveTrain.TankDrive(-0.5, -0.5);
+			}
 			/*****
 			while(IsAutonomous() && IsEnabled()){
 				SmartDashboard::PutNumber("Autonomous mode", 1);
