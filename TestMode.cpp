@@ -167,9 +167,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case ultrasonicTestMode:
-			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f", frontUltrasonic->GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f", backUltrasonic->GetDistance());
-			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", grabberUltrasonic->GetDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%f %f", frontUltrasonic->GetDistance(), frontUltrasonic->GetAverageDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%f %f", backUltrasonic->GetDistance(), backUltrasonic->GetAverageDistance());
 			//testSwitch = new AnalogIOButton(5);
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "us%f", ultrasonic->GetVoltage());
 			//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "AB%d", testSwitch->Get());
