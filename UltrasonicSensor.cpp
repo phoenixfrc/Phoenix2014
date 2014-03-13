@@ -11,6 +11,10 @@ float UltrasonicSensor::GetDistance(){
 	return GetVoltage()*100;
 }
 
+float UltrasonicSensor::GetAverageDistance(){
+	
+	return GetAverageVoltage()*100;
+}
 UltrasonicSensor::~UltrasonicSensor(){
 	
 }

@@ -7,6 +7,7 @@ class UltrasonicSensor : public AnalogChannel
 public:
 	UltrasonicSensor(int moduleNumber, int portNumber);
 	float GetDistance();	
+	float GetAverageDistance();
 	float Range;
 		
 	~UltrasonicSensor();
