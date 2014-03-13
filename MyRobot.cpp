@@ -113,7 +113,7 @@ public:
 		float currentDistance = frontUltrasonic.GetAverageDistance();
 		float minDistance = 132.0;
 		float maxDistance = 144.0;
-		bool GoalRange = minDistance > currentDistance < maxDistance;
+		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 		
 		//int maxDriveLoop = 50;
 		while(IsAutonomous() && IsEnabled()){
