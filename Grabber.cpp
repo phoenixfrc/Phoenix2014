@@ -1,9 +1,7 @@
 #include "Grabber.h"
+#include "TestMode.h"
 
-
-
-
-Grabber::Grabber() :
+Grabber::Grabber(Joystick * gamePad) :
 	grabberActuator(PHOENIX2014_GRABBER_CLAW_MOTOR_PWM),
 	//grabberElevator(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	grabberCloseLimit(PHOENIX2014_GRABBER_CLOSE_LIMIT_SWITCH),
@@ -14,54 +12,47 @@ Grabber::Grabber() :
 	elevatorMotor(PHOENIX2014_GRABBER_ELEVATOR_MOTOR_PWM),
 	//the angle is 0 when shooter is backward (transmition side)
 	elevatorAngleSensor(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ELEVATOR_ANGLE),
-	elevatorController(0.1*60, 0.001*20, 0.0, &elevatorAngleSensor, &elevatorMotor ),
+	elevatorController(0.1*2000.0, 0.001*10.0, 0.0, &elevatorAngleSensor, &elevatorMotor),
 	ballDetector(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_GRABBER_BALL_ULTRASONIC_SENSOR)
 	//lcd(DriverStationLCD::GetInstance())
 
-	
 {
 	//initialize the grabber to trip the closed grabber switch
 	m_grabberState = unknown;
 	m_grabberPower = 1.0;
-	m_elevatorPower = 1.0;
+	m_elevatorPower = 2.0;
 	//initialize elevator PiD loop
 	elevatorController.SetContinuous(false);
+	elevatorAngleSensor.SetVoltageForPID(true);
 	elevatorController.SetOutputRange(-m_elevatorPower, m_elevatorPower);//motor run from -1 to 1
 	elevatorController.SetInputRange(PHOENIX2014_VOLTAGE_AT_FRONT, PHOENIX2014_VOLTAGE_AT_BACK);
-	elevatorController.SetAbsoluteTolerance(0.002);//about one degree
-	elevatorAngleSensor.SetVoltageForPID(true);
+	elevatorController.SetAbsoluteTolerance(2.5);
 	distanceToClose = 12;
 	detectBall = true;
 	m_stateString = "";
+	m_gamePad = gamePad;
 }
 
 void Grabber::init(){
 	m_grabberState = unknown;
 }
-void Grabber::resetSetPoint(){
+
+//Caller needs to enable elevator controller.
+void Grabber::resetSetPoint(){	
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
 	elevatorController.Reset();
 	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
-	
 }
 
 
-void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * gamePad){
+void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	//One button will toggle between open and closed grabber
-	bool grabberButton = gamePad->GetRawButton(1);
-	bool setElevatorAngleButton = gamePad->GetRawButton(3);
+	bool grabberButton = m_gamePad->GetRawButton(1);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
 	//float moveGrabberDownButton = gamePad->GetRawButton(4);
 	//bool ballPresent =  ballSensor.Get();
 	bool reachedLimitForClosed = !grabberCloseLimit.Get();
 	bool reachedLimitForOpen = !grabberOpenLimit.Get();
-	bool elevatorForwardRequest = gamePad->GetRawButton(4);
-	bool elevatorBackwardRequest = gamePad->GetRawButton(2);
-	bool forwardLimit = !forwardLimitSwitch.Get();
-	bool backLimit = !backLimitSwitch.Get();
-	float voltageIncrement = 0.001;
-	
-
 	//Ball detector.
 	if(ballDetector.GetDistance() < distanceToClose){
 		detectBall = true;
@@ -117,9 +108,6 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 			}
 			break;
 	}
-	if(setElevatorAngleButton){
-		elevatorAngleSensor(2.0);
-	}
 	/*if (grabberButton && m_limitSwitch){
 		grabberActuator.Set(m_grabberPower*-1);
 		if(m_limitSwitch == reachedLimitForClosed){
@@ -166,32 +154,10 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 			elevatorMotor.Set(0.0);
 		}
 	}*/
+	//this->ButtonControledElevator();
+	this->ThumbstickControledElevator();
 	
-	//PID Loop for the grabber elevator which controlls the elevator arm
-	//
-
-	
-
-	if(elevatorForwardRequest && !elevatorBackwardRequest && !forwardLimit){
-		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
-				elevatorMotor.Set(m_elevatorPower);
-	}
-	
-	else if(elevatorBackwardRequest && !elevatorForwardRequest && !backLimit){
-		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
-				elevatorMotor.Set(m_elevatorPower*-1);
-		
-		}
-		else {
-		if(backLimit){
-			m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
-					}
-		if(forwardLimit){
-			m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
-					}
-	}
-	//elevatorController.SetSetpoint(m_desiredElevatorVoltage);
-	//elevatorController.SetSetpoint(450.0);
+	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
 	
 /*	else(yButton && bottomLimit){
 		elevatorEncoder.Reset();
@@ -205,6 +171,64 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor, Joystick * ga
 	}*/
 	
 }
+//This function changes the setpoint of the PID loop via the A and Y buttons
+float Grabber::ButtonControledElevator(){
+	//PID Loop for the grabber elevator which controlls the elevator arm
+	bool elevatorForwardRequest = m_gamePad->GetRawButton(4);
+	bool elevatorBackwardRequest = m_gamePad->GetRawButton(2);
+	bool forwardLimit = !forwardLimitSwitch.Get();
+	bool backLimit = !backLimitSwitch.Get();
+	float voltageIncrement = 0.001;
+
+	if(elevatorForwardRequest && !elevatorBackwardRequest && !forwardLimit){
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
+				elevatorMotor.Set(m_elevatorPower);
+	}
+	
+	else if(elevatorBackwardRequest && !elevatorForwardRequest && !backLimit){
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
+				elevatorMotor.Set(m_elevatorPower*-1);
+		
+		}
+		
+	return this->ElevatorLimitSwitchBehavior();
+	
+}
+
+
+//This function changes the set point of the PID loop via the thumbstick
+float Grabber::ThumbstickControledElevator(){
+	float dPadThumbstick = TestMode::GetThumbstickWithZero(m_gamePad);
+	m_desiredElevatorVoltage = m_desiredElevatorVoltage + dPadThumbstick/100.0;
+	if(m_desiredElevatorVoltage > PHOENIX2014_VOLTAGE_AT_BACK){
+		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_BACK;
+	}
+	if(m_desiredElevatorVoltage < PHOENIX2014_VOLTAGE_AT_FRONT){
+		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_FRONT;
+	}
+	return this->ElevatorLimitSwitchBehavior();
+	
+}
+
+
+//This function makes sure that the arm does not go passed the limit switches
+float Grabber::ElevatorLimitSwitchBehavior(){
+	bool forwardLimit = !forwardLimitSwitch.Get();
+	bool backLimit = !backLimitSwitch.Get();
+	float voltageIncrement = 0.005;
+	
+	if(backLimit){
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage + voltageIncrement;
+	}
+	if(forwardLimit){
+		m_desiredElevatorVoltage = m_desiredElevatorVoltage - voltageIncrement;
+	}
+	return m_desiredElevatorVoltage;
+}
+
+
+
+
 void Grabber::UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd){
 	lcd->PrintfLine(line, m_stateString);
 }
@@ -214,7 +238,8 @@ void Grabber::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 	bool bottomLimit = !forwardLimitSwitch.Get();
 	bool topLimit = !backLimitSwitch.Get();
 
-	lcd->PrintfLine(line, "gb=%c%c ev=%c%c", //prints the button values to LCD display
+	lcd->PrintfLine(line, "M%8.5f gb=%c%c ev=%c%c", //prints the button values to LCD display
+			            elevatorMotor.Get(),
 						reachedLimitForOpen ? 'O':'o',
 						reachedLimitForClosed ? 'C':'c',
 						bottomLimit ? 'F':'f',
@@ -238,6 +263,20 @@ void Grabber::DriveElevatorTestMode(float value){
 
 	elevatorMotor.Set(value);
 }
+//Custom Pid
+float Grabber::OperatePIDLoop(){
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / m_desiredElevatorVoltage;
+	if(pidError < PHOENIX2014_PID_THRESHOLD){
+		m_elevatorPower = 0;
+	}
+	else{
+		m_elevatorPower = pidError;
+	}
+	return pidError;
+}
+
+
 
 Grabber::~Grabber(){
+	
 }

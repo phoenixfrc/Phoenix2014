@@ -4,6 +4,9 @@
 #include "TestMode.h"
 #include "Phoenix2014.h"
 #include "UltrasonicSensor.h"
+#include "Preferences.h"
+
+
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -14,10 +17,10 @@
 class RobotDemo : public SimpleRobot
 {
 	RobotDrive driveTrain; // robot drive system
-	Grabber ballGrabber;
 	Joystick rightJoyStick; // rightStick wired to port 1
 	Joystick leftJoyStick;  // leftStick wired to port 2
 	Joystick gamePad;
+	Grabber ballGrabber;
 	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistanceRight;
 	Encoder driveDistanceLeft;
@@ -30,6 +33,7 @@ class RobotDemo : public SimpleRobot
 	AnalogTrigger analogTestSwitch;
 	//RobotDrive speedLimiter;
 	DriverStationLCD * lcd;
+	Preferences * dashboardPreferences;
 	bool m_display_page_1;
 	
 public:
@@ -37,10 +41,10 @@ public:
 	RobotDemo()://This is the constructer function
 		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
 		driveTrain(PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
-		ballGrabber(), //Place holder for grabber.
 		rightJoyStick(2),// as they are declared above.
 		leftJoyStick(1),
 		gamePad(3),
+		ballGrabber(&gamePad),
 		//elevation(1,2),
 		driveDistanceRight(PHOENIX2014_R_DRIVE_ENCODER_A,PHOENIX2014_R_DRIVE_ENCODER_B ),
 		driveDistanceLeft(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
@@ -51,7 +55,8 @@ public:
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
 		//speedLimiter(1, 2),
-	    lcd(DriverStationLCD::GetInstance())
+	    lcd(DriverStationLCD::GetInstance()),
+		dashboardPreferences(Preferences::GetInstance())
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -68,14 +73,16 @@ public:
 	void RobotInit(){
 	//move initial code from inside operator controll
 		m_display_page_1 = false;
-
+		double angleMeasure = dashboardPreferences->GetDouble("Angle", PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
+		SmartDashboard::PutNumber("Angle", angleMeasure);
+		
 	}
 	
 	//this called when the robot is enabled
 	void init(){
 		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
-		ballGrabber.elevatorController.Enable();
+		// ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();	
 	}
@@ -221,8 +228,15 @@ public:
 		//ballGrabber.desiredElevatorVoltage = 90;
 		int printDelay = 0;
 		int shootDelay = 0;
+		bool SavePreferencesToFlash = false;
+		
 		while (IsOperatorControl() && IsEnabled())
 		{
+			SavePreferencesToFlash = gamePad.GetRawButton(8);
+			if(SavePreferencesToFlash){
+				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
+				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+			}
 			printDelay ++;
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
@@ -235,15 +249,18 @@ public:
 			//manual mode(no PID) for elevator
 			float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
 			ballGrabber.DriveElevatorTestMode(dPadThumbstick);
-			
+			//Sets motor equal to the elevator sensor.
+			ballGrabber.OperatePIDLoop();
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
 				//readings[loopCounter%100];
 				//do average();
+				lcd->Clear();
 				if(m_display_page_1)
 				{
-					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg1");
+					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
 					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
 
 					if(button6){
@@ -251,7 +268,7 @@ public:
 					}
 				}
 				else{
-					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "%c", button6 ? '1':'0');
+					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg2 %c", button6 ? '1':'0');
 					ballGrabber.DisplayDebugInfo(DriverStationLCD::kUser_Line2,lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line3, "G%f", ballGrabber.ballDetector.GetDistance());
 					//ballGrabber.UpDateWithState(DriverStationLCD::kUser_Line3,lcd);
@@ -259,10 +276,10 @@ public:
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
 					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-					//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-					//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-					//				ballGrabber.elevatorAngleSensor.PIDGet(),
-					//				ballGrabber.elevatorController.GetError());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.3fSP=%6.3f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV-%5.2fEE=%6.3f",
+									ballGrabber.elevatorAngleSensor.PIDGet(),
+									ballGrabber.elevatorController.GetError());
 					if(button6){
 						m_display_page_1 = true;
 					}
@@ -287,15 +304,18 @@ public:
 				shootDelay = 0;
 			}
 			bool okToGrab = (shootDelay == 0);//Normaly 0 unless delaying
-			ballGrabber.OperateGrabber(shooterButton, okToGrab, &gamePad);
+			ballGrabber.OperateGrabber(shooterButton, okToGrab);
 			//Trying to make some things happen automatically during teleoperated
-			
-			
 			
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
 		//ballGrabber.elevatorController.Disable();	
+		
+		if(SavePreferencesToFlash){
+			dashboardPreferences->Save();
+		}
+			
 	} // end of OperatorControl()
 		
 	/**
@@ -313,7 +333,8 @@ public:
 								  &shooter, &ballGrabber
 								  );
 			lcd->UpdateLCD();
-			Wait(0.2);
+			Wait(0.1);
+			
 		}
 		driveDistanceRight.Stop();
 

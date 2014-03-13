@@ -5,6 +5,8 @@
 #include "UltrasonicSensor.h"
 #include "Shooter.h"
 #include "Grabber.h"
+//this class decleration is needed to compile Grabber
+class Grabber;
 
 class TestMode {
 	UltrasonicSensor testUltrasonic1;
