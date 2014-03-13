@@ -23,7 +23,7 @@ public:
 		void init();
 		float m_desiredElevatorVoltage;
 		void resetSetPoint();
-		
+				
 private:
 		Joystick * m_gamePad;
 		enum grabberStates{open, opening, closed, closing, unknown};
@@ -52,6 +52,7 @@ private:
 		int distanceToClose;
 		bool detectBall;
 		char * m_stateString;
+
 
 };
 #endif
