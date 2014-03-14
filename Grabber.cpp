@@ -108,21 +108,10 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			}
 			break;
 	}
-	this->ThumbstickControledElevator();
-	
-	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
-	
-/*	else(yButton && bottomLimit){
-		elevatorEncoder.Reset();
-		elevatorEncoder.Start();
-		elevatorMotor.Set(m_elevatorPower);
-	}
-	
-	if(aButton && topLimit){
-		elevatorEncoder.Reset();
-		elevatorEncoder.Start();
-		elevatorMotor.Set(m_elevatorPower*-1);
-	}*/
+	//this->ButtonControledElevator();
+	this->ThumbstickControledElevator(); //update desired position based on thumbstick and limit switches.
+	this->OperatePIDLoop(); //compute desired elevator power.
+	elevatorMotor.Set(m_elevatorPower); //use the computed power and drive motor.
 	
 }
 //This function changes the setpoint of the PID loop via the A and Y buttons
@@ -229,7 +218,12 @@ float Grabber::OperatePIDLoop(){
 	}
 	return pidError;
 }
+void Grabber::StopPidLoop(){
+		elevatorMotor.Set(0.0);
+		m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
+		this->ElevatorLimitSwitchBehavior();
 
+}
 
 
 Grabber::~Grabber(){

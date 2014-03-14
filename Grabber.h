@@ -18,6 +18,7 @@ public:
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DriveElevatorTestMode(float value);
 		float OperatePIDLoop();
+		void StopPidLoop();
 		
 		~Grabber();
 		void init();

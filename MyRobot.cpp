@@ -233,10 +233,9 @@ public:
 	void OperatorControl()
 	{
 		init();
-		//elevation.Reset();
-		//elevation.Start();
+		
 		driveTrain.SetSafetyEnabled(true);
-		//ballGrabber.desiredElevatorVoltage = 90;
+		
 		int printDelay = 0;
 		int shootDelay = 0;
 		bool SavePreferencesToFlash = false;
@@ -321,7 +320,7 @@ public:
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
-		//ballGrabber.elevatorController.Disable();	
+		ballGrabber.StopPidLoop();	
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
