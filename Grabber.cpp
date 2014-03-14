@@ -38,7 +38,7 @@ void Grabber::init(){
 }
 
 //Caller needs to enable elevator controller.
-void Grabber::resetSetPoint(){	
+void Grabber::resetSetPoint(){
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
 	elevatorController.Reset();
 	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
@@ -108,67 +108,10 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			}
 			break;
 	}
-	/*if (grabberButton && m_limitSwitch){
-		grabberActuator.Set(m_grabberPower*-1);
-		if(m_limitSwitch == reachedLimitForClosed){
-			m_limitSwitch = reachedLimitForOpen;
-		}
-		else{
-			m_limitSwitch = reachedLimitForClosed;
-		}
-	}
-	if (m_limitSwitch){
-		grabberActuator.Set(0.0);
-	}
-	if(ballPresent && reachedLimitForOpen){
-		m_limitSwitch = reachedLimitForClosed;
-		grabberActuator.Set(-1.0);
-	}
-	if(reachedLimitForClosed){
-		grabberActuator.Set(0.0);
-	}
-	
-	//this should open the grabber when you press the open button
-	if (openGrabberButton == true){
-		grabberActuator.Set(-25.0);
-	}
-	if (reachedLimitForOpen == true){
-		grabberActuator.Set(0.0);
-	}
-	//this should close the grabber when you press the close button
-	if (closeGrabberButton == true || ballPresent == true && reachedLimitForClosed == false){
-		1s grabberActuator.Set(25.0);
-	}
-	if (reachedLimitForClosed == true){
-		grabberActuator.Set(0.0);
-	}
-	if (moveGrabberUpButton == true){
-		grabberElevator.Set(1.0);
-	}
-	if (moveGrabberDownButton == true && !grabberState == pressed){
-		grabberElevator.Set(-1.0);
-	}*/
-	/*if (yButton){
-		elevatorMotor.Set(m_elevatorPower);
-		if (topLimit){
-			elevatorMotor.Set(0.0);
-		}
-	}*/
 	//this->ButtonControledElevator();
 	this->ThumbstickControledElevator();
 	
 	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
-	
-/*	else(yButton && bottomLimit){
-		elevatorEncoder.Reset();
-		elevatorEncoder.Start();
-		elevatorMotor.Set(m_elevatorPower);
-	}
-	if(aButton && topLimit){
-		elevatorEncoder.Reset();
-		elevatorEncoder.Start();
-		elevatorMotor.Set(m_elevatorPower*-1);
-	}*/
 	
 }
 //This function changes the setpoint of the PID loop via the A and Y buttons
