@@ -84,7 +84,7 @@ public:
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		// ballGrabber.elevatorController.Enable();
 		shooter.init();
-		ballGrabber.init();	
+		ballGrabber.init();
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -188,10 +188,9 @@ public:
 	void OperatorControl()
 	{
 		init();
-		//elevation.Reset();
-		//elevation.Start();
+		
 		driveTrain.SetSafetyEnabled(true);
-		//ballGrabber.desiredElevatorVoltage = 90;
+		
 		int printDelay = 0;
 		int shootDelay = 0;
 		bool SavePreferencesToFlash = false;
@@ -213,10 +212,10 @@ public:
 			driveTrain.TankDrive(lJoyStick, rJoyStick);
 			
 			//manual mode(no PID) for elevator
-			float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
-			ballGrabber.DriveElevatorTestMode(dPadThumbstick);
+			//float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
+			//ballGrabber.DriveElevatorTestMode(dPadThumbstick);
 			//Sets motor equal to the elevator sensor.
-			ballGrabber.OperatePIDLoop();
+			//ballGrabber.OperatePIDLoop();
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
@@ -276,7 +275,7 @@ public:
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
-		//ballGrabber.elevatorController.Disable();	
+		ballGrabber.StopPidLoop();	
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();

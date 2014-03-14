@@ -109,9 +109,9 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			break;
 	}
 	//this->ButtonControledElevator();
-	this->ThumbstickControledElevator();
-	
-	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
+	this->ThumbstickControledElevator(); //update desired position based on thumbstick and limit switches.
+	this->OperatePIDLoop(); //compute desired elevator power.
+	elevatorMotor.Set(m_elevatorPower); //use the computed power and drive motor.
 	
 }
 //This function changes the setpoint of the PID loop via the A and Y buttons
@@ -206,18 +206,24 @@ void Grabber::DriveElevatorTestMode(float value){
 
 	elevatorMotor.Set(value);
 }
-//Custom Pid
+//Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
-	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / m_desiredElevatorVoltage;
-	if(pidError < PHOENIX2014_PID_THRESHOLD){
-		m_elevatorPower = 0;
+	//Make constant for 5.0 and call it max voltage or somthing like that.
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / 5.0;
+	if((pidError < PHOENIX2014_PID_THRESHOLD)&&(pidError > -1.0 * PHOENIX2014_PID_THRESHOLD)){
+		m_elevatorPower = 0.0;
 	}
 	else{
 		m_elevatorPower = pidError;
 	}
 	return pidError;
 }
+void Grabber::StopPidLoop(){
+		elevatorMotor.Set(0.0);
+		m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
+		this->ElevatorLimitSwitchBehavior();
 
+}
 
 
 Grabber::~Grabber(){
