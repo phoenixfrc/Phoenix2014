@@ -197,10 +197,11 @@ public:
 		
 		while (IsOperatorControl() && IsEnabled())
 		{
-			SavePreferencesToFlash = gamePad.GetRawButton(8);
-			if(SavePreferencesToFlash){
+			bool SavePreferences = gamePad.GetRawButton(8);
+			if (SavePreferences){
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				SavePreferencesToFlash = true;
 			}
 			printDelay ++;
 			
@@ -215,7 +216,10 @@ public:
 			//float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
 			//ballGrabber.DriveElevatorTestMode(dPadThumbstick);
 			//Sets motor equal to the elevator sensor.
-			//ballGrabber.OperatePIDLoop();
+
+			ballGrabber.OperatePIDLoop();
+			
+
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
@@ -279,6 +283,7 @@ public:
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
+			SavePreferencesToFlash = false;
 		}
 			
 	} // end of OperatorControl()
