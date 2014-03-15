@@ -210,7 +210,7 @@ void Grabber::DriveElevatorTestMode(float value){
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
 	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / 5.0;
-	if((pidError < PHOENIX2014_PID_THRESHOLD)&&(-1.0*PHOENIX2014_PID_THRESHOLD)){
+	if((pidError < PHOENIX2014_PID_THRESHOLD)&&(-1.0*PHOENIX2014_PID_THRESHOLD < pidError)){
 		m_elevatorPower = 0.0;
 	}
 	else{
