@@ -35,13 +35,14 @@ Grabber::Grabber(Joystick * gamePad) :
 
 void Grabber::init(){
 	m_grabberState = unknown;
+	this->resetSetPoint();
 }
 
 //Caller needs to enable elevator controller.
 void Grabber::resetSetPoint(){
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
-	elevatorController.Reset();
-	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
+	//elevatorController.Reset();
+	//elevatorController.SetSetpoint(m_desiredElevatorVoltage);
 }
 
 
@@ -212,7 +213,7 @@ void Grabber::DriveElevatorTestMode(float value){
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
-	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / 5.0;
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / 2.0;
 	if((pidError < PHOENIX2014_PID_THRESHOLD)&&(pidError > -1.0 * PHOENIX2014_PID_THRESHOLD)){
 		m_elevatorPower = 0.0;
 	}

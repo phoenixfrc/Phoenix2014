@@ -14,7 +14,7 @@
 #define PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT 5
 //Angle ajustment.
 #define PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE 1.75
-#define PHOENIX2014_PID_THRESHOLD 0.5 //Make small 0.5 is just for testing.
+#define PHOENIX2014_PID_THRESHOLD 0.2
 
 //define talon constant here
 

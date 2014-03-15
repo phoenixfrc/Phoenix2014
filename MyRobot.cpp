@@ -80,9 +80,6 @@ public:
 	
 	//this called when the robot is enabled
 	void init(){
-		ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_VERTICAL;
-		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
-		// ballGrabber.elevatorController.Enable();
 		shooter.init();
 		ballGrabber.init();
 	}
@@ -216,7 +213,10 @@ public:
 			//float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
 			//ballGrabber.DriveElevatorTestMode(dPadThumbstick);
 			//Sets motor equal to the elevator sensor.
-			//ballGrabber.OperatePIDLoop();
+
+			ballGrabber.OperatePIDLoop();
+			
+
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
@@ -292,6 +292,7 @@ public:
 		TestMode tester(m_ds);
 		driveDistanceRight.Reset();
 		driveDistanceRight.Start();
+		ballGrabber.resetSetPoint();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
 			tester.PerformTesting(&gamePad, &driveDistanceRight, lcd, &rightJoyStick, &leftJoyStick,
