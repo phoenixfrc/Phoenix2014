@@ -200,7 +200,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 }
 float TestMode::GetThumbstickWithZero(Joystick * gamePad){
 	float rawValue = gamePad->GetY();
-	if(rawValue<0.05 && rawValue>-0.05){
+	if(rawValue < 0.07 && rawValue > -0.07){
 		return 0.0;
 	}
 	return rawValue;

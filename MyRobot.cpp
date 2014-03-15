@@ -99,7 +99,6 @@ public:
 		//Initialize encoder.
 		//int distanceToShoot = 133;
 		//int shootDelay = 0;
-		//bool printDelay = 0;
 		//ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
 		driveDistanceRight.Reset();
 		driveDistanceLeft.Reset();
@@ -107,25 +106,27 @@ public:
 		driveDistanceLeft.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
+		int printDelay = 0;
 		float currentDistance = frontUltrasonic.GetAverageDistance();
 		float minDistance = 132.0;
 		float maxDistance = 144.0;
 		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 		
 		//int maxDriveLoop = 50;
-		while(IsAutonomous() && IsEnabled()){
-
+		while(IsAutonomous() && IsEnabled())
+		{
 		if(checkBox1 == false){
 			if(GoalRange){
 				driveTrain.TankDrive(0.0,0.0);
 				if(ballGrabber.elevatorAngleSensor.GetVoltage() == 2.08){
-				shooter.OperateShooter(true, false);
+				    shooter.OperateShooter(true, false);
 				}
 			}
 			else{
 				driveTrain.TankDrive(-0.5, -0.5);
 				ballGrabber.RunElevatorAutonomous(2.08);
 			}
+
 		}
 		else{
 			driveTrain.TankDrive(-0.5,-0.5);
@@ -143,22 +144,24 @@ public:
 				Wait(0.005);
 			}
 		}
-		/*float rangeToWall = frontUltrasonic.GetDistance();
+		printDelay = printDelay++;
+		if(printDelay >= 100){
+			lcd->Clear();
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "In Autonomous");
+			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Ulra=%f", frontUltrasonic.GetAverageDistance());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "CEV=%f", ballGrabber.elevatorAngleSensor.GetVoltage());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "DEV=%f", ballGrabber.m_desiredElevatorVoltage);
+			lcd->UpdateLCD();
+			printDelay = 0;
+		}
+			/*float rangeToWall = frontUltrasonic.GetDistance();
 			while(rangeToWall > rangeToWallClose){
 				driveTrain.Drive(-5, 0.0);
 				rangeToWall = frontUltrasonic.GetDistance();
 				Wait(.001);
 			}
 			driveTrain.Drive(0.0, 0.0); //Stop the Robot*/
-		/*if(checkBox1 == true){
-			SmartDashboard::PutNumber("Autonomous mode", 2);
-			//float rangeToWall = frontUltrasonic.GetDistance();
-			
-			//while(rangeToWall > rangeToWallFar){
-				driveTrain.Drive(-5, 0.0);
-			}
-			driveTrain.Drive(0.0, 0.0);
-		}};*/
+
 		lcd->Clear();
 		lcd->UpdateLCD();
 		//driveDistance.Reset();
@@ -173,7 +176,7 @@ public:
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
 		lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Exiting Autonomous");
 	}
-	}
+}
 
 	/**
 	 * Runs the motors with arcade steering. 
@@ -246,9 +249,8 @@ public:
 					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
 					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.3f", ballGrabber.m_desiredElevatorVoltage);
-					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%5.2fEE=%6.3f",
-									ballGrabber.elevatorAngleSensor.PIDGet(),
-									ballGrabber.elevatorController.GetError());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%5.2f",
+									ballGrabber.elevatorAngleSensor.GetVoltage());
 					if(button6){
 						m_display_page_1 = true;
 					}

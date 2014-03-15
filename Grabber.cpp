@@ -142,7 +142,12 @@ float Grabber::ButtonControledElevator(){
 //This function changes the set point of the PID loop via the thumbstick
 float Grabber::ThumbstickControledElevator(){
 	float dPadThumbstick = TestMode::GetThumbstickWithZero(m_gamePad);
-	m_desiredElevatorVoltage = m_desiredElevatorVoltage + dPadThumbstick/100.0;
+	
+	if (dPadThumbstick != 0.0){
+		float currentVoltage = elevatorAngleSensor.GetVoltage();
+		m_desiredElevatorVoltage = currentVoltage + dPadThumbstick/5.0;
+	}
+	
 	if(m_desiredElevatorVoltage > PHOENIX2014_VOLTAGE_AT_BACK){
 		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_BACK;
 	}
@@ -212,12 +217,12 @@ void Grabber::DriveElevatorTestMode(float value){
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
-	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) / 2.0;
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) * 7.0;
 	if((pidError < PHOENIX2014_PID_THRESHOLD)&&(pidError > -1.0 * PHOENIX2014_PID_THRESHOLD)){
 		m_elevatorPower = 0.0;
 	}
 	else{
-		m_elevatorPower = pidError;
+		m_elevatorPower = pidError + 0.15;
 	}
 	return pidError;
 }
