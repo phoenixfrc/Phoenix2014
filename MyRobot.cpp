@@ -197,10 +197,11 @@ public:
 		
 		while (IsOperatorControl() && IsEnabled())
 		{
-			SavePreferencesToFlash = gamePad.GetRawButton(8);
-			if(SavePreferencesToFlash){
+			bool SavePreferences = gamePad.GetRawButton(8);
+			if (SavePreferences){
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				SavePreferencesToFlash = true;
 			}
 			printDelay ++;
 			
@@ -279,6 +280,7 @@ public:
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
+			SavePreferencesToFlash = false;
 		}
 			
 	} // end of OperatorControl()
