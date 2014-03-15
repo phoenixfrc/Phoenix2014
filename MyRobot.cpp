@@ -118,10 +118,13 @@ public:
 		if(checkBox1 == false){
 			if(GoalRange){
 				driveTrain.TankDrive(0.0,0.0);
+				if(ballGrabber.elevatorAngleSensor.GetVoltage() == 2.08){
+				shooter.OperateShooter(true, false);
+				}
 			}
 			else{
-				
 				driveTrain.TankDrive(-0.5, -0.5);
+				ballGrabber.RunElevatorAutonomous(2.08);
 			}
 		}
 		else{

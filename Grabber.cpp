@@ -111,8 +111,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	}
 	//this->ButtonControledElevator();
 	this->ThumbstickControledElevator(); //update desired position based on thumbstick and limit switches.
-	this->OperatePIDLoop(); //compute desired elevator power.
-	elevatorMotor.Set(m_elevatorPower); //use the computed power and drive motor.
+	this->DriveMotorWithPIDLoop();
 	
 }
 //This function changes the setpoint of the PID loop via the A and Y buttons
@@ -150,10 +149,13 @@ float Grabber::ThumbstickControledElevator(){
 	if(m_desiredElevatorVoltage < PHOENIX2014_VOLTAGE_AT_FRONT){
 		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_FRONT;
 	}
-	return this->ElevatorLimitSwitchBehavior();
-	
+	return this->ElevatorLimitSwitchBehavior();	
 }
-
+//this function will move the elevator to an angle based on the elevator voltage
+void Grabber::RunElevatorAutonomous(float autoDesiredElevatorVoltage){
+	m_desiredElevatorVoltage = autoDesiredElevatorVoltage;
+	this->DriveMotorWithPIDLoop();
+}
 
 //This function makes sure that the arm does not go passed the limit switches
 float Grabber::ElevatorLimitSwitchBehavior(){
@@ -218,6 +220,10 @@ float Grabber::OperatePIDLoop(){
 		m_elevatorPower = pidError;
 	}
 	return pidError;
+}
+void Grabber::DriveMotorWithPIDLoop(){
+	this->OperatePIDLoop();
+	elevatorMotor.Set(m_elevatorPower);
 }
 void Grabber::StopPidLoop(){
 		elevatorMotor.Set(0.0);
