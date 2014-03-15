@@ -14,12 +14,13 @@ public:
 		void OperateGrabber(bool openToShoot, bool useBallSensor);
 		float ButtonControledElevator();
 		float ThumbstickControledElevator();
-		void autoPID(float autoDesiredElevatorVoltage);
+		void RunElevatorAutonomous(float autoDesiredElevatorVoltage);
 		float ElevatorLimitSwitchBehavior();
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DriveElevatorTestMode(float value);
 		float OperatePIDLoop();
+		void DriveMotorWithPIDLoop();
 		void StopPidLoop();
 		
 		~Grabber();
