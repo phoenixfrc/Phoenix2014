@@ -10,9 +10,11 @@ class Grabber {
 	
 public:
 		Grabber(Joystick * gamePad);
+		
 		void OperateGrabber(bool openToShoot, bool useBallSensor);
 		float ButtonControledElevator();
 		float ThumbstickControledElevator();
+		void autoPID(float autoDesiredElevatorVoltage);
 		float ElevatorLimitSwitchBehavior();
 		void UpDateWithState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);

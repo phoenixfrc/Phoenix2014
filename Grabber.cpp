@@ -152,7 +152,10 @@ float Grabber::ThumbstickControledElevator(){
 	return this->ElevatorLimitSwitchBehavior();
 	
 }
-
+void Grabber::autoPID(float autoDesiredElevatorVoltage){
+	elevatorController.SetSetpoint(autoDesiredElevatorVoltage);
+	this->OperatePIDLoop();
+}
 
 //This function makes sure that the arm does not go passed the limit switches
 float Grabber::ElevatorLimitSwitchBehavior(){
