@@ -35,13 +35,14 @@ Grabber::Grabber(Joystick * gamePad) :
 
 void Grabber::init(){
 	m_grabberState = unknown;
+	this->resetSetPoint();
 }
 
 //Caller needs to enable elevator controller.
 void Grabber::resetSetPoint(){
 	m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
-	elevatorController.Reset();
-	elevatorController.SetSetpoint(m_desiredElevatorVoltage);
+	//elevatorController.Reset();
+	//elevatorController.SetSetpoint(m_desiredElevatorVoltage);
 }
 
 
