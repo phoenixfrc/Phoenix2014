@@ -84,7 +84,7 @@ public:
 		ballGrabber.elevatorController.SetSetpoint(ballGrabber.m_desiredElevatorVoltage);
 		// ballGrabber.elevatorController.Enable();
 		shooter.init();
-		ballGrabber.init();	
+		ballGrabber.init();
 	}
 	/**
 	 * Drive left & right motors for 2 seconds then stop
@@ -113,7 +113,7 @@ public:
 		float currentDistance = frontUltrasonic.GetAverageDistance();
 		float minDistance = 132.0;
 		float maxDistance = 144.0;
-		bool GoalRange = minDistance > currentDistance < maxDistance;
+		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 		
 		//int maxDriveLoop = 50;
 		while(IsAutonomous() && IsEnabled()){
@@ -123,56 +123,11 @@ public:
 				driveTrain.TankDrive(0.0,0.0);
 			}
 			else{
+				
 				driveTrain.TankDrive(-0.5, -0.5);
 			}
-			/*****
-			while(IsAutonomous() && IsEnabled()){
-				SmartDashboard::PutNumber("Autonomous mode", 1);
-				//Place robot 1 inch from white line. Robot is 33 inches long.  
-				//distance between line and wall is 216 inches.
-				//Drive forward 216 - 83 = 133 inches.
-				//Set elevator angle to 45 Degrees forward = 1.75 Volts.
-				//Drive until Robot is out of the white zone and within range to wall.
-				//Shoot as soon as robot is stopped.
-				//lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", frontUltrasonic.GetDistance()
-				lcd->PrintfLine(DriverStationLCD::kUser_Line1, "range%f", driveDistanceRight.GetDistance());
-				while(((driveDistanceRight.GetDistance() < distanceToShoot) || (driveDistanceLeft.GetDistance() < distanceToShoot)) && (maxDriveLoop > 0)){
-					//prepares shooter to shoot.
-					shooter.OperateShooter(false, true);
-					if(driveDistanceLeft.GetDistance() >= distanceToShoot){
-						leftDriveSpeed = 0.0;
-					}
-					if(driveDistanceRight.GetDistance() >= distanceToShoot){
-						rightDriveSpeed = 0.0;
-					}
-					driveTrain.TankDrive(leftDriveSpeed, rightDriveSpeed);
-					Wait(.05);
-					maxDriveLoop--;
-					if(printDelay >= 1){
-						lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%6.3f %6.3f", driveDistanceLeft.GetDistance(), driveDistanceRight.GetDistance());
-						lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%d", maxDriveLoop);
-						lcd->UpdateLCD();
-						printDelay = 0;
-					}
-					else{
-						printDelay++;
-					}
-				}
-				driveTrain.Drive(0.0, 0.0);
-				Wait(.005);
-				shootDelay++;
-				bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
-				if (ReadyToShoot){
-					shooter.OperateShooter(ReadyToShoot, false);
-					shootDelay = 0;
-				}
-				ballGrabber.OperateGrabber(false, true, &gamePad);
-			}
-			*****/	
 		}
 		else{
-			//bool shooting = false;
-			//shooter.OperateShooter(shooting, false);
 			driveTrain.TankDrive(-0.5,-0.5);
 			ballGrabber.DriveElevatorTestMode(-1.0);
 			lcd->Clear();
@@ -242,10 +197,11 @@ public:
 		
 		while (IsOperatorControl() && IsEnabled())
 		{
-			SavePreferencesToFlash = gamePad.GetRawButton(8);
-			if(SavePreferencesToFlash){
+			bool SavePreferences = gamePad.GetRawButton(8);
+			if (SavePreferences){
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				SavePreferencesToFlash = true;
 			}
 			printDelay ++;
 			
@@ -257,11 +213,13 @@ public:
 			driveTrain.TankDrive(lJoyStick, rJoyStick);
 			
 			//manual mode(no PID) for elevator
-			float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
-			ballGrabber.DriveElevatorTestMode(dPadThumbstick);
+			//float dPadThumbstick = TestMode::GetThumbstickWithZero(&gamePad);
+			//ballGrabber.DriveElevatorTestMode(dPadThumbstick);
 			//Sets motor equal to the elevator sensor.
+
 			ballGrabber.OperatePIDLoop();
 			
+
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
 				//float readings[100];
@@ -325,6 +283,7 @@ public:
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
+			SavePreferencesToFlash = false;
 		}
 			
 	} // end of OperatorControl()
