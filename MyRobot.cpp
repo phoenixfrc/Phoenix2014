@@ -242,8 +242,8 @@ public:
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "EV%6.2f", ballGrabber.elevatorAngleSensor.GetVoltage());
 					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line4, lcd);
 					//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.3fSP=%6.3f", ballGrabber.m_desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV-%5.2fEE=%6.3f",
+					lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.3f", ballGrabber.m_desiredElevatorVoltage);
+					lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%5.2fEE=%6.3f",
 									ballGrabber.elevatorAngleSensor.PIDGet(),
 									ballGrabber.elevatorController.GetError());
 					if(button6){
