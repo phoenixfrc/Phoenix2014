@@ -194,6 +194,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
             break;
 		case savePreferences:
+			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Save Preferences case");
 			bool savePreferences = button8;
 			
 			if(savePreferences){
@@ -202,6 +203,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				savePreferencesToFlash = true;
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);
+				lcd->UpdateLCD();
+				Wait(1);
 			}
 			
 			if(button2){
