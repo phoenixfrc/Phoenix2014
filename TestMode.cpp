@@ -7,6 +7,7 @@ TestMode::TestMode(DriverStation * theDriverStation):
 	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 	testUltrasonic2(2, 3),
 	testUltrasonic3(2, 4),
+	dashboardPreferences(Preferences::GetInstance()),
    m_dsIO(theDriverStation->GetEnhancedIO())
 {
 	m_mode = testGamepad;
@@ -20,6 +21,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 		                      UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch, 
 		                      Shooter * theShooter, Grabber * theElevatorAndGrabber)
 {
+
+	bool savePreferencesToFlash = false;
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
 	bool button3 = gamePad->GetRawButton(3); //Gets button three (Red B)
@@ -187,16 +190,36 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			                analogTestSwitch->GetTriggerState() ? '1':'0'
 			                );
 			if(button2){
-				m_mode = testGamepad;
+				m_mode = savePreferences;
 			}
             break;
-		
+		case savePreferences:
+			bool savePreferences = button8;
+			
+			if(savePreferences){
+				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
+				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				savePreferencesToFlash = true;
+				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
+				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);
+			}
+			
+			if(button2){
+				m_mode = testGamepad;
+				if(savePreferencesToFlash){
+					dashboardPreferences->Save();
+					savePreferencesToFlash = false;
+					lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Saved");
+					lcd->UpdateLCD();
+					Wait(5);
+			}
+		break;
 		default:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
 			break;
 	}
 	
-	
+	}
 }
 float TestMode::GetThumbstickWithZero(Joystick * gamePad){
 	float rawValue = gamePad->GetY();

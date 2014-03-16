@@ -12,10 +12,11 @@ class TestMode {
 	UltrasonicSensor testUltrasonic1;
 	UltrasonicSensor testUltrasonic2;
 	UltrasonicSensor testUltrasonic3;
+	Preferences * dashboardPreferences;
 public:
 	AnalogIOButton * testSwitch;
 	enum testModes{testGamepad, testShooter, testGrabber, testElevator, testJoystick,
-				   testTalon, testIO, testEncoder, ultrasonicTestMode, analogSwitchMode, testingElevatorMotor};
+				   testTalon, testIO, testEncoder, ultrasonicTestMode, analogSwitchMode, testingElevatorMotor, savePreferences};
 	
 	TestMode(DriverStation * theDriverStation);
 	void PerformTesting(Joystick * gamePad, Encoder *encoder, DriverStationLCD * lcd, 

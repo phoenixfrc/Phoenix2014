@@ -310,8 +310,9 @@ public:
 			
 		}
 		driveDistanceRight.Stop();
+		}
 
-	}
+	
 	
 };
 
