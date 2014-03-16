@@ -124,14 +124,15 @@ public:
 		driveDistanceRight.Start();
 		driveDistanceLeft.Start();
 		int printDelay = 0;
-		float currentDistance = frontUltrasonic.GetAverageDistance();
-		float minDistance = 132.0;
+		float minDistance = 52.0;
 		float maxDistance = 144.0;
-		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
+		
 		
 		int maxDriveLoop = 12000;
 		while(IsAutonomous() && IsEnabled())
 		{
+			float currentDistance = frontUltrasonic.GetAverageDistance();
+			bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 			maxDriveLoop --;
 			bool motorDriveTimeExceeded = maxDriveLoop < 0;
 			//Ultrasonic Autonomous
