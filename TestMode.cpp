@@ -199,8 +199,24 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			bool savePreferences = button8;
 			
 			if(savePreferences){
+				double pValue = SmartDashboard::GetNumber("P");
+				double iValue = SmartDashboard::GetNumber("I");
+				double dValue = SmartDashboard::GetNumber("D");
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
-				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				double distanceValue = SmartDashboard::GetNumber("Distance");
+				double grabberValue = SmartDashboard::GetNumber("Grabber");
+				double extra1Value = SmartDashboard::GetNumber("Extra1");
+				double extra2Value = SmartDashboard::GetNumber("Extra2");
+				double extra3Value = SmartDashboard::GetNumber("Extra3");
+				dashboardPreferences->PutDouble("P", pValue);
+				dashboardPreferences->PutDouble("I", iValue);
+				dashboardPreferences->PutDouble("D", dValue);
+				dashboardPreferences->PutDouble("Angle", distanceValue);
+				dashboardPreferences->PutDouble("Distance", grabberValue);
+				dashboardPreferences->PutDouble("Grabber", grabberValue);
+				dashboardPreferences->PutDouble("Extra1", extra1Value);
+				dashboardPreferences->PutDouble("Extra2", extra2Value);
+				dashboardPreferences->PutDouble("Extra3", extra3Value);
 				m_savePreferencesToFlash = true;
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);
