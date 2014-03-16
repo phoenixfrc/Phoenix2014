@@ -112,22 +112,29 @@ public:
 		float maxDistance = 144.0;
 		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 		
-		//int maxDriveLoop = 50;
+		int maxDriveLoop = 50;
 		while(IsAutonomous() && IsEnabled())
 		{
-		if(checkBox1 == false){
-			if(GoalRange){
-				driveTrain.TankDrive(0.0,0.0);
-				if(ballGrabber.elevatorAngleSensor.GetVoltage() == 2.08){
-				    shooter.OperateShooter(true, false);
+			maxDriveLoop --;
+			bool motorDriveTimeExceeded = maxDriveLoop < 0;
+			//Ultrasonic Autonomous
+			if(checkBox1 == false){
+				if(GoalRange){
+					driveTrain.TankDrive(0.0,0.0);
+					if(ballGrabber.elevatorAngleSensor.GetVoltage() == 2.08){
+						shooter.OperateShooter(true, false);
+					}
 				}
-			}
-			else{
-				driveTrain.TankDrive(-0.5, -0.5);
-				ballGrabber.RunElevatorAutonomous(2.08);
-			}
+				else if(motorDriveTimeExceeded){
+					driveTrain.TankDrive(0.0,0.0);
+				}
+				else{
+					driveTrain.TankDrive(-0.5, -0.5);
+					ballGrabber.RunElevatorAutonomous(2.08);
+				}
 
-		}
+			}
+			//Timer Autonomous
 		else{
 			driveTrain.TankDrive(-0.5,-0.5);
 			ballGrabber.DriveElevatorTestMode(-1.0);
