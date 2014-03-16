@@ -13,6 +13,8 @@ TestMode::TestMode(DriverStation * theDriverStation):
 	m_mode = testGamepad;
 	m_ds = theDriverStation;
 	m_driving_motor = true;
+	m_savePreferencesToFlash = false;
+
 }
 
 void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStationLCD * lcd, 
@@ -22,7 +24,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 		                      Shooter * theShooter, Grabber * theElevatorAndGrabber)
 {
 
-	bool savePreferencesToFlash = false;
 	bool button1 = gamePad->GetRawButton(1); //Gets button one (Blue X)
 	bool button2 = gamePad->GetRawButton(2); //Gets button two (Green A)
 	bool button3 = gamePad->GetRawButton(3); //Gets button three (Red B)
@@ -200,7 +201,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			if(savePreferences){
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
-				savePreferencesToFlash = true;
+				m_savePreferencesToFlash = true;
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);
 				lcd->UpdateLCD();
@@ -209,9 +210,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			if(button2){
 				m_mode = testGamepad;
-				if(savePreferencesToFlash){
+				if(m_savePreferencesToFlash){
 					dashboardPreferences->Save();
-					savePreferencesToFlash = false;
+					m_savePreferencesToFlash = false;
 					lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Saved");
 					lcd->UpdateLCD();
 					Wait(5);

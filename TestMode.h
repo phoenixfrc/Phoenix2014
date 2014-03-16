@@ -29,6 +29,7 @@ public:
 private:
 	int m_mode;
 	bool m_driving_motor;
+	bool m_savePreferencesToFlash;
 	DriverStation * m_ds;
 	DriverStationEnhancedIO & m_dsIO;
 };
