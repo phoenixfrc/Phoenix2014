@@ -73,8 +73,25 @@ public:
 	void RobotInit(){
 	//move initial code from inside operator controll
 		m_display_page_1 = false;
-		double angleMeasure = dashboardPreferences->GetDouble("Angle", PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
+		Wait(.5);
+		double P = dashboardPreferences->GetDouble("P");
+		double I = dashboardPreferences->GetDouble("I");
+		double D = dashboardPreferences->GetDouble("D");
+		double angleMeasure = dashboardPreferences->GetDouble("Angle");
+		double distanceMeasure = dashboardPreferences->GetDouble("Distance");
+		double grabberMeasure = dashboardPreferences->GetDouble("Grabber");
+		double extra1 = dashboardPreferences->GetDouble("Extra1");
+		double extra2 = dashboardPreferences->GetDouble("Extra2");
+		double extra3 = dashboardPreferences->GetDouble("Extra3");
+		SmartDashboard::PutNumber("P", P);
+		SmartDashboard::PutNumber("I", I);
+		SmartDashboard::PutNumber("D", D);
 		SmartDashboard::PutNumber("Angle", angleMeasure);
+		SmartDashboard::PutNumber("Distance", distanceMeasure);
+		SmartDashboard::PutNumber("Grabber", grabberMeasure);
+		SmartDashboard::PutNumber("Extra1", extra1);
+		SmartDashboard::PutNumber("Extra2", extra2);
+		SmartDashboard::PutNumber("Extra3", extra3);
 		
 	}
 	
