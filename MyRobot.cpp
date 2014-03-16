@@ -126,18 +126,24 @@ public:
 		int printDelay = 0;
 		float minDistance = 52.0;
 		float maxDistance = 144.0;
+		bool isInRange = false;
+		float closeDistance = maxDistance + 24.0;
+		float autoDriveSpeed = 0.55;
+		float autoDriveSlowSpeed = 0.38;
 		
-		
-		int maxDriveLoop = 12000;
+		int maxDriveLoop = 12000; 
 		while(IsAutonomous() && IsEnabled())
 		{
 			float currentDistance = frontUltrasonic.GetAverageDistance();
 			bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
+			if(GoalRange){
+				isInRange = true;
+			}
 			maxDriveLoop --;
 			bool motorDriveTimeExceeded = maxDriveLoop < 0;
 			//Ultrasonic Autonomous
 			if(checkBox1 == false){
-				if(GoalRange){
+				if(isInRange){
 					driveTrain.TankDrive(0.0,0.0);
 					if(ballGrabber.elevatorAngleSensor.GetVoltage() == 2.08){
 						shooter.OperateShooter(true, false);
@@ -147,10 +153,12 @@ public:
 					driveTrain.TankDrive(0.0,0.0);
 				}
 				else{
-					driveTrain.TankDrive(-0.5, -0.5);
-					ballGrabber.RunElevatorAutonomous(2.08);
+					if(currentDistance < closeDistance){
+						autoDriveSpeed = autoDriveSlowSpeed;
+					}
+					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
 				}
-
+				ballGrabber.RunElevatorAutonomous(2.08);
 			}
 			//Timer Autonomous
 		else{
