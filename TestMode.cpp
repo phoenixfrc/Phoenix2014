@@ -211,8 +211,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				dashboardPreferences->PutDouble("P", pValue);
 				dashboardPreferences->PutDouble("I", iValue);
 				dashboardPreferences->PutDouble("D", dValue);
-				dashboardPreferences->PutDouble("Angle", distanceValue);
-				dashboardPreferences->PutDouble("Distance", grabberValue);
+				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
+				dashboardPreferences->PutDouble("Distance", distanceValue);
 				dashboardPreferences->PutDouble("Grabber", grabberValue);
 				dashboardPreferences->PutDouble("Extra1", extra1Value);
 				dashboardPreferences->PutDouble("Extra2", extra2Value);
