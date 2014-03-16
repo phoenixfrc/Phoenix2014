@@ -112,7 +112,7 @@ public:
 		float maxDistance = 144.0;
 		bool GoalRange = (minDistance < currentDistance) && (currentDistance < maxDistance);
 		
-		int maxDriveLoop = 50;
+		int maxDriveLoop = 12000;
 		while(IsAutonomous() && IsEnabled())
 		{
 			maxDriveLoop --;
