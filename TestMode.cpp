@@ -208,6 +208,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				double extra1Value = SmartDashboard::GetNumber("Extra1");
 				double extra2Value = SmartDashboard::GetNumber("Extra2");
 				double extra3Value = SmartDashboard::GetNumber("Extra3");
+				double slider1Value = SmartDashboard::GetNumber("Slider 1");
 				dashboardPreferences->PutDouble("P", pValue);
 				dashboardPreferences->PutDouble("I", iValue);
 				dashboardPreferences->PutDouble("D", dValue);
@@ -217,6 +218,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				dashboardPreferences->PutDouble("Extra1", extra1Value);
 				dashboardPreferences->PutDouble("Extra2", extra2Value);
 				dashboardPreferences->PutDouble("Extra3", extra3Value);
+				dashboardPreferences->PutDouble("Slider 1", slider1Value);
 				m_savePreferencesToFlash = true;
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);
