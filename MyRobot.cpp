@@ -94,7 +94,7 @@ public:
 		SmartDashboard::PutNumber("Extra2", extra2);
 		SmartDashboard::PutNumber("Extra3", extra3);
 		SmartDashboard::PutNumber("Slider 1", slider1);
-		double pFromDashboard = SmartDashboard::GetNumber("P");
+		/*double pFromDashboard = SmartDashboard::GetNumber("P");
 		double iFromDashboard = SmartDashboard::GetNumber("I");
 		double dFromDashboard = SmartDashboard::GetNumber("D");
 		double angleFromDashboard = SmartDashboard::GetNumber("Angle");
@@ -103,7 +103,7 @@ public:
 		double extra1FromDashboard = SmartDashboard::GetNumber("Extra1");
 		double extra2FromDashboard = SmartDashboard::GetNumber("Extra2");
 		double extra3FromDashboard = SmartDashboard::GetNumber("Extra3");
-		double sliderFromDashboard = SmartDashboard::GetNumber("Slider 1");		
+		double sliderFromDashboard = SmartDashboard::GetNumber("Slider 1");		*/
 	}
 	
 	//this called when the robot is enabled
@@ -262,7 +262,10 @@ public:
 					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg1");
 					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
 					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
-
+					SmartDashboard::PutNumber("UltrasonicF", 1);
+					SmartDashboard::PutNumber("UltrasonicB", 1);                                         
+					SmartDashboard::PutNumber("ElvatorAngle", 2);//Change keyname to ElavatorAngle from (ElvatorAngle)
+																										 //^^
 					if(button6){
 						m_display_page_1 = false;
 					}
