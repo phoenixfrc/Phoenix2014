@@ -217,7 +217,7 @@ void Grabber::DriveElevatorTestMode(float value){
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
-	float pidError = (m_desiredElevatorVoltage - (elevatorAngleSensor.GetVoltage()) * 7.0);
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) * 7.0;
 	if((-PHOENIX2014_PID_THRESHOLD < pidError) && (pidError < PHOENIX2014_PID_THRESHOLD)){
 		m_elevatorPower = 0.0;
 	}
