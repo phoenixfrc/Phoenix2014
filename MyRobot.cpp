@@ -103,7 +103,7 @@ public:
 		double extra1FromDashboard = SmartDashboard::GetNumber("Extra1");
 		double extra2FromDashboard = SmartDashboard::GetNumber("Extra2");
 		double extra3FromDashboard = SmartDashboard::GetNumber("Extra3");
-		double sliderFromDashboard = SmartDashboard::GetNumber("Slider 1");*/
+		double sliderFromDashboard = SmartDashboard::GetNumber("Slider 1");	*/
 	}
 	
 	//this called when the robot is enabled
@@ -140,8 +140,10 @@ public:
 		float closeDistance = maxDistance + 24.0;
 		float autoDriveSpeed = 0.55;
 		float autoDriveSlowSpeed = 0.38;
-		
+		int time = 0;
 		int maxDriveLoop = 5*200; // 5 seconds @200 times/sec
+		int startShootTime = 0;	// When shooting started
+		//int exitAfterShootTime = 1*200;
 		if(checkBox1 == false){
 			//Ultrasonic Autonomous
 			bool isInRange = false;
@@ -152,11 +154,21 @@ public:
 				if((minDistance < currentDistance) && (currentDistance < maxDistance)){
 					isInRange = true;
 				}
-				maxDriveLoop --;
-				bool motorDriveTimeExceeded = maxDriveLoop < 0;
+				time++;
+				bool motorDriveTimeExceeded = time > maxDriveLoop;
 				if(isInRange){
 					driveTrain.TankDrive(0.0,0.0);
-					if((ballGrabber.elevatorAngleSensor.GetVoltage() > 2.06) && (ballGrabber.elevatorAngleSensor.GetVoltage() < 2.10)){
+					if((ballGrabber.elevatorAngleSensor.GetVoltage() > 1.60) && (ballGrabber.elevatorAngleSensor.GetVoltage() < 1.64)){
+						if (startShootTime == 0) {
+							startShootTime = time;
+						}
+						// Check to see if only a small amount of time has past so we don't re-shoot
+						// Enough to cover break release and start winding again.0
+						
+						//bad code DOES NOT disable winch motor
+					//	if ((time-startShootTime)>exitAfterShootTime) {
+					//		break;
+					//	}
 						shooter.OperateShooter(true, false);
 					}
 				}
@@ -169,7 +181,7 @@ public:
 					}
 					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
 				}
-				ballGrabber.RunElevatorAutonomous(2.08);
+				ballGrabber.RunElevatorAutonomous(1.62);
 /****
 				printDelay = printDelay++;
 				if(printDelay >= 100){
@@ -262,7 +274,10 @@ public:
 					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg1");
 					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
 					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
-
+					SmartDashboard::PutNumber("UltrasonicF", 1);
+					SmartDashboard::PutNumber("UltrasonicB", 1);                                         
+					SmartDashboard::PutNumber("ElvatorAngle", 2);//Change keyname to ElavatorAngle from (ElvatorAngle)
+																										 //^^
 					if(button6){
 						m_display_page_1 = false;
 					}
