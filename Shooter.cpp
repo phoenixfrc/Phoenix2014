@@ -18,7 +18,7 @@ void Shooter::init(){
 	m_unwindDelayCounter = 0;
 }
 
-void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
+bool Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 
 	bool isWound = !winchRetractedSensor.Get();
 	bool isBraked = brakeEngaged.Get();
@@ -94,60 +94,7 @@ void Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
 			}
 			break;
 		}
-
-
-	
-/*	if (loadShooterButton && shooterState == released){
-		shooterMotor.Set(1.0);//turn on winch motor
-		if(encoderValue >= m_reachedLimitForLoad || isretracted){
-			shooterMotor.Set(0.0);
-			if (brakeButton){
-				brakeSwitch.Get();
-			}
-			
-		}
-	}
-			
-	
-	
-	if(releaseShooterButton && shooterState == loaded){
-	releaseShooter.Set(Relay::kReverse);
-	shooterState = released;
-	}
-	
-	//Here I want start loading(retracting)
-	if (loadShooterButton &&  shooterState == released && !isRetracted) {
-	shooterEncoder.Start();
-	shooterMotor.Set(Relay::kReverse);
-	shooterState = loading;
-	}
-	
-	//Read encoder if limit reached stop retracting
-
-	if(shooterEncoder.Get() >= ShooterEncoderLimit && shooterState == loading || isRetracted){
-	shooterMotor.Set(Relay::kOff);
-	shooterState = loaded;
-	}
-}
-
-	if (loadShooterButton && m_limitSwitch){
-			loaderMotor.Set(Relay::kReverse);
-			if(m_limitSwitch == reachedLimitForLoad){
-			}
-			else{
-				m_limitSwitch = reachedLimitForLoad;
-			}
-		}
-		if (m_limitSwitch){
-			loaderMotor.Set(Relay::kOff);
-		}
-		if(loaderSensor.Get() && reachedLimitForLoad){
-			m_limitSwitch = reachedLimitForLoad;
-			loaderMotor.Set(Relay::kOff);
-		}
-		if(reachedLimitForLoad){
-			loaderMotor.Set(Relay::kOff);
-		}*/
+		return m_shooterState == shoot;
 }
 void Shooter::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd){
 	bool isWound = !winchRetractedSensor.Get();

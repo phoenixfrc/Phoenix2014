@@ -15,7 +15,7 @@ class Shooter {
 	Talon brakeMotor;
 public:
 		Shooter();  //constructor called when instances created
-		void OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
+		bool OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void TestShooter(float brakePower, float loaderPower);
 		void PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd);

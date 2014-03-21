@@ -35,6 +35,7 @@ class RobotDemo : public SimpleRobot
 	DriverStationLCD * lcd;
 	Preferences * dashboardPreferences;
 	bool m_display_page_1;
+	bool m_FromAutonomous;
 	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
@@ -61,6 +62,7 @@ public:
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearRightMotor, false); 
+		m_FromAutonomous = false;
 	}
 	
 	float limitSpeed(float requestedSpeed)
@@ -94,6 +96,7 @@ public:
 		SmartDashboard::PutNumber("Extra2", extra2);
 		SmartDashboard::PutNumber("Extra3", extra3);
 		SmartDashboard::PutNumber("Slider 1", slider1);
+		m_FromAutonomous = false;
 		/*double pFromDashboard = SmartDashboard::GetNumber("P");
 		double iFromDashboard = SmartDashboard::GetNumber("I");
 		double dFromDashboard = SmartDashboard::GetNumber("D");
@@ -120,6 +123,7 @@ public:
 		lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Entered Autonomous");
 		driveTrain.SetSafetyEnabled(false);
 		bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
+		m_FromAutonomous = true;
 		//float rightDriveSpeed = -1.0;
 		//float leftDriveSpeed = -1.0;
 		//int rangeToWallClose = 60;
@@ -142,7 +146,8 @@ public:
 		float autoDriveSlowSpeed = 0.38;
 		int time = 0;
 		int maxDriveLoop = 5*200; // 5 seconds @200 times/sec
-		int startShootTime = 0;	// When shooting started
+		bool shootingBall = false;
+		bool wantFirstShot = true;
 		//int exitAfterShootTime = 1*200;
 		if(checkBox1 == false){
 			//Ultrasonic Autonomous
@@ -159,17 +164,16 @@ public:
 				if(isInRange){
 					driveTrain.TankDrive(0.0,0.0);
 					if((ballGrabber.elevatorAngleSensor.GetVoltage() > 1.60) && (ballGrabber.elevatorAngleSensor.GetVoltage() < 1.64)){
-						if (startShootTime == 0) {
-							startShootTime = time;
-						}
-						// Check to see if only a small amount of time has past so we don't re-shoot
-						// Enough to cover break release and start winding again.0
+						//Enough to cover break release and start winding again.
 						
 						//bad code DOES NOT disable winch motor
 					//	if ((time-startShootTime)>exitAfterShootTime) {
 					//		break;
 					//	}
-						shooter.OperateShooter(true, false);
+						shootingBall = shooter.OperateShooter(wantFirstShot, false);
+					}
+					if(shootingBall == true){
+						wantFirstShot = false;
 					}
 				}
 				else if(motorDriveTimeExceeded){
@@ -230,8 +234,10 @@ public:
 	
 	void OperatorControl()
 	{
-		init();
-		
+		if(!m_FromAutonomous){
+			init();
+		}
+		m_FromAutonomous = false;
 		driveTrain.SetSafetyEnabled(true);
 		
 		int printDelay = 0;
