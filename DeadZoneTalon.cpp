@@ -20,6 +20,15 @@ float DeadZoneTalon::adjustValue(float value){
 	}
 	return value;
 }
+void DeadZoneTalon::Set(float value, bool posLS, bool negLS, uint8_t syncGroup){
+	if(posLS && value > 0.0){
+		value = 0.0;
+	}
+	if(negLS && value < 0.0){
+		value = 0.0;
+	}
+	this->Set(value, syncGroup);
+}
 
 void DeadZoneTalon::Set(float value, uint8_t syncGroup){
 	value = adjustValue(value);
