@@ -1,5 +1,5 @@
 #ifndef TEAM_H
-
+//copy me to team.h use phoenix 2
 #define	TEAM_H	1
 
 //Defining constants for the cRio slots

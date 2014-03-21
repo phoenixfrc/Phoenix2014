@@ -201,7 +201,7 @@ void Grabber::DriveElevatorTestMode(float value){
 	bool bottomLimit = !forwardLimitSwitch.Get();
 	bool topLimit = !backLimitSwitch.Get();
 
-	if (bottomLimit){
+	/*if (bottomLimit){
 		if(value<0){
 			value = 0.0;
 		}
@@ -210,9 +210,9 @@ void Grabber::DriveElevatorTestMode(float value){
 		if(value>0){
 					value = 0.0;
 				}
-	}
-
-	elevatorMotor.Set(value);
+	}*/
+	
+	elevatorMotor.Set(value, topLimit, bottomLimit);
 }
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
