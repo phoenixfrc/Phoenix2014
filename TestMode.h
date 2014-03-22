@@ -15,7 +15,7 @@ class TestMode {
 	Preferences * dashboardPreferences;
 public:
 	AnalogIOButton * testSwitch;
-	enum testModes{testGamepad, testShooter, testGrabber, testElevator, testJoystick,
+	enum testModes{testGamepad, testLimitSwitches, testShooter, testGrabber, testElevator, testJoystick,
 				   testTalon, testIO, testEncoder, ultrasonicTestMode, analogSwitchMode, testingElevatorMotor, savePreferences};
 	
 	TestMode(DriverStation * theDriverStation);

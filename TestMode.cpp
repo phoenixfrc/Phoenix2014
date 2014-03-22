@@ -33,7 +33,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
 	encoder->SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
-	
+	float desiredValue = rightJoyStick->GetAxis(Joystick::kYAxis);
+
 	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 //	double slider1 = SmartDashboard::GetNumber("Slider 1");
 	
@@ -55,8 +56,16 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
 			// SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
-				m_mode = testShooter;  //Changeds to testShooter
+				m_mode = testLimitSwitches;  //Changeds to testShooter
 			}
+			break;
+		case testLimitSwitches:  //tests all the limit switches and potentiometer.
+
+			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line1,lcd);
+			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line2, lcd);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2f",
+					theElevatorAndGrabber->elevatorAngleSensor.GetVoltage());
+			m_mode = testShooter;  //Changeds to testShooter
 			break;
 		case testShooter:
 			float dPadThumbstick = GetThumbstickWithZero(gamePad);
@@ -136,7 +145,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testTalon:  //Tests the Talons
-			float desiredValue = rightJoyStick->GetAxis(Joystick::kYAxis);
 			testTalons->Set(desiredValue);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "J%5.3,T%5.3f",desiredValue, testTalons->Get());
 			
