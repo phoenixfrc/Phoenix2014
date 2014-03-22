@@ -229,6 +229,18 @@ float Grabber::OperatePIDLoop(){
 		} else if (motorPower > 1.0) {
 			motorPower = 1.0;
 		}
+		// Ensure we do not power the motors in the direction of a hit limit switch
+		// Also, do not have the target farther in the direction of a set limit switch
+		bool forwardLimit = !forwardLimitSwitch.Get();
+		bool backLimit = !backLimitSwitch.Get();
+		if(backLimit && motorPower > 0){
+			motorPower = 0.0;
+			m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
+		}
+		if(forwardLimit && motorPower < 0){
+			motorPower = 0.0;
+			m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
+		}
 		m_elevatorPower = motorPower;
 	}
 	return pidError;

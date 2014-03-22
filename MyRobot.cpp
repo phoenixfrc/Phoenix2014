@@ -148,6 +148,7 @@ public:
 		int maxDriveLoop = 5*200; // 5 seconds @200 times/sec
 		bool shootingBall = false;
 		bool wantFirstShot = true;
+
 		//int exitAfterShootTime = 1*200;
 		if(checkBox1 == false){
 			//Ultrasonic Autonomous
@@ -163,7 +164,8 @@ public:
 				bool motorDriveTimeExceeded = time > maxDriveLoop;
 				if(isInRange){
 					driveTrain.TankDrive(0.0,0.0);
-					if((ballGrabber.elevatorAngleSensor.GetVoltage() > 1.60) && (ballGrabber.elevatorAngleSensor.GetVoltage() < 1.64)){
+					if((ballGrabber.elevatorAngleSensor.GetVoltage() > PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE - 0.05) &&
+							(ballGrabber.elevatorAngleSensor.GetVoltage() < PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE + 0.05)){
 						//Enough to cover break release and start winding again.
 						
 						//bad code DOES NOT disable winch motor
@@ -185,7 +187,7 @@ public:
 					}
 					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
 				}
-				ballGrabber.RunElevatorAutonomous(1.62);
+				ballGrabber.RunElevatorAutonomous(PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE);
 /****
 				printDelay = printDelay++;
 				if(printDelay >= 100){
