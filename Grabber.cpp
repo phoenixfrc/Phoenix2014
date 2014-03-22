@@ -31,11 +31,15 @@ Grabber::Grabber(Joystick * gamePad) :
 	detectBall = true;
 	m_stateString = "";
 	m_gamePad = gamePad;
+	multiplier = SmartDashboard::GetNumber("I");
+	boost = SmartDashboard::GetNumber("D");
 }
 
 void Grabber::init(){
 	m_grabberState = unknown;
 	this->resetSetPoint();
+	multiplier = SmartDashboard::GetNumber("I");
+	boost = SmartDashboard::GetNumber("D");
 }
 
 //Caller needs to enable elevator controller.
@@ -217,13 +221,13 @@ void Grabber::DriveElevatorTestMode(float value){
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
-	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) * 6.0;
+	float pidError = (m_desiredElevatorVoltage - elevatorAngleSensor.GetVoltage()) * multiplier;  //Changed multiplier to dashboard constant
 	if((-PHOENIX2014_PID_THRESHOLD < pidError) && (pidError < PHOENIX2014_PID_THRESHOLD)){
 		m_elevatorPower = 0.0;
 	}
 	else{
 		// Ensure the motor power is between .15 and 1
-		double motorPower = pidError + (pidError > 0 ? 0.15 : -0.15);
+		double motorPower = pidError + (pidError > 0 ? boost : -boost);  //Changed boost to dashboard constant
 		if (motorPower < -1.0) {
 			motorPower = -1.0;
 		} else if (motorPower > 1.0) {

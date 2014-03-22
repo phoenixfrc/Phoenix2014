@@ -42,6 +42,8 @@ private:
 		DigitalInput forwardLimitSwitch;
 		DigitalInput backLimitSwitch;
 		DeadZoneTalon elevatorMotor;
+		double multiplier;
+		double boost;
 public:
 		AnalogChannel elevatorAngleSensor;
 		PIDController elevatorController;
