@@ -31,6 +31,7 @@ public:
 private:
 		Joystick * m_gamePad;
 		enum grabberStates{open, opening, closed, closing, unknown};
+		int m_motorOnTimeCount;
 public:
 		Talon grabberActuator;
 		

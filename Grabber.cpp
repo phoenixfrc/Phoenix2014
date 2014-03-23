@@ -31,8 +31,9 @@ Grabber::Grabber(Joystick * gamePad) :
 	detectBall = true;
 	m_stateString = "";
 	m_gamePad = gamePad;
-	multiplier = SmartDashboard::GetNumber("I");
-	boost = SmartDashboard::GetNumber("D");
+	multiplier = 0.0;
+	boost = 0.0;
+	m_motorOnTimeCount = 0;
 }
 
 void Grabber::init(){
@@ -70,11 +71,13 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 		}
 	//int currentElevatorAngle =(int) (elevatorAngleSensor.GetVoltage()*PHOENIX2014_POT_DEGREES_PER_VOLT);
 	//This will 
+	bool motorOnTooLong = (m_motorOnTimeCount > PHOENIX2014_MAX_GRAB_MOTOR_ON_CYCLES);
 	switch(m_grabberState){
 		case closing:
 			m_stateString = "GS=closing";
 			grabberActuator.Set(m_grabberPower*-1);
-			if(reachedLimitForClosed){
+			m_motorOnTimeCount ++;
+			if(reachedLimitForClosed || motorOnTooLong){
 				m_grabberState = closed;
 			}
 			break;
@@ -82,6 +85,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			
 			m_stateString = "GS=closed";
 			grabberActuator.Set(0.0);
+			m_motorOnTimeCount = 0;
 			if(grabberButton){
 				m_grabberState = opening;
 			}
@@ -89,13 +93,15 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 		case opening:
 			m_stateString = "GS=opening";
 			grabberActuator.Set(m_grabberPower);
-			if(reachedLimitForOpen){
+			m_motorOnTimeCount ++;
+			if(reachedLimitForOpen || motorOnTooLong){
 				m_grabberState = open;
 			}
 			break;
 		case open:
 			m_stateString = "GS=open";
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
+			m_motorOnTimeCount = 0;
 			if (grabberButton /*|| (detectBall && useBallSensor)*/){
 				m_grabberState = closing;
 			}
