@@ -53,7 +53,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 							button8 ? '1':'0',
 							checkBox1 ? '1':'0'
 							);
-			lcd->PrintfLine(DriverStationLCD::kUser_Line6, "Thumstick=%f", gamePad->GetX());
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "Tx=%5.2f, Ty=%5.2f", gamePad->GetX(), gamePad->GetY());
 			// SmartDashboard::PutNumber("Team Number", 2342);
 			if(button2){
 				m_mode = testLimitSwitches;  //Changeds to testShooter
@@ -65,7 +65,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line2, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2f",
 					theElevatorAndGrabber->elevatorAngleSensor.GetVoltage());
-			m_mode = testShooter;  //Changeds to testShooter
+			if(button2){m_mode = testShooter;  //Changeds to testShooter
+		
+			}
 			break;
 		case testShooter:
 			float dPadThumbstick = GetThumbstickWithZero(gamePad);
