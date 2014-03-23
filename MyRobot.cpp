@@ -128,6 +128,7 @@ public:
 		float autoDriveSlowSpeed = 0.38;
 		int time = 0;
 		int maxDriveLoop = 5*200; // 5 seconds @200 times/sec
+		int minDriveLoop = 3*200;
 		bool shootingBall = false;
 		bool wantFirstShot = true;
 
@@ -145,7 +146,8 @@ public:
 				}
 				time++;
 				bool motorDriveTimeExceeded = time > maxDriveLoop;
-				if(isInRange){
+				bool motorMinMet = time > minDriveLoop;
+				if(isInRange && motorMinMet){
 					driveTrain.TankDrive(0.0,0.0);
 					if((ballGrabber.elevatorAngleSensor.GetVoltage() > PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE - 0.05) &&
 							(ballGrabber.elevatorAngleSensor.GetVoltage() < PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE + 0.05)){
@@ -165,7 +167,7 @@ public:
 					driveTrain.TankDrive(0.0,0.0);
 				}
 				else{
-					if(currentDistance < closeDistance){
+					if((currentDistance < closeDistance) && motorMinMet){
 						autoDriveSpeed = autoDriveSlowSpeed;
 					}
 					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
@@ -332,6 +334,7 @@ public:
 		driveDistanceRight.Reset();
 		driveDistanceRight.Start();
 		ballGrabber.resetSetPoint();
+		shooter.motorShutOff();
 		while (IsTest() && IsEnabled()){
 			lcd->Clear();
 			tester.PerformTesting(&gamePad, &driveDistanceRight, lcd, &rightJoyStick, &leftJoyStick,

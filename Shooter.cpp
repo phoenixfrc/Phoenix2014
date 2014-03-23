@@ -118,6 +118,10 @@ void Shooter::TestShooter(float brakePower, float loaderPower){
 	brakeMotor.Set(brakePower);
 	winchMotor.Set(loaderPower);
 }
+void Shooter::motorShutOff(){
+	brakeMotor.Set(0.0);
+	winchMotor.Set(0.0);
+}
 void Shooter::PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd){
 	if(m_shooterState == shoot){
 		lcd->PrintfLine(line, "ShSt=shoot");

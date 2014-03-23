@@ -18,6 +18,7 @@ public:
 		bool OperateShooter(bool shooterButton, bool loadShooterButton);  //Controll the Shooter
 		void DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		void TestShooter(float brakePower, float loaderPower);
+		void motorShutOff();
 		void PrintShooterState(DriverStationLCD::Line line, DriverStationLCD * lcd);
 		~Shooter();  //The destructor called instances destroyed
 		void init();
