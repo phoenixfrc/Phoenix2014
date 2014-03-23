@@ -212,7 +212,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				double iValue = SmartDashboard::GetNumber("I");
 				double dValue = SmartDashboard::GetNumber("D");
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
-				double distanceValue = SmartDashboard::GetNumber("Distance");
+				double distanceValue = SmartDashboard::GetNumber("Length");
 				double grabberValue = SmartDashboard::GetNumber("Grabber");
 				double extra1Value = SmartDashboard::GetNumber("Extra1");
 				double extra2Value = SmartDashboard::GetNumber("Extra2");
@@ -222,7 +222,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				dashboardPreferences->PutDouble("I", iValue);
 				dashboardPreferences->PutDouble("D", dValue);
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
-				dashboardPreferences->PutDouble("Distance", distanceValue);
+				dashboardPreferences->PutDouble("Length", distanceValue);
 				dashboardPreferences->PutDouble("Grabber", grabberValue);
 				dashboardPreferences->PutDouble("Extra1", extra1Value);
 				dashboardPreferences->PutDouble("Extra2", extra2Value);

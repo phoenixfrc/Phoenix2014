@@ -7,7 +7,6 @@
 #include "Preferences.h"
 
 
-
 /**
  * This is a demo program showing the use of the RobotBase class.
  * The SimpleRobot class is the base of a robot application that will automatically call your
@@ -16,48 +15,41 @@
  */ 
 class RobotDemo : public SimpleRobot
 {
+	DriverStationLCD * lcd;
+	Preferences * dashboardPreferences;
 	RobotDrive driveTrain; // robot drive system
 	Joystick rightJoyStick; // rightStick wired to port 1
 	Joystick leftJoyStick;  // leftStick wired to port 2
 	Joystick gamePad;
 	Grabber ballGrabber;
-	//Encoder elevation;//we will use digital I/O port numbers 1 and 2
 	Encoder driveDistanceRight;
 	Encoder driveDistanceLeft;
-	//Encoder testEncoder;
 	Shooter shooter;
 	DigitalInput testSwitch;
 	Talon testTalons;
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
 	AnalogTrigger analogTestSwitch;
-	//RobotDrive speedLimiter;
-	DriverStationLCD * lcd;
-	Preferences * dashboardPreferences;
 	bool m_display_page_1;
 	bool m_FromAutonomous;
 	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
 	RobotDemo()://This is the constructer function
-		//myRobot(1, 2, 3, 4),	// lr, lf, rr, rf pwm channels,
+		lcd(DriverStationLCD::GetInstance()),
+		dashboardPreferences(Preferences::GetInstance()),
 		driveTrain(PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
 		rightJoyStick(2),// as they are declared above.
 		leftJoyStick(1),
 		gamePad(3),
 		ballGrabber(&gamePad),
-		//elevation(1,2),
 		driveDistanceRight(PHOENIX2014_R_DRIVE_ENCODER_A,PHOENIX2014_R_DRIVE_ENCODER_B ),
 		driveDistanceLeft(PHOENIX2014_L_DRIVE_ENCODER_A, PHOENIX2014_L_DRIVE_ENCODER_B),
-		//testEncoder(5,6),
 		testSwitch(3),
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
-		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
-		//speedLimiter(1, 2),
-	    lcd(DriverStationLCD::GetInstance()),
-		dashboardPreferences(Preferences::GetInstance())
+		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5)
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -80,7 +72,7 @@ public:
 		double I = dashboardPreferences->GetDouble("I");
 		double D = dashboardPreferences->GetDouble("D");
 		double angleMeasure = dashboardPreferences->GetDouble("Angle");
-		double distanceMeasure = dashboardPreferences->GetDouble("Distance");
+		double length = dashboardPreferences->GetDouble("Length");
 		double grabberMeasure = dashboardPreferences->GetDouble("Grabber");
 		double extra1 = dashboardPreferences->GetDouble("Extra1");
 		double extra2 = dashboardPreferences->GetDouble("Extra2");
@@ -90,23 +82,13 @@ public:
 		SmartDashboard::PutNumber("I", I);
 		SmartDashboard::PutNumber("D", D);
 		SmartDashboard::PutNumber("Angle", angleMeasure);
-		SmartDashboard::PutNumber("Distance", distanceMeasure);
+		SmartDashboard::PutNumber("Length", length);
 		SmartDashboard::PutNumber("Grabber", grabberMeasure);
 		SmartDashboard::PutNumber("Extra1", extra1);
 		SmartDashboard::PutNumber("Extra2", extra2);
 		SmartDashboard::PutNumber("Extra3", extra3);
 		SmartDashboard::PutNumber("Slider 1", slider1);
 		m_FromAutonomous = false;
-		/*double pFromDashboard = SmartDashboard::GetNumber("P");
-		double iFromDashboard = SmartDashboard::GetNumber("I");
-		double dFromDashboard = SmartDashboard::GetNumber("D");
-		double angleFromDashboard = SmartDashboard::GetNumber("Angle");
-		double distanceFromDashboard = SmartDashboard::GetNumber("Distance");
-		double grabberFromDashboard = SmartDashboard::GetNumber("Grabber");
-		double extra1FromDashboard = SmartDashboard::GetNumber("Extra1");
-		double extra2FromDashboard = SmartDashboard::GetNumber("Extra2");
-		double extra3FromDashboard = SmartDashboard::GetNumber("Extra3");
-		double sliderFromDashboard = SmartDashboard::GetNumber("Slider 1");	*/
 	}
 	
 	//this called when the robot is enabled
@@ -151,6 +133,7 @@ public:
 
 		//int exitAfterShootTime = 1*200;
 		if(checkBox1 == false){
+			int printDelay = 0;
 			//Ultrasonic Autonomous
 			bool isInRange = false;
 			while(IsAutonomous() && IsEnabled())
@@ -188,18 +171,18 @@ public:
 					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
 				}
 				ballGrabber.RunElevatorAutonomous(PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE);
-/****
 				printDelay = printDelay++;
-				if(printDelay >= 100){
+				if(printDelay >= 200){
 					lcd->Clear();
 					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "In Autonomous");
-					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Ulra=%f", frontUltrasonic.GetAverageDistance());
-					lcd->PrintfLine(DriverStationLCD::kUser_Line3, "CEV=%f", ballGrabber.elevatorAngleSensor.GetVoltage());
-					lcd->PrintfLine(DriverStationLCD::kUser_Line4, "DEV=%f", ballGrabber.m_desiredElevatorVoltage);
+					shooter.DisplayDebugInfo(DriverStationLCD::kUser_Line2, lcd);
+					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
+					lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ulra=%f", frontUltrasonic.GetAverageDistance());
+					//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%f", ballGrabber.elevatorAngleSensor.GetVoltage());
+					//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "DEV=%f", ballGrabber.m_desiredElevatorVoltage);
 					lcd->UpdateLCD();
 					printDelay = 0;
 				}
-****/
 				Wait(0.005);
 			}
 			lcd->Clear();
