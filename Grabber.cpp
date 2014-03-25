@@ -53,7 +53,8 @@ void Grabber::resetSetPoint(){
 
 void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	//One button will toggle between open and closed grabber
-	bool grabberButton = m_gamePad->GetRawButton(1);
+	bool openGrabberButton = m_gamePad->GetRawButton(4);
+	bool closeGrabberButton = m_gamePad->GetRawButton(2);
 	//float moveGrabberUpButton = gamePad->GetRawButton(2);
 	//float moveGrabberDownButton = gamePad->GetRawButton(4);
 	//bool ballPresent =  ballSensor.Get();
@@ -86,7 +87,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			m_stateString = "GS=closed";
 			grabberActuator.Set(0.0);
 			m_motorOnTimeCount = 0;
-			if(grabberButton){
+			if(openGrabberButton){
 				m_grabberState = opening;
 			}
 			break;
@@ -102,7 +103,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			m_stateString = "GS=open";
 			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
 			m_motorOnTimeCount = 0;
-			if (grabberButton /*|| (detectBall && useBallSensor)*/){
+			if (closeGrabberButton /*|| (detectBall && useBallSensor)*/){
 				m_grabberState = closing;
 			}
 			break;

@@ -157,7 +157,7 @@ public:
 					//	if ((time-startShootTime)>exitAfterShootTime) {
 					//		break;
 					//	}
-						shootingBall = shooter.OperateShooter(wantFirstShot, false);
+						shootingBall = shooter.OperateShooter(wantFirstShot);
 					}
 					if(shootingBall == true){
 						wantFirstShot = false;
@@ -203,7 +203,7 @@ public:
 			driveTrain.TankDrive(0.0,0.0);
 			int counter = 0;
 			while(counter < 600){
-				shooter.OperateShooter(shooting, false);
+				shooter.OperateShooter(shooting);
 				Wait(0.005);
 			}
 		}
@@ -297,8 +297,8 @@ public:
 			}
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
-			bool shooterButton = gamePad.GetRawButton(7);//TODO make constants
-			bool loadShooterButton = gamePad.GetRawButton(8);
+			bool shooterButton = gamePad.GetRawButton(7) || gamePad.GetRawButton(8);//TODO make constants
+			//bool loadShooterButton = gamePad.GetRawButton(8);
 			if (shooterButton && shootDelay == 0){
 				shootDelay++;
 			}
@@ -306,7 +306,7 @@ public:
 				shootDelay++;
 			}
 			bool ReadyToShoot = (shootDelay>PHOENIX2014_LOOP_COUNT_FOR_SHOOT_DELAY);
-			shooter.OperateShooter(ReadyToShoot,loadShooterButton);
+			shooter.OperateShooter(ReadyToShoot);
 			if (ReadyToShoot){
 				shootDelay = 0;
 			}

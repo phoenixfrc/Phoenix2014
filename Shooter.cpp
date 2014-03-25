@@ -18,7 +18,7 @@ void Shooter::init(){
 	m_unwindDelayCounter = 0;
 }
 
-bool Shooter::OperateShooter(bool shootRequest, bool loadRequest) {
+bool Shooter::OperateShooter(bool shootRequest) {
 
 	bool isWound = !winchRetractedSensor.Get();
 	bool isBraked = brakeEngaged.Get();
