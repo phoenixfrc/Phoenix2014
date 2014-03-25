@@ -90,6 +90,9 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			if(openGrabberButton){
 				m_grabberState = opening;
 			}
+			if(closeGrabberButton){
+				m_grabberState = closing;
+			}
 			break;
 		case opening:
 			m_stateString = "GS=opening";
@@ -116,7 +119,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 				m_grabberState = open;
 			}
 			else{
-				m_grabberState = opening;
+				m_grabberState = closing;
 			}
 			break;
 	}
