@@ -25,6 +25,7 @@ public:
 			            UltrasonicSensor * grabberUltrasonic, AnalogTrigger * analogTestSwitch,
 			            Shooter * theShooter, Grabber * theElevator);
 	static float GetThumbstickWithZero(Joystick * gamePad);
+	static float GetTwistWithZero(Joystick * gamePad);
 	~TestMode();
 private:
 	int m_mode;

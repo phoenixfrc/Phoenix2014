@@ -260,6 +260,13 @@ float TestMode::GetThumbstickWithZero(Joystick * gamePad){
 	return rawValue;
 }
 
+float TestMode::GetTwistWithZero(Joystick * gamePad){
+	float rawValue = gamePad->GetTwist();
+	if(rawValue < 0.07 && rawValue > -0.07){
+		return 0.0;
+	}
+	return rawValue;
+}
 
 TestMode::~TestMode(){
 	

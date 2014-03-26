@@ -55,11 +55,11 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	//One button will toggle between open and closed grabber
 	bool openGrabberButton = m_gamePad->GetRawButton(4);
 	bool closeGrabberButton = m_gamePad->GetRawButton(2);
-	//float moveGrabberUpButton = gamePad->GetRawButton(2);
-	//float moveGrabberDownButton = gamePad->GetRawButton(4);
+	float manualGrabberSpeed = TestMode::GetTwistWithZero(m_gamePad);
 	//bool ballPresent =  ballSensor.Get();
 	bool reachedLimitForClosed = !grabberCloseLimit.Get();
 	bool reachedLimitForOpen = !grabberOpenLimit.Get();
+	float desiredGrabberSpeed = 0.0;
 	//Ball detector.
 	if(ballDetector.GetDistance() < distanceToClose){
 		detectBall = true;
@@ -76,16 +76,19 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	switch(m_grabberState){
 		case closing:
 			m_stateString = "GS=closing";
-			grabberActuator.Set(m_grabberPower*-1);
+			desiredGrabberSpeed = m_grabberPower*-1;
 			m_motorOnTimeCount ++;
 			if(reachedLimitForClosed || motorOnTooLong){
 				m_grabberState = closed;
+			}
+			else if (openGrabberButton){
+				m_grabberState = opening;
 			}
 			break;
 		case closed:
 			
 			m_stateString = "GS=closed";
-			grabberActuator.Set(0.0);
+			desiredGrabberSpeed = manualGrabberSpeed;
 			m_motorOnTimeCount = 0;
 			if(openGrabberButton){
 				m_grabberState = opening;
@@ -93,21 +96,30 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			if(closeGrabberButton){
 				m_grabberState = closing;
 			}
+			else if(reachedLimitForOpen){
+				m_grabberState = open;
+			}
 			break;
 		case opening:
 			m_stateString = "GS=opening";
-			grabberActuator.Set(m_grabberPower);
+			desiredGrabberSpeed = m_grabberPower;
 			m_motorOnTimeCount ++;
 			if(reachedLimitForOpen || motorOnTooLong){
 				m_grabberState = open;
 			}
+			else if(closeGrabberButton){
+				m_grabberState = closing;
+			}
 			break;
 		case open:
 			m_stateString = "GS=open";
-			grabberActuator.Set(0.0);//if button is pressed or ball is detected.
+			desiredGrabberSpeed = manualGrabberSpeed;//if button is pressed or ball is detected.
 			m_motorOnTimeCount = 0;
 			if (closeGrabberButton /*|| (detectBall && useBallSensor)*/){
 				m_grabberState = closing;
+			}
+			if(reachedLimitForClosed){
+				m_grabberState = closed;
 			}
 			break;
 		case unknown://unknown is the same as default
@@ -123,6 +135,14 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			}
 			break;
 	}
+	//enforce limit switches
+	if(reachedLimitForClosed && (desiredGrabberSpeed < 0.0)){
+		desiredGrabberSpeed = 0.0;
+	}
+	if(reachedLimitForOpen && (desiredGrabberSpeed > 0.0)){
+		desiredGrabberSpeed = 0.0;
+	}
+	grabberActuator.Set(desiredGrabberSpeed);
 	//this->ButtonControledElevator();
 	this->ThumbstickControledElevator(); //update desired position based on thumbstick and limit switches.
 	this->DriveMotorWithPIDLoop();

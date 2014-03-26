@@ -6,7 +6,6 @@
 #include "UltrasonicSensor.h"
 #include "Preferences.h"
 
-
 /**
  * This is a demo program showing the use of the RobotBase class.
  * The SimpleRobot class is the base of a robot application that will automatically call your
@@ -317,7 +316,7 @@ public:
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
-		ballGrabber.StopPidLoop();	
+		ballGrabber.StopPidLoop();
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
