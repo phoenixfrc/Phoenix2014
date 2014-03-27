@@ -33,8 +33,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	bool button7 = gamePad->GetRawButton(7); //Gets button seven (LT = bottom left trigger)
 	bool button8 = gamePad->GetRawButton(8); //Gets button eight (RT = bottom right trigger)
 	encoder->SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_LEFT);
-	float desiredValue = rightJoyStick->GetAxis(Joystick::kYAxis);
-
 	bool checkBox1 = SmartDashboard::GetBoolean("Checkbox 1");
 //	double slider1 = SmartDashboard::GetNumber("Slider 1");
 	
@@ -58,6 +56,10 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			if(button2){
 				m_mode = testLimitSwitches;  //Changeds to testShooter
 			}
+			if(button3){
+				m_mode = savePreferences;
+			}
+			
 			break;
 		case testLimitSwitches:  //tests all the limit switches and potentiometer.
 
@@ -67,6 +69,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 					theElevatorAndGrabber->elevatorAngleSensor.GetVoltage());
 			if(button2){m_mode = testShooter;  //Changeds to testShooter
 		
+			}
+			if(button3){
+				m_mode = testGamepad;
 			}
 			break;
 		case testShooter:
@@ -85,6 +90,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 					theShooter->TestShooter(0.0, 0.0);			
 				}
 			}
+			if(button3){
+				m_mode = testLimitSwitches;
+			}
 			
 			else{
 				//drive brake
@@ -101,6 +109,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			//turn both motors off
 				theShooter->TestShooter(0.0, 0.0);
 			}
+			if(button3){
+				m_mode = testLimitSwitches;
+			}
 			
 			break;
 		case testGrabber:
@@ -114,6 +125,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				theElevatorAndGrabber->elevatorController.Disable();
 				m_mode = testElevator;  //Changes mode to testElevator
 			
+			}
+			if(button3){
+				m_mode = testShooter;
 			}
 			break;
 		case testElevator:
@@ -133,6 +147,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				// theElevatorAndGrabber->elevatorController.Enable();
 				
 			}
+			if(button3){
+				m_mode = testGrabber;
+			}
 			break;
 		case testJoystick:  //Tests the Joysticks
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "LJS=%f,RJS=%f", //prints out Joystick values to LCD Display
@@ -143,32 +160,13 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			
 			if(button2){
-				m_mode = testTalon; //Changes mode to test Talon
+				m_mode = testEncoder; //Changes mode to test Talon
+			}
+			if(button3){
+				m_mode = testElevator;
 			}
 			break;
-		case testTalon:  //Tests the Talons
-			testTalons->Set(desiredValue);
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "J%5.3,T%5.3f",desiredValue, testTalons->Get());
-			
-			//lcd->PrintfLine(DriverStationLCD::kUser_Line4, "%5.3f %5.3f %5.3f", lJoyStick, rJoyStick, SmartDashboard::GetNumber("Slider 1"));
-							//lcd->PrintfLine(DriverStationLCD::kUser_Line5, "DEV=%6.2fSP=%6.2f", ballGrabber.desiredElevatorVoltage, ballGrabber.elevatorController.GetSetpoint());
-							//lcd->PrintfLine(DriverStationLCD::kUser_Line6, "CEV=%6.2fEE=%6.2f",
-							//	ballGrabber.elevatorAngleSensor.PIDGet(),
-							//	ballGrabber.elevatorController.GetError());
-			
-			
-			if(button2){
-				m_mode = testIO;  //Changes mode to test IO
-				
-			}
-			break;
-		case testIO:  //Tests the Input and Outputs
-			
-			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "testingIO, %d", testSwitch->Get());
-			if(button2){
-				m_mode = testEncoder; //changes mode to test Encoder
-			}
-			break;
+		
 		case testEncoder:  //Tests the Encoders
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%d", encoder->Get());
@@ -177,6 +175,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			if(button2){
 				m_mode = ultrasonicTestMode; //Changes mode to Test Ultrasonic
+			}
+			if(button3){
+				m_mode = testJoystick;
 			}
 			break;
 		case ultrasonicTestMode:
@@ -193,6 +194,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			if(button2){
 				m_mode = analogSwitchMode;
 			}
+			if(button3){
+				m_mode = testEncoder;
+			}
 			break;
 		case analogSwitchMode:
 			analogTestSwitch->SetLimitsVoltage(1.5, 3);
@@ -201,6 +205,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			                );
 			if(button2){
 				m_mode = savePreferences;
+			}
+			if(button3){
+				m_mode = ultrasonicTestMode;
 			}
             break;
 		case savePreferences:
@@ -244,6 +251,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 					lcd->UpdateLCD();
 					Wait(5);
 			}
+				if(button3){
+					m_mode = analogSwitchMode;
+				}
 		break;
 		default:
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "unknown mode");
