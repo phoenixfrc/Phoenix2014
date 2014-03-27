@@ -29,6 +29,7 @@ class RobotDemo : public SimpleRobot
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
 	AnalogTrigger analogTestSwitch;
+	Relay lightBulb;
 	bool m_display_page_1;
 	bool m_FromAutonomous;
 	
@@ -48,7 +49,8 @@ public:
 		testTalons(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT),
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
-		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5)
+		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
+		lightBulb(1)
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -253,7 +255,6 @@ public:
 			//Sets motor equal to the elevator sensor.
 
 			ballGrabber.OperatePIDLoop();
-			
 
 		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
@@ -297,6 +298,8 @@ public:
 			//int rotation = elevation.Get();
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7) || gamePad.GetRawButton(8);//TODO make constants
+			bool automaticAimButton = gamePad.GetRawButton(1);
+			float distanceToWall = frontUltrasonic.GetAverageDistance();
 			//bool loadShooterButton = gamePad.GetRawButton(8);
 			if (shooterButton && shootDelay == 0){
 				shootDelay++;
@@ -312,6 +315,15 @@ public:
 			bool okToGrab = (shootDelay == 0);//Normaly 0 unless delaying
 			ballGrabber.OperateGrabber(shooterButton, okToGrab);
 			//Trying to make some things happen automatically during teleoperated
+			if(automaticAimButton){
+				ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE;
+			}
+			if((distanceToWall > 11.0) && distanceToWall < 12.0){
+				lightBulb.Set(Relay::kOn);
+			}
+			else{
+				lightBulb.Set(Relay::kOff);
+			}
 			
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
