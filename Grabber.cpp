@@ -177,7 +177,7 @@ float Grabber::ButtonControledElevator(){
 float Grabber::ThumbstickControledElevator(){
 	float dPadThumbstick = TestMode::GetThumbstickWithZero(m_gamePad);
 	
-	if (dPadThumbstick != 0.0){
+	if(dPadThumbstick != 0.0){
 		float currentVoltage = elevatorAngleSensor.GetVoltage();
 		m_desiredElevatorVoltage = currentVoltage + dPadThumbstick/5.0;
 	}
@@ -188,7 +188,7 @@ float Grabber::ThumbstickControledElevator(){
 	if(m_desiredElevatorVoltage < PHOENIX2014_VOLTAGE_AT_FRONT){
 		m_desiredElevatorVoltage = PHOENIX2014_VOLTAGE_AT_FRONT;
 	}
-	return this->ElevatorLimitSwitchBehavior();	
+	return this->ElevatorLimitSwitchBehavior();
 }
 //this function will move the elevator to an angle based on the elevator voltage
 void Grabber::RunElevatorAutonomous(float autoDesiredElevatorVoltage){
@@ -248,6 +248,7 @@ void Grabber::DriveElevatorTestMode(float value){
 	
 	elevatorMotor.Set(value, topLimit, bottomLimit);
 }
+
 //Custom Pid will figure out the error between the current value and the desired value and set the motor accordingly.
 float Grabber::OperatePIDLoop(){
 	//Make constant for 5.0 and call it max voltage or somthing like that.
@@ -287,7 +288,6 @@ void Grabber::StopPidLoop(){
 		elevatorMotor.Set(0.0);
 		m_desiredElevatorVoltage = elevatorAngleSensor.GetVoltage();
 		this->ElevatorLimitSwitchBehavior();
-
 }
 
 
