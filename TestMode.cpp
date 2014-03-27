@@ -227,7 +227,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				dashboardPreferences->PutDouble("Extra1", extra1Value);
 				dashboardPreferences->PutDouble("Extra2", extra2Value);
 				dashboardPreferences->PutDouble("Extra3", extra3Value);
-				dashboardPreferences->PutDouble("Slider 1", slider1Value);
+				dashboardPreferences->PutDouble("Slider1", slider1Value);
 				m_savePreferencesToFlash = true;
 				lcd->PrintfLine(DriverStationLCD::kUser_Line2, "added pref to be saved");
 				lcd->PrintfLine(DriverStationLCD::kUser_Line3, "angle=%f", elevatorAngleValue);

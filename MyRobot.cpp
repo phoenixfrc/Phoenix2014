@@ -78,7 +78,7 @@ public:
 		double extra1 = dashboardPreferences->GetDouble("Extra1");
 		double extra2 = dashboardPreferences->GetDouble("Extra2");
 		double extra3 = dashboardPreferences->GetDouble("Extra3");
-		double slider1 = dashboardPreferences->GetDouble("Slider 1");
+		double slider1 = dashboardPreferences->GetDouble("Slider1");
 		SmartDashboard::PutNumber("P", P);
 		SmartDashboard::PutNumber("I", I);
 		SmartDashboard::PutNumber("D", D);
