@@ -60,8 +60,15 @@ public:
 	
 	float limitSpeed(float requestedSpeed)
 	{
-		float scaleSpeed = SmartDashboard::GetNumber("Slider 1");
+		float scaleSpeed = SmartDashboard::GetNumber("Extra1");
+		if(scaleSpeed <= 0){
+			scaleSpeed = 0;
+		}
+		if(scaleSpeed > 100){
+			scaleSpeed = 100.0;
+		}
 		return requestedSpeed * 0.01 * scaleSpeed;
+		
 	}
 	
 	// Executed at Robot power-on
