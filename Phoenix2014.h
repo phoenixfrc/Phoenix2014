@@ -30,7 +30,7 @@
 
 // *******************************************************************
 //spikes needed for shooter
-#define PHOENIX2014_RELAY_UNUSED1 1
+#define PHOENIX2014_RELAY_LIGHTBULB 1
 //Unused Spikes.
 #define PHOENIX2014_RELAY_UNUSED2 2
 #define PHOENIX2014_RELAY_UNUSED3 3

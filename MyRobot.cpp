@@ -50,7 +50,7 @@ public:
 		frontUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
 		backUltrasonic(PHOENIX2014_ANALOG_MODULE_NUMBER, PHOENIX2014_ANALOG_ULTRASONIC_BACK),
 		analogTestSwitch(PHOENIX2014_ANALOG_MODULE_NUMBER, 5),
-		lightBulb(1)
+		lightBulb(PHOENIX2014_RELAY_LIGHTBULB)
 	{
 		driveTrain.SetExpiration(0.1);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -272,7 +272,9 @@ public:
 				if(m_display_page_1)
 				{
 					lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Teleop pg1");
-					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f", frontUltrasonic.GetDistance(), backUltrasonic.GetDistance());
+					lcd->PrintfLine(DriverStationLCD::kUser_Line2, "FR %4.0f, BA %4.0f",
+							        frontUltrasonic.GetAverageDistance(),
+							        backUltrasonic.GetAverageDistance());
 					shooter.PrintShooterState(DriverStationLCD::kUser_Line3, lcd);
 					SmartDashboard::PutNumber("UltrasonicF", 1);
 					SmartDashboard::PutNumber("UltrasonicB", 1);                                         
@@ -325,17 +327,28 @@ public:
 			if(automaticAimButton){
 				ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE;
 			}
-			if((distanceToWall > 11.0) && distanceToWall < 12.0){
-				lightBulb.Set(Relay::kOn);
+			//((distanceToWall > (12.0*11.0)) && distanceToWall < (12.0*13.0)){
+				//lightBulb.Set(Relay::kOn);
+			//}
+			//else{
+			
+#ifdef WANTWEIRDPULSING
+			if (printDelay < 30) {
+				lightBulb.Set(Relay::kForward);
 			}
-			else{
+			else if (printDelay >= 30 && printDelay < 65) {
+				lightBulb.Set(Relay::kReverse);
+			}
+			else {
 				lightBulb.Set(Relay::kOff);
 			}
+#endif
 			
 			Wait(0.005);// wait for a motor update time
 		} // end of while enabled
 		driveTrain.StopMotor();
 		ballGrabber.StopPidLoop();
+		shooter.motorShutOff();
 		
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();

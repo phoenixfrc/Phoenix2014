@@ -56,7 +56,7 @@ bool Shooter::OperateShooter(bool shootRequest) {
 			winchMotor.Set(m_loaderPower);
 			if(isWound){
 				// Transition to next state - braking
-				winchMotor.Set(-0.1);
+				winchMotor.Set(m_loaderPower * 0.6);  //hold winch while braking
 				m_shooterState = braking;
 			}
 			break;
@@ -66,6 +66,7 @@ bool Shooter::OperateShooter(bool shootRequest) {
 			
 			if (isBraked){
 				brakeMotor.Set(0.0);
+				winchMotor.Set(0.0);
 				m_shooterState = unwinding;
 				m_unwindDelayCounter = 10*200; //this is 10 seconds at 200 iters per second
 			}
