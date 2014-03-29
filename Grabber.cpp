@@ -76,7 +76,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 	switch(m_grabberState){
 		case closing:
 			m_stateString = "GS=closing";
-			desiredGrabberSpeed = m_grabberPower*-1;
+			desiredGrabberSpeed = m_grabberPower;  // positive to open
 			m_motorOnTimeCount ++;
 			if(reachedLimitForClosed || motorOnTooLong){
 				m_grabberState = closed;
@@ -102,7 +102,7 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			break;
 		case opening:
 			m_stateString = "GS=opening";
-			desiredGrabberSpeed = m_grabberPower;
+			desiredGrabberSpeed = m_grabberPower * -1.0; // negative to open
 			m_motorOnTimeCount ++;
 			if(reachedLimitForOpen || motorOnTooLong){
 				m_grabberState = open;
@@ -136,10 +136,14 @@ void Grabber::OperateGrabber(bool openToShoot, bool useBallSensor){
 			break;
 	}
 	//enforce limit switches
-	if(reachedLimitForClosed && (desiredGrabberSpeed < 0.0)){
+	
+	// since closing is + motor power, don't allow > 0 if hit open limit
+	if(reachedLimitForClosed && (desiredGrabberSpeed > 0.0)){
 		desiredGrabberSpeed = 0.0;
 	}
-	if(reachedLimitForOpen && (desiredGrabberSpeed > 0.0)){
+	
+	// since opening is - motor power, don't allow < 0 if hit open limit
+	if(reachedLimitForOpen && (desiredGrabberSpeed < 0.0)){
 		desiredGrabberSpeed = 0.0;
 	}
 	grabberActuator.Set(desiredGrabberSpeed);
@@ -223,12 +227,13 @@ void Grabber::DisplayDebugInfo(DriverStationLCD::Line line, DriverStationLCD * l
 	bool bottomLimit = !forwardLimitSwitch.Get();
 	bool topLimit = !backLimitSwitch.Get();
 
-	lcd->PrintfLine(line, "M%8.5f gb=%c%c ev=%c%c", //prints the button values to LCD display
+	lcd->PrintfLine(line, "M%8.5f gb=%c%c ev=%c%c GV%c", //prints the button values to LCD display
 			            elevatorMotor.Get(),
 						reachedLimitForOpen ? 'O':'o',
 						reachedLimitForClosed ? 'C':'c',
 						bottomLimit ? 'F':'f',
-						topLimit ? 'B':'b'
+						topLimit ? 'B':'b',
+						grabberActuator.Get() > 0 ? '+' : '-'
 						);
 }
 void Grabber::DriveElevatorTestMode(float value){

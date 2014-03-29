@@ -6,6 +6,8 @@
 #include "DeadZoneTalon.h"
 #include "TestMode.h"
 
+
+
 class Grabber {
 	
 public:
@@ -33,6 +35,7 @@ private:
 		enum grabberStates{open, opening, closed, closing, unknown};
 		int m_motorOnTimeCount;
 public:
+		// Grabber opening = negative motor set, closing when postitive motor set
 		Talon grabberActuator;
 		
 private:

@@ -120,7 +120,8 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
 			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line3,lcd);
-			
+			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Gb=%6.3f", dPadThumbstick);
+
 			if(button2){
 				theElevatorAndGrabber->elevatorController.Disable();
 				m_mode = testElevator;  //Changes mode to testElevator
