@@ -4,9 +4,6 @@
 
 
 TestMode::TestMode(DriverStation * theDriverStation):
-	testUltrasonic1(2, PHOENIX2014_ANALOG_ULTRASONIC_FRONT),
-	testUltrasonic2(2, 3),
-	testUltrasonic3(2, 4),
 	dashboardPreferences(Preferences::GetInstance()),
    m_dsIO(theDriverStation->GetEnhancedIO())
 {
@@ -65,10 +62,11 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 
 			theElevatorAndGrabber->DisplayDebugInfo(DriverStationLCD::kUser_Line1,lcd);
 			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line2, lcd);
+			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", frontUltrasonic->GetAverageDistance());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line5, "CEV=%6.2f",
 					theElevatorAndGrabber->elevatorAngleSensor.GetVoltage());
-			if(button2){m_mode = testShooter;  //Changeds to testShooter
-		
+			if(button2){
+				m_mode = testShooter;  //Changes to testShooter
 			}
 			if(button3){
 				m_mode = testGamepad;
@@ -79,6 +77,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Shooter Test");
 			theShooter->DisplayDebugInfo(DriverStationLCD::kUser_Line3, lcd);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Ts = %f", dPadThumbstick);
+			//TODO Better winch/brake control. 
 			
 			if(m_driving_motor){
 				//if true drive motor 
@@ -107,6 +106,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			if(button2){
 				m_mode = testGrabber;  //Changes mode to testGrabber
 			//turn both motors off
+				//TODO Use new api MotorShutOff.
 				theShooter->TestShooter(0.0, 0.0);
 			}
 			if(button3){
@@ -115,6 +115,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			
 			break;
 		case testGrabber:
+			//TODO Respect limit switches.
 			dPadThumbstick = GetThumbstickWithZero(gamePad);
 			theElevatorAndGrabber->grabberActuator.Set(dPadThumbstick);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Grabber NI");
@@ -132,6 +133,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			}
 			break;
 		case testElevator:
+			//TODO Respect limit switches.
 			dPadThumbstick = GetThumbstickWithZero(gamePad);
 			lcd->PrintfLine(DriverStationLCD::kUser_Line1, "Elevator Test");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "Press Green Button");
@@ -169,6 +171,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 			break;
 		
 		case testEncoder:  //Tests the Encoders
+			//TODO Maybe remove case?
 			lcd->PrintfLine(DriverStationLCD::kUser_Line4, "Testing Encoder");
 			lcd->PrintfLine(DriverStationLCD::kUser_Line2, "%d", encoder->Get());
 			lcd->PrintfLine(DriverStationLCD::kUser_Line3, "%f", encoder->GetRate());
@@ -263,6 +266,7 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 	
 	}
 }
+
 float TestMode::GetThumbstickWithZero(Joystick * gamePad){
 	float rawValue = gamePad->GetY();
 	if(rawValue < 0.07 && rawValue > -0.07){
@@ -271,6 +275,7 @@ float TestMode::GetThumbstickWithZero(Joystick * gamePad){
 	return rawValue;
 }
 
+//Same as Y for right thumbstick.
 float TestMode::GetTwistWithZero(Joystick * gamePad){
 	float rawValue = gamePad->GetTwist();
 	if(rawValue < 0.07 && rawValue > -0.07){
