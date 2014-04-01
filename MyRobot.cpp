@@ -308,7 +308,7 @@ public:
 			//the above is commented because we are not using it yet
 			bool shooterButton = gamePad.GetRawButton(7) || gamePad.GetRawButton(8);//TODO make constants
 			bool automaticAimButton = gamePad.GetRawButton(1);
-			float distanceToWall = frontUltrasonic.GetAverageDistance();
+			//float distanceToWall = frontUltrasonic.GetAverageDistance();
 			//bool loadShooterButton = gamePad.GetRawButton(8);
 			if (shooterButton && shootDelay == 0){
 				shootDelay++;
