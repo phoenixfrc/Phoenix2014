@@ -90,10 +90,6 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 					theShooter->TestShooter(0.0, 0.0);
 				}
 			}
-			if(button3){
-				m_mode = testLimitSwitches;
-			}
-			
 			else{
 				//drive brake
 				theShooter->TestShooter(dPadThumbstick, 0.0);
