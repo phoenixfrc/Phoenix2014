@@ -86,10 +86,9 @@ void TestMode::PerformTesting(Joystick * gamePad,Encoder *encoder, DriverStation
 				if(button4){
 					m_driving_motor = false;
 					//turn off driving motor
-					theShooter->TestShooter(0.0, 0.0);			
+					theShooter->TestShooter(0.0, 0.0);
 				}
 			}
-			
 			else{
 				//drive brake
 				theShooter->TestShooter(dPadThumbstick, 0.0);

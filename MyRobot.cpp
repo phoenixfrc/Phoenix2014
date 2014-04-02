@@ -136,9 +136,10 @@ public:
 		float autoDriveSpeed = 0.55;
 		float autoDriveSlowSpeed = 0.38;
 		int time = 0;
+		
 		//TODO Verify times are good for competition robot. "D.M"
-		int maxDriveLoop = 5*200; // 5 seconds @200 times/sec
-		int minDriveLoop = 3*200;
+		int maxDriveLoop = 4*200; // 4 seconds @200 times/sec
+		int minDriveLoop = 1*200;
 		bool shootingBall = false;
 		bool wantFirstShot = true;
 
@@ -175,7 +176,7 @@ public:
 					if((currentDistance < closeDistance) && motorMinMet){
 						autoDriveSpeed = autoDriveSlowSpeed;
 					}
-					driveTrain.TankDrive(-1.0 * autoDriveSpeed - 0.03, -1.0 * autoDriveSpeed);
+					driveTrain.TankDrive(-0.95 * autoDriveSpeed, -1.0 * autoDriveSpeed);//the DriveTrain is BACKWARD
 				}
 				ballGrabber.RunElevatorAutonomous(PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE);
 				printDelay = printDelay++;

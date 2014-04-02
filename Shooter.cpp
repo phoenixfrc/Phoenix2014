@@ -56,7 +56,7 @@ bool Shooter::OperateShooter(bool shootRequest) {
 			winchMotor.Set(m_loaderPower);
 			if(isWound){
 				// Transition to next state - braking
-				winchMotor.Set(m_loaderPower * 0.6);  //hold winch while braking
+				winchMotor.Set(m_loaderPower * 0.4);  //hold winch while braking
 				m_shooterState = braking;
 			}
 			break;
