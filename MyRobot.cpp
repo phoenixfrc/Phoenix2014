@@ -136,7 +136,7 @@ public:
 		float autoDriveSlowSpeed = 0.38;
 		int time = 0;
 		int maxDriveLoop = 4*200; // 5 seconds @200 times/sec
-		int minDriveLoop = 1*200;
+		int minDriveLoop = 2*200;
 		bool shootingBall = false;
 		bool wantFirstShot = true;
 
