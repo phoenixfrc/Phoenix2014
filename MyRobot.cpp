@@ -32,6 +32,8 @@ class RobotDemo : public SimpleRobot
 	Relay lightBulb;
 	bool m_display_page_1;
 	bool m_FromAutonomous;
+	int m_MinDriveLoop;
+	//float m_MinAutoTime;
 	
 public:
 	// For the RobotDemo() constructor list the component constructors (myrobot, rightstick etc) in the order declared above.
@@ -56,6 +58,7 @@ public:
 		driveTrain.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 		driveTrain.SetInvertedMotor(RobotDrive::kRearRightMotor, false); 
 		m_FromAutonomous = false;
+		m_MinDriveLoop = 2*200;
 	}
 	
 	float limitSpeed(float requestedSpeed)
@@ -130,13 +133,12 @@ public:
 		driveDistanceLeft.Start();
 		//int printDelay = 0;
 		float minDistance = 52.0;  // Closer to the wall than this is too close
-		float maxDistance = 144.0; // Once at least this close, within shooting range
-		float closeDistance = maxDistance + 24.0;
+		float maxDistance = 12.0*11.0; // Once at least this close, within shooting range
+		//float closeDistance = maxDistance + 24.0;
 		float autoDriveSpeed = 0.55;
-		float autoDriveSlowSpeed = 0.38;
+		//float autoDriveSlowSpeed = 0.38;
 		int time = 0;
-		int maxDriveLoop = 4*200; // 5 seconds @200 times/sec
-		int minDriveLoop = 2*200;
+		int maxDriveLoop = 4*200; // 4 seconds @200 times/sec
 		bool shootingBall = false;
 		bool wantFirstShot = true;
 
@@ -144,21 +146,21 @@ public:
 		if(checkBox1 == false){
 			int printDelay = 0;
 			//Ultrasonic Autonomous
-			bool isInRange = false;
+			//bool isInRange = false;
 			while(IsAutonomous() && IsEnabled())
 			{
 				float currentDistance = frontUltrasonic.GetAverageDistance();
 				// Transition isInRange from false to true once
 				if((minDistance < currentDistance) && (currentDistance < maxDistance)){
-					isInRange = true;
+					//isInRange = true;
 				}
 				time++;
 				bool motorDriveTimeExceeded = time > maxDriveLoop;
-				bool motorMinMet = time > minDriveLoop;
-				if(isInRange && motorMinMet){
+				bool motorMinMet = time > m_MinDriveLoop;
+				if(/*isInRange ||*/ motorMinMet){
 					driveTrain.TankDrive(0.0,0.0);
-					if((ballGrabber.elevatorAngleSensor.GetVoltage() > PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE - 0.05) &&
-							(ballGrabber.elevatorAngleSensor.GetVoltage() < PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE + 0.05)){
+					if((ballGrabber.elevatorAngleSensor.GetVoltage() > PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE - 0.1) &&
+							(ballGrabber.elevatorAngleSensor.GetVoltage() < PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE + 0.1)){
 						//Enough to cover break release and start winding again.
 						
 						//bad code DOES NOT disable winch motor
@@ -175,10 +177,10 @@ public:
 					driveTrain.TankDrive(0.0,0.0);
 				}
 				else{
-					if((currentDistance < closeDistance) && motorMinMet){
-						autoDriveSpeed = autoDriveSlowSpeed;
-					}
-					driveTrain.TankDrive(-0.95 * autoDriveSpeed, -1.0 * autoDriveSpeed);//the DriveTrain is BACKWARD
+					//if((currentDistance < closeDistance) && motorMinMet){
+					//	autoDriveSpeed = autoDriveSlowSpeed;
+					//}
+					driveTrain.TankDrive(-0.97 * autoDriveSpeed, -1.0 * autoDriveSpeed);//the DriveTrain is BACKWARD
 				}
 				ballGrabber.RunElevatorAutonomous(PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE);
 				printDelay = printDelay++;
@@ -325,7 +327,7 @@ public:
 			ballGrabber.OperateGrabber(shooterButton, okToGrab);
 			//Trying to make some things happen automatically during teleoperated
 			if(automaticAimButton){
-				ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE;
+				ballGrabber.m_desiredElevatorVoltage = PHOENIX2014_TELEOP_ELEVATOR_ANGLE;
 			}
 			//((distanceToWall > (12.0*11.0)) && distanceToWall < (12.0*13.0)){
 				//lightBulb.Set(Relay::kOn);
