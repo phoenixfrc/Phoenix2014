@@ -24,8 +24,8 @@ class RobotDemo : public SimpleRobot
 	Encoder driveDistanceRight;
 	Encoder driveDistanceLeft;
 	Shooter shooter;
-	DigitalInput testSwitch;
-	Talon testTalons;
+	DigitalInput testSwitch; //TODO get rid of testSwitch.
+	Talon testTalons; //TODO get rid of testTalons.
 	UltrasonicSensor frontUltrasonic;
 	UltrasonicSensor backUltrasonic;
 	AnalogTrigger analogTestSwitch;
@@ -78,7 +78,7 @@ public:
 	void RobotInit(){
 	//move initial code from inside operator controll
 		m_display_page_1 = false;
-		Wait(.5);
+		Wait(.5); //Give dashboard preferences time to load.
 		double P = dashboardPreferences->GetDouble("P");
 		double I = dashboardPreferences->GetDouble("I");
 		double D = dashboardPreferences->GetDouble("D");
@@ -125,6 +125,7 @@ public:
 		//int distanceToShoot = 133;
 		//int shootDelay = 0;
 		//ballGrabber.elevatorController.SetSetpoint(PHOENIX2014_INITIAL_AUTONOMOUS_ELEVATOR_ANGLE);
+		//TODO Remove encoders from code??
 		driveDistanceRight.Reset();
 		driveDistanceLeft.Reset();
 		driveDistanceRight.SetDistancePerPulse(PHOENIX2014_DRIVE_DISTANCE_PER_PULSE_RIGHT);
@@ -139,10 +140,10 @@ public:
 		//float autoDriveSlowSpeed = 0.38;
 		int time = 0;
 		int maxDriveLoop = 4*200; // 4 seconds @200 times/sec
+
 		bool shootingBall = false;
 		bool wantFirstShot = true;
 
-		//int exitAfterShootTime = 1*200;
 		if(checkBox1 == false){
 			int printDelay = 0;
 			//Ultrasonic Autonomous
@@ -163,10 +164,6 @@ public:
 							(ballGrabber.elevatorAngleSensor.GetVoltage() < PHOENIX2014_AUTONOMOUS_ELEVATOR_ANGLE + 0.1)){
 						//Enough to cover break release and start winding again.
 						
-						//bad code DOES NOT disable winch motor
-					//	if ((time-startShootTime)>exitAfterShootTime) {
-					//		break;
-					//	}
 						shootingBall = shooter.OperateShooter(wantFirstShot);
 					}
 					if(shootingBall == true){
@@ -239,16 +236,18 @@ public:
 		
 		int printDelay = 0;
 		int shootDelay = 0;
-		bool SavePreferencesToFlash = false;
+		//bool SavePreferencesToFlash = false;
 		
 		while (IsOperatorControl() && IsEnabled())
 		{
-			bool SavePreferences = gamePad.GetRawButton(8);
+			/*
+		    bool SavePreferences = gamePad.GetRawButton(8);
 			if (SavePreferences){
 				double elevatorAngleValue = SmartDashboard::GetNumber("Angle");
 				dashboardPreferences->PutDouble("Angle", elevatorAngleValue);
 				SavePreferencesToFlash = true;
 			}
+			*/
 			printDelay ++;
 			
 			float rJoyStick = limitSpeed(rightJoyStick.GetY());
@@ -263,13 +262,10 @@ public:
 			//ballGrabber.DriveElevatorTestMode(dPadThumbstick);
 			//Sets motor equal to the elevator sensor.
 
+			//TODO Probably don't need but want to test because called inside operate grabber.
 			ballGrabber.OperatePIDLoop();
 
-		//organize lcd code limit to 2 times per second
 			if(printDelay == 100){
-				//float readings[100];
-				//readings[loopCounter%100];
-				//do average();
 				lcd->Clear();
 				if(m_display_page_1)
 				{
@@ -352,10 +348,12 @@ public:
 		ballGrabber.StopPidLoop();
 		shooter.motorShutOff();
 		
+		/*
 		if(SavePreferencesToFlash){
 			dashboardPreferences->Save();
 			SavePreferencesToFlash = false;
 		}
+		*/
 			
 	} // end of OperatorControl()
 		

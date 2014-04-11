@@ -9,9 +9,6 @@
 class Grabber;
 
 class TestMode {
-	UltrasonicSensor testUltrasonic1;
-	UltrasonicSensor testUltrasonic2;
-	UltrasonicSensor testUltrasonic3;
 	Preferences * dashboardPreferences;
 public:
 	AnalogIOButton * testSwitch;
