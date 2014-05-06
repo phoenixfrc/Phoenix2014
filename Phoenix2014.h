@@ -14,7 +14,7 @@
 
 //using 1,2,3,4 for drivetrain
 #define PHOENIX2014_DRIVEMOTOR_LEFT_REAR 1
-#define PHOENIX2014_SHOOTER_BRAKE_MOTOR 2
+#define PHOENIX2014_DRIVEMOTOR_RIGHT_FRONT 2
 #define PHOENIX2014_DRIVEMOTOR_RIGHT_REAR 3
 #define PHOENIX2014_DRIVEMOTOR_LEFT_FRONT 4
 //talons needed for grabber
@@ -25,7 +25,7 @@
 //unused pwm ports.
 #define PHOENIX2014_CAMERA_SERVO_VERTICLE_PWM 8
 #define PHOENIX2014_CAMERA_SERVO_HORIZONTAL_PWM 9
-#define PHOENIX2014_PWM_UNUSED10 10
+#define PHOENIX2014_SHOOTER_BRAKE_MOTOR 10
 #define PHOENIX2014_PWM_UNUSED11 11
 
 // *******************************************************************
