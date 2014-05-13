@@ -40,7 +40,7 @@ public:
 	RobotDemo()://This is the constructer function
 		lcd(DriverStationLCD::GetInstance()),
 		dashboardPreferences(Preferences::GetInstance()),
-		driveTrain(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT,PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_FRONT,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel), rearrightmotor (pwm channel)
+		driveTrain(PHOENIX2014_DRIVEMOTOR_LEFT_FRONT,PHOENIX2014_DRIVEMOTOR_LEFT_REAR,PHOENIX2014_DRIVEMOTOR_RIGHT_FRONT,PHOENIX2014_DRIVEMOTOR_RIGHT_REAR), // rearleftmotor (pwm channel),frontleftmotor , rearrightmotor (pwm channel)
 		rightJoyStick(2),// as they are declared above.
 		leftJoyStick(1),
 		gamePad(3),
